@@ -1,0 +1,1 @@
+"""Typed Firecrawl HTTP adapter."""

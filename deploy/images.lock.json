@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-08-24",
+  "images": {
+    "browser_test": {
+      "reference": "mcr.microsoft.com/playwright:v1.62.1-noble",
+      "digest": "sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e"
+    },
+    "node_build": {
+      "reference": "docker.io/library/node:24.19.0-bookworm-slim",
+      "digest": "sha256:3638d9a6fe4030bd716be989438248074489337ba3275657f93595428be4fc03"
+    },
+    "postgres": {
+      "reference": "docker.io/library/postgres:18.6-alpine3.24",
+      "digest": "sha256:d3e1620b530c944afa6e887d22eb899824da68e19c52024bf98f5220c88a65b2"
+    },
+    "python_runtime": {
+      "reference": "docker.io/library/python:3.13.15-slim-trixie",
+      "digest": "sha256:ffb752e139c0a19692a43af8d8523b274222dd68eebad5d583b45c2201c6e30a"
+    },
+    "uv_build": {
+      "reference": "ghcr.io/astral-sh/uv:0.12.5",
+      "digest": "sha256:e85be844203885286c60ffad8a858d48afb6c5a5c237ca0e67f12e74b8f174b1"
+    }
+  }
+}

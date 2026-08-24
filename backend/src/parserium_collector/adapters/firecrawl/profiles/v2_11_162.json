@@ -1,0 +1,25 @@
+{
+  "profile_schema_version": 1,
+  "release_tag": "v2.11.162",
+  "git_sha": "7666c1f9ae8720a6bba271e0f60b6a217f8a5210",
+  "release_identity": "operator_declared",
+  "request_profile": "search-web-metadata-only",
+  "capabilities": {
+    "search.web.metadata_only": "untested",
+    "search.web.with_scrape": "unsafe_disabled",
+    "scrape": "unsafe_disabled",
+    "crawl": "unsafe_disabled",
+    "map": "unsafe_disabled",
+    "extract": "unsafe_disabled",
+    "domain_hints": "provider_hint_only",
+    "language_hint": "probe_required",
+    "country": "unsupported",
+    "location": "unsupported",
+    "date_filter": "unsupported",
+    "generic_filter": "unsupported"
+  },
+  "strict_searxng_only": "unsupported",
+  "firecrawl_egress": "unsafe_disabled",
+  "firecrawl_robots": "unsafe_disabled",
+  "proof_artifacts": []
+}
