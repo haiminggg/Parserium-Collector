@@ -1,0 +1,2 @@
+"""Application-owned database adapter."""
+

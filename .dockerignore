@@ -1,0 +1,15 @@
+.git
+.github
+.local
+.worktrees
+worktrees
+**/.venv
+**/__pycache__
+**/node_modules
+**/dist
+**/.pytest_cache
+**/playwright-report
+**/test-results
+scrape
+tmp
+
