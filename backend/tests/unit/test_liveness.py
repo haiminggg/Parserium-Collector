@@ -12,7 +12,7 @@ def test_liveness_returns_build_identity_without_dependency_calls() -> None:
         )
     )
 
-    with TestClient(app) as client:
+    with TestClient(app, base_url="http://127.0.0.1:8080") as client:
         response = client.get("/api/v1/health/live")
 
     assert response.status_code == 200

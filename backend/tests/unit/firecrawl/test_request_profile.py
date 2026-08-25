@@ -111,3 +111,28 @@ async def test_metadata_probe_rejects_unknown_result_fields() -> None:
 
     assert error.value.code == "schema_mismatch"
     assert error.value.retryable is False
+
+
+async def test_metadata_probe_accepts_observed_empty_result_envelope() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={
+                "success": True,
+                "id": "empty-search",
+                "data": {},
+                "creditsUsed": 0,
+            },
+        )
+
+    transport = httpx.MockTransport(handler)
+    async with httpx.AsyncClient(
+        base_url="http://firecrawl.test",
+        transport=transport,
+    ) as http_client:
+        result = await FirecrawlClient(http_client).probe_metadata_search(
+            MetadataSearchRequest(query="no matching documents")
+        )
+
+    assert result.search_id == "empty-search"
+    assert result.results == []

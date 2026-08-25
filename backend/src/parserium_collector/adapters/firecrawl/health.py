@@ -39,8 +39,8 @@ def firecrawl_health_probe(
             name="firecrawl",
             status=ComponentStatus.DEGRADED,
             detail=(
-                "Connected; release identity is operator-declared; compatibility is untested; "
-                "egress and robots are unsafe_disabled."
+                "Connected; release identity is operator-declared; metadata-only search is "
+                "verified; fetch capabilities remain disabled."
             ),
             required=False,
         )

@@ -17,7 +17,7 @@ def database_url() -> str:
         raise RuntimeError("TEST_DATABASE_URL is required for integration tests.") from error
 
 
-async def prepare_database(engine: AsyncEngine, revision: str = "0001_foundation") -> None:
+async def prepare_database(engine: AsyncEngine, revision: str = "0002_local_sessions") -> None:
     async with engine.begin() as connection:
         await connection.run_sync(metadata.drop_all)
         await connection.run_sync(metadata.create_all)
@@ -36,7 +36,7 @@ async def test_database_probe_accepts_matching_migration() -> None:
     try:
         await prepare_database(engine)
 
-        result = await database_probe(engine, "0001_foundation")()
+        result = await database_probe(engine, "0002_local_sessions")()
 
         assert result.status is ComponentStatus.AVAILABLE
     finally:
@@ -48,7 +48,7 @@ async def test_database_probe_rejects_mismatched_migration() -> None:
     try:
         await prepare_database(engine, revision="unexpected")
 
-        result = await database_probe(engine, "0001_foundation")()
+        result = await database_probe(engine, "0002_local_sessions")()
 
         assert result.status is ComponentStatus.UNAVAILABLE
         assert result.detail == "Database migration does not match the application."

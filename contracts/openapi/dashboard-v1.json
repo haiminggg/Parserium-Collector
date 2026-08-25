@@ -45,6 +45,155 @@
         "title": "ComponentStatus",
         "type": "string"
       },
+      "DocumentCandidate": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "document_type": {
+            "$ref": "#/components/schemas/DocumentType"
+          },
+          "source": {
+            "const": "firecrawl",
+            "default": "firecrawl",
+            "title": "Source",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "url": {
+            "format": "uri",
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "document_type"
+        ],
+        "title": "DocumentCandidate",
+        "type": "object"
+      },
+      "DocumentDiscoveryRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "document_types": {
+            "default": [
+              "pdf",
+              "docx"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/DocumentType"
+            },
+            "title": "Document Types",
+            "type": "array"
+          },
+          "exclude_domains": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Exclude Domains",
+            "type": "array"
+          },
+          "include_domains": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Include Domains",
+            "type": "array"
+          },
+          "limit": {
+            "default": 20,
+            "maximum": 30.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "DocumentDiscoveryRequest",
+        "type": "object"
+      },
+      "DocumentDiscoveryResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentCandidate"
+            },
+            "title": "Candidates",
+            "type": "array"
+          },
+          "provider_search_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Provider Search Ids",
+            "type": "array"
+          },
+          "rejected_non_document_results": {
+            "title": "Rejected Non Document Results",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "provider_search_ids",
+          "candidates",
+          "rejected_non_document_results"
+        ],
+        "title": "DocumentDiscoveryResponse",
+        "type": "object"
+      },
+      "DocumentType": {
+        "enum": [
+          "pdf",
+          "docx"
+        ],
+        "title": "DocumentType",
+        "type": "string"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
       "HealthStatus": {
         "properties": {
           "build_id": {
@@ -98,6 +247,101 @@
         ],
         "title": "LiveResponse",
         "type": "object"
+      },
+      "PairingRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "PairingRequest",
+        "type": "object"
+      },
+      "PublicSessionStatus": {
+        "properties": {
+          "status": {
+            "const": "pairing_required",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "PublicSessionStatus",
+        "type": "object"
+      },
+      "SessionResponse": {
+        "properties": {
+          "csrf_token": {
+            "title": "Csrf Token",
+            "type": "string"
+          },
+          "idle_expires_at": {
+            "format": "date-time",
+            "title": "Idle Expires At",
+            "type": "string"
+          },
+          "status": {
+            "const": "authenticated",
+            "default": "authenticated",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "csrf_token",
+          "idle_expires_at"
+        ],
+        "title": "SessionResponse",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
       }
     }
   },
@@ -107,6 +351,81 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/discovery/search": {
+      "post": {
+        "operationId": "search_documents",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Parserium-CSRF",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Parserium-Csrf"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "parserium_session",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Parserium Session"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentDiscoveryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDiscoveryResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search Documents",
+        "tags": [
+          "discovery"
+        ]
+      }
+    },
     "/api/v1/health/live": {
       "get": {
         "operationId": "get_liveness",
@@ -177,6 +496,211 @@
         "summary": "Get Health Status",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/api/v1/session": {
+      "get": {
+        "operationId": "get_session_api_v1_session_get",
+        "parameters": [
+          {
+            "in": "cookie",
+            "name": "parserium_session",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Parserium Session"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Session",
+        "tags": [
+          "session"
+        ]
+      }
+    },
+    "/api/v1/session/logout": {
+      "post": {
+        "operationId": "logout_session_api_v1_session_logout_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Parserium-CSRF",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Parserium-Csrf"
+            }
+          },
+          {
+            "in": "cookie",
+            "name": "parserium_session",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Parserium Session"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Logout Session",
+        "tags": [
+          "session"
+        ]
+      }
+    },
+    "/api/v1/session/pair": {
+      "post": {
+        "operationId": "pair_session_api_v1_session_pair_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PairingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Pair Session",
+        "tags": [
+          "session"
+        ]
+      }
+    },
+    "/api/v1/session/status": {
+      "get": {
+        "operationId": "get_session_status_api_v1_session_status_get",
+        "parameters": [
+          {
+            "in": "cookie",
+            "name": "parserium_session",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Parserium Session"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PublicSessionStatus"
+                    },
+                    {
+                      "$ref": "#/components/schemas/SessionResponse"
+                    }
+                  ],
+                  "title": "Response Get Session Status Api V1 Session Status Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Session Status",
+        "tags": [
+          "session"
         ]
       }
     }

@@ -14,7 +14,7 @@ async def test_unconfigured_firecrawl_is_optional_and_not_configured() -> None:
     assert result.status is ComponentStatus.NOT_CONFIGURED
 
 
-async def test_connected_firecrawl_remains_degraded_until_proofs_exist() -> None:
+async def test_connected_firecrawl_reports_verified_metadata_only_capability() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(200, json={"status": "ok"})
 
@@ -29,4 +29,5 @@ async def test_connected_firecrawl_remains_degraded_until_proofs_exist() -> None
     assert result.status is ComponentStatus.DEGRADED
     assert result.required is False
     assert "operator-declared" in (result.detail or "")
-    assert "unsafe_disabled" in (result.detail or "")
+    assert "metadata-only search is verified" in (result.detail or "")
+    assert "fetch capabilities remain disabled" in (result.detail or "")

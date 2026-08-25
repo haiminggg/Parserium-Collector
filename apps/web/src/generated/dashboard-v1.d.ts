@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/v1/discovery/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Search Documents */
+        post: operations["search_documents"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health/live": {
         parameters: {
             query?: never;
@@ -55,6 +72,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Session */
+        get: operations["get_session_api_v1_session_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/session/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Logout Session */
+        post: operations["logout_session_api_v1_session_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/session/pair": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pair Session */
+        post: operations["pair_session_api_v1_session_pair_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/session/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Session Status */
+        get: operations["get_session_status_api_v1_session_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -77,6 +162,72 @@ export interface components {
          * @enum {string}
          */
         ComponentStatus: "available" | "degraded" | "unavailable" | "unsupported" | "not_configured";
+        /** DocumentCandidate */
+        DocumentCandidate: {
+            /** Description */
+            description?: string | null;
+            document_type: components["schemas"]["DocumentType"];
+            /**
+             * Source
+             * @default firecrawl
+             * @constant
+             */
+            source: "firecrawl";
+            /** Title */
+            title?: string | null;
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+        };
+        /** DocumentDiscoveryRequest */
+        DocumentDiscoveryRequest: {
+            /**
+             * Document Types
+             * @default [
+             *       "pdf",
+             *       "docx"
+             *     ]
+             */
+            document_types: components["schemas"]["DocumentType"][];
+            /**
+             * Exclude Domains
+             * @default []
+             */
+            exclude_domains: string[];
+            /**
+             * Include Domains
+             * @default []
+             */
+            include_domains: string[];
+            /**
+             * Limit
+             * @default 20
+             */
+            limit: number;
+            /** Query */
+            query: string;
+        };
+        /** DocumentDiscoveryResponse */
+        DocumentDiscoveryResponse: {
+            /** Candidates */
+            candidates: components["schemas"]["DocumentCandidate"][];
+            /** Provider Search Ids */
+            provider_search_ids: string[];
+            /** Rejected Non Document Results */
+            rejected_non_document_results: number;
+        };
+        /**
+         * DocumentType
+         * @enum {string}
+         */
+        DocumentType: "pdf" | "docx";
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
         /** HealthStatus */
         HealthStatus: {
             /** Build Id */
@@ -101,6 +252,48 @@ export interface components {
              */
             status: "alive";
         };
+        /** PairingRequest */
+        PairingRequest: {
+            /** Code */
+            code: string;
+        };
+        /** PublicSessionStatus */
+        PublicSessionStatus: {
+            /**
+             * Status
+             * @constant
+             */
+            status: "pairing_required";
+        };
+        /** SessionResponse */
+        SessionResponse: {
+            /** Csrf Token */
+            csrf_token: string;
+            /**
+             * Idle Expires At
+             * Format: date-time
+             */
+            idle_expires_at: string;
+            /**
+             * Status
+             * @default authenticated
+             * @constant
+             */
+            status: "authenticated";
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Context */
+            ctx?: Record<string, never>;
+            /** Input */
+            input?: unknown;
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -110,6 +303,43 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    search_documents: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentDiscoveryRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDiscoveryResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_liveness: {
         parameters: {
             query?: never;
@@ -175,6 +405,132 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HealthStatus"];
+                };
+            };
+        };
+    };
+    get_session_api_v1_session_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    logout_session_api_v1_session_logout_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    pair_session_api_v1_session_pair_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PairingRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_session_status_api_v1_session_status_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicSessionStatus"] | components["schemas"]["SessionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

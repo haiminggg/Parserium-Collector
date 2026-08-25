@@ -2,6 +2,7 @@ import {
   Alert,
   AppShell,
   Badge,
+  Button,
   Card,
   Container,
   Group,
@@ -11,9 +12,17 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { loadHealth } from "./api/health";
+import {
+  loadSessionStatus,
+  logoutSession,
+  pairSession,
+  type SessionStatus,
+} from "./api/session";
+import { DiscoveryScreen } from "./DiscoveryScreen";
+import { PairingScreen } from "./PairingScreen";
 
 const statusColor: Record<string, string> = {
   available: "green",
@@ -24,11 +33,58 @@ const statusColor: Record<string, string> = {
 };
 
 export function App() {
+  const queryClient = useQueryClient();
+  const session = useQuery({
+    queryKey: ["session"],
+    queryFn: loadSessionStatus,
+  });
   const health = useQuery({
     queryKey: ["health"],
     queryFn: loadHealth,
     refetchInterval: 10_000,
+    enabled: session.data?.status === "authenticated",
   });
+  const pairing = useMutation({
+    mutationFn: pairSession,
+    onSuccess: (authenticated) => {
+      queryClient.setQueryData<SessionStatus>(["session"], authenticated);
+    },
+  });
+  const logout = useMutation({
+    mutationFn: async () => {
+      if (session.data?.status !== "authenticated") return;
+      await logoutSession(session.data.csrf_token);
+    },
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["health"] });
+      queryClient.setQueryData<SessionStatus>(["session"], { status: "pairing_required" });
+    },
+  });
+
+  if (session.isLoading) {
+    return (
+      <Container size="sm" py="xl">
+        <Group role="status">
+          <Loader size="sm" />
+          <Text>Checking browser pairing</Text>
+        </Group>
+      </Container>
+    );
+  }
+
+  if (session.isError) {
+    return (
+      <Container size="sm" py="xl">
+        <Alert color="red" title="Session check unavailable">
+          The dashboard API did not return a valid session response.
+        </Alert>
+      </Container>
+    );
+  }
+
+  if (session.data?.status !== "authenticated") {
+    return <PairingScreen onPair={(code) => pairing.mutateAsync(code).then(() => undefined)} />;
+  }
 
   return (
     <AppShell header={{ height: 64 }} padding="md">
@@ -40,11 +96,19 @@ export function App() {
               {health.data.overall}
             </Badge>
           ) : null}
+          <Button
+            variant="subtle"
+            onClick={() => logout.mutate()}
+            loading={logout.isPending}
+          >
+            Log out
+          </Button>
         </Group>
       </AppShell.Header>
       <AppShell.Main>
         <Container size="lg">
           <Stack gap="lg" aria-busy={health.isLoading}>
+            <DiscoveryScreen csrfToken={session.data.csrf_token} />
             <div>
               <Title order={1}>System health</Title>
               <Text>Foundation status only. Collection capabilities remain gated.</Text>

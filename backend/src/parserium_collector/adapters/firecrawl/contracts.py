@@ -41,7 +41,7 @@ class SearchResult(BaseModel):
 class FirecrawlSearchData(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    web: list[SearchResult]
+    web: list[SearchResult] = Field(default_factory=list)
 
 
 class FirecrawlSearchEnvelope(BaseModel):
@@ -50,6 +50,7 @@ class FirecrawlSearchEnvelope(BaseModel):
     success: bool
     id: str
     data: FirecrawlSearchData
+    credits_used: int = Field(default=0, alias="creditsUsed", ge=0)
 
 
 class MetadataSearchResult(BaseModel):

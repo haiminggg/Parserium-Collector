@@ -58,8 +58,27 @@ try {
   }
 
   $edgeNetwork = "${project}_edge"
-  docker run --rm --ipc=host --network $edgeNetwork --env PLAYWRIGHT_BASE_URL=http://api:8080 parserium-collector-browser-test:verify
-  if ($LASTEXITCODE -ne 0) { throw 'Browser accessibility gate failed.' }
+  foreach ($browserProject in @('desktop-chromium', 'mobile-chromium')) {
+    $recoveryOutput = @(
+      docker compose -p $project -f $composeFile run --rm --no-deps api `
+        python -m parserium_collector.cli.session_recovery
+    )
+    if ($LASTEXITCODE -ne 0) { throw 'Pairing-code recovery failed.' }
+    $codeLines = @($recoveryOutput | Where-Object { $_ -like 'LOCAL PAIRING CODE: *' })
+    if ($codeLines.Count -ne 1) { throw 'Recovery did not return exactly one pairing code.' }
+    $pairingCode = ($codeLines[0] -split ': ', 2)[1].Trim()
+    if ($pairingCode -notmatch '^[A-Za-z0-9_-]{24}$') {
+      throw 'Recovery returned an invalid pairing-code format.'
+    }
+    docker run --rm --ipc=host --network $edgeNetwork `
+      --env PLAYWRIGHT_BASE_URL=http://api:8080 `
+      --env PLAYWRIGHT_PAIRING_CODE=$pairingCode `
+      parserium-collector-browser-test:verify `
+      npm run test:e2e -- --project=$browserProject
+    $pairingCode = $null
+    $recoveryOutput = $null
+    if ($LASTEXITCODE -ne 0) { throw "Browser gate failed for $browserProject." }
+  }
   Write-Output 'PASS: complete platform foundation verification.'
 } finally {
   if ($project -ne 'parserium-foundation-verification') {

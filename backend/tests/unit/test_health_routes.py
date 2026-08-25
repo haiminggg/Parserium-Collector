@@ -19,7 +19,7 @@ def test_status_returns_component_health() -> None:
         health_service=health_service(ComponentStatus.AVAILABLE),
     )
 
-    with TestClient(app) as client:
+    with TestClient(app, base_url="http://127.0.0.1:8080") as client:
         response = client.get("/api/v1/health/status")
 
     assert response.status_code == 200
@@ -43,7 +43,7 @@ def test_readiness_returns_service_unavailable_when_degraded() -> None:
         health_service=health_service(ComponentStatus.UNAVAILABLE),
     )
 
-    with TestClient(app) as client:
+    with TestClient(app, base_url="http://127.0.0.1:8080") as client:
         response = client.get("/api/v1/health/ready")
 
     assert response.status_code == 503

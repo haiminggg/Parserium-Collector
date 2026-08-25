@@ -18,7 +18,7 @@ def test_static_index_is_served_without_intercepting_api_routes(tmp_path: Path) 
         health_service=unavailable_health_service("static-test", "test"),
     )
 
-    with TestClient(app) as client:
+    with TestClient(app, base_url="http://127.0.0.1:8080") as client:
         root = client.get("/")
         live = client.get("/api/v1/health/live")
 

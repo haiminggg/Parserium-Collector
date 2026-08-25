@@ -15,6 +15,18 @@ def network_names(service: dict[str, Any]) -> set[str]:
     return set(networks)
 
 
+def secret_sources(service: dict[str, Any]) -> set[str]:
+    secrets = service.get("secrets", []) or []
+    if not isinstance(secrets, list):
+        fail("service secrets must use rendered list form")
+    sources: set[str] = set()
+    for secret in secrets:
+        if not isinstance(secret, dict) or not isinstance(secret.get("source"), str):
+            fail("service secret must have a rendered source")
+        sources.add(secret["source"])
+    return sources
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("config", type=Path)
@@ -60,6 +72,27 @@ def main() -> int:
 
     if "no-new-privileges:true" not in (services["db"].get("security_opt") or []):
         fail("db does not set no-new-privileges")
+
+    secrets = document.get("secrets", {})
+    if not isinstance(secrets, dict) or set(secrets) != {
+        "db_password",
+        "session_signing_secret",
+    }:
+        fail("exactly the database and session signing secrets must exist")
+    if secret_sources(services["api"]) != {
+        "db_password",
+        "session_signing_secret",
+    }:
+        fail("api must mount the database and session signing secrets")
+
+    api_environment = services["api"].get("environment", {})
+    if not isinstance(api_environment, dict) or api_environment.get(
+        "DASHBOARD_FIRECRAWL_BASE_URL"
+    ) != "http://host.docker.internal:3002":
+        fail("api must target the local Firecrawl endpoint")
+    rendered_extra_hosts = json.dumps(services["api"].get("extra_hosts", []))
+    if "host.docker.internal" not in rendered_extra_hosts or "host-gateway" not in rendered_extra_hosts:
+        fail("api must map the cross-platform Docker host gateway")
 
     networks = document.get("networks", {})
     if not isinstance(networks, dict):
