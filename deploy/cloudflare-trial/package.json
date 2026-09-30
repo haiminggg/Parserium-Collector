@@ -1,0 +1,8 @@
+{
+  "name": "parserium-container-trial",
+  "private": true,
+  "type": "module",
+  "dependencies": {"@cloudflare/containers": "0.3.7"},
+  "devDependencies": {"wrangler": "4.130.0"},
+  "scripts": {"test": "node --test access.test.mjs"}
+}

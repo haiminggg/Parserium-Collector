@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "parserium-parsing-trial",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-09-10",
+  "workers_dev": true,
+  "preview_urls": false,
+  "containers": [{
+    "class_name": "ParsingTrial",
+    "image": "./Dockerfile",
+    "image_build_context": "../..",
+    "instance_type": "basic",
+    "max_instances": 1
+  }],
+  "durable_objects": {"bindings": [{"name": "TRIAL", "class_name": "ParsingTrial"}]},
+  "migrations": [{"tag": "v1", "new_sqlite_classes": ["ParsingTrial"]}]
+}
