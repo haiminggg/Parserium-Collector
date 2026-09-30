@@ -1,0 +1,28 @@
+.document-motion { color: #24221f; width: 100%; }
+.dm-heading { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem 1rem; flex-wrap: wrap; }
+.workspace-shell .discovery-idle-state .dm-heading h2 { font-size: 1.25rem; margin: 0; }
+.dm-heading p { margin: 0; color: #74695c; font-size: .75rem; }
+.dm-stage { height: 285px; position: relative; perspective: 1100px; }
+.dm-sheet { position: absolute; top: 24px; left: 50%; width: 190px; height: 235px; margin-left: -95px; border: 1px solid #ded8cd; border-radius: 9px; background: #fffdfa; box-shadow: 0 12px 22px #76634e20; padding: 18px; transform-origin: 50% 85%; }
+.dm-back-one { transform: rotate(-8deg); background: #eee8dd; }
+.dm-back-two { transform: rotate(6deg); background: #f9f5ed; }
+.dm-original { overflow: hidden; }
+.dm-tag { display: flex; justify-content: space-between; font-size: 11px; color: #766c60; padding-bottom: 12px; border-bottom: 1px solid #e7e0d6; }
+.dm-title { font-size: 15px; margin: 14px 0 10px; }
+.dm-line { height: 4px; background: #dcd8d0; border-radius: 3px; margin-bottom: 6px; }
+.dm-short { width: 64%; }
+.dm-table { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 15px; border-top: 1px solid #d7c9b8; border-left: 1px solid #d7c9b8; }
+.dm-table i { height: 18px; border-bottom: 1px solid #d7c9b8; border-right: 1px solid #d7c9b8; background: #f6efe5; }
+.dm-scan { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #c34b20; box-shadow: 0 -12px 25px 8px #d46b3426; opacity: 0; }
+.dm-output { opacity: 0; }
+.dm-output .dm-tag { color: #ad431e; }
+.dm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 16px; }
+.dm-cell { height: 25px; border-radius: 4px; background: #eee8df; border: 1px solid #e2d9cc; }
+.dm-cell:nth-child(-n+3) { background: #c05129; border-color: #c05129; }
+.dm-caption { margin: 14px 0 0; font-size: 11px; color: #776d61; }
+.dm-footer { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; border-top: 1px solid #e0d9cf; padding-top: .8rem; }
+.dm-footer span { font-size: .8rem; color: #63594e; }
+.dm-footer button { min-height: 44px; padding: .6rem 1rem; border: 1px solid #a93b16; border-radius: 7px; background: #b8441c; color: white; font-size: .8rem; cursor: pointer; }
+.dm-footer button:disabled { opacity: .65; cursor: wait; }
+/* Keep the control visible on shorter laptops; scroll content instead of clipping it. */
+.workspace-shell .discovery-idle-state:has(.document-motion) { padding: 1.2rem; }

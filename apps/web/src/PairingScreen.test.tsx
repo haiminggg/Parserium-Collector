@@ -20,6 +20,8 @@ describe("PairingScreen", () => {
     const storage = vi.spyOn(Storage.prototype, "setItem");
     renderPairing(onPair);
 
+    expect(screen.getByRole("region", { name: "Browser pairing" })).toBeVisible();
+
     fireEvent.change(screen.getByLabelText(/Pairing code/), {
       target: { value: "operator-code" },
     });

@@ -4,6 +4,143 @@
  */
 
 export interface paths {
+    "/api/v1/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Activity */
+        get: operations["list_activity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/activity/{job_type}/{job_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Activity History */
+        delete: operations["delete_activity_history"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Callback */
+        get: operations["callback_api_v1_auth_callback_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Login */
+        post: operations["login_api_v1_auth_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/collection/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Collection Jobs */
+        get: operations["list_collection_jobs"];
+        put?: never;
+        /** Create Collection Jobs */
+        post: operations["create_collection_jobs"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/collection/jobs/completed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Clear Completed Collection Jobs */
+        delete: operations["clear_completed_collection_jobs"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/collection/jobs/{job_id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retry Collection Job */
+        post: operations["retry_collection_job"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/discovery/analyses/{candidate_id}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Analysis Preview */
+        get: operations["get_analysis_preview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/discovery/search": {
         parameters: {
             query?: never;
@@ -15,6 +152,213 @@ export interface paths {
         put?: never;
         /** Search Documents */
         post: operations["search_documents"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/discovery/searches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Analysis Search */
+        post: operations["create_analysis_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/discovery/searches/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Analysis Search */
+        get: operations["get_analysis_search"];
+        put?: never;
+        post?: never;
+        /** Cancel Analysis Search */
+        delete: operations["cancel_analysis_search"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/discovery/searches/{session_id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retry Analysis Search */
+        post: operations["retry_analysis_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Documents */
+        get: operations["list_documents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Stored Document */
+        delete: operations["delete_stored_document"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download Stored Document */
+        get: operations["download_stored_document"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Document Export */
+        post: operations["create_document_export"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Document Exports */
+        get: operations["list_document_exports"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/firecrawl/connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Connections */
+        get: operations["list_firecrawl_connections"];
+        put?: never;
+        /** Create Connection */
+        post: operations["create_firecrawl_connection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/firecrawl/connections/{connection_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Connection */
+        delete: operations["delete_firecrawl_connection"];
+        options?: never;
+        head?: never;
+        /** Update Connection */
+        patch: operations["update_firecrawl_connection"];
+        trace?: never;
+    };
+    "/api/v1/firecrawl/connections/{connection_id}/credential": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace Credential */
+        put: operations["replace_firecrawl_connection_credential"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/firecrawl/connections/{connection_id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Test Connection */
+        post: operations["test_firecrawl_connection"];
         delete?: never;
         options?: never;
         head?: never;
@@ -140,10 +484,338 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/session/workspace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Switch Workspace */
+        post: operations["switch_workspace_api_v1_session_workspace_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ActivityJobResponse */
+        ActivityJobResponse: {
+            /** Can Cancel */
+            can_cancel: boolean;
+            /** Can Delete */
+            can_delete: boolean;
+            /** Can Retry */
+            can_retry: boolean;
+            /** Completed At */
+            completed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Created By Name */
+            created_by_name?: string | null;
+            /** Created By User Id */
+            created_by_user_id: string | null;
+            /** Error Code */
+            error_code?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            job_type: components["schemas"]["ActivityJobType"];
+            /** Progress Percent */
+            progress_percent?: number | null;
+            /** Related Document Id */
+            related_document_id: string | null;
+            /** Stage */
+            stage: string;
+            state: components["schemas"]["ActivityJobState"];
+            /** Subtitle */
+            subtitle?: string | null;
+            /** Title */
+            title: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /**
+         * ActivityJobState
+         * @enum {string}
+         */
+        ActivityJobState: "queued" | "active" | "completed" | "failed" | "cancelled";
+        /**
+         * ActivityJobType
+         * @enum {string}
+         */
+        ActivityJobType: "discovery" | "collection" | "analysis" | "export";
+        /** ActivityPageResponse */
+        ActivityPageResponse: {
+            /** Items */
+            items: components["schemas"]["ActivityJobResponse"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+            summary: components["schemas"]["ActivitySummaryResponse"];
+            /** Total */
+            total: number;
+        };
+        /** ActivitySummaryResponse */
+        ActivitySummaryResponse: {
+            /** Active */
+            active: number;
+            /** Completed */
+            completed: number;
+            /** Failed */
+            failed: number;
+            /** Queued */
+            queued: number;
+        };
+        /** AnalysisCandidateResponse */
+        AnalysisCandidateResponse: {
+            /** Analyzed Page Count */
+            analyzed_page_count: number;
+            /** Attempt Count */
+            attempt_count: number;
+            /** Bytes Downloaded */
+            bytes_downloaded: number;
+            /** Completed At */
+            completed_at: string | null;
+            /** Content Length */
+            content_length?: number | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Description */
+            description: string | null;
+            document_type: components["schemas"]["DocumentType"];
+            /** Error Code */
+            error_code: string | null;
+            /** Error Detail */
+            error_detail: string | null;
+            /** Error Retryable */
+            error_retryable: boolean | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Ordinal */
+            ordinal: number;
+            /** Page Count */
+            page_count?: number | null;
+            /** Preview Available */
+            preview_available: boolean;
+            /** Preview Height */
+            preview_height?: number | null;
+            /** Preview Page Num */
+            preview_page_num?: number | null;
+            /** Preview Width */
+            preview_width?: number | null;
+            public_state: components["schemas"]["PublicAnalysisState"] | null;
+            /**
+             * Source Url
+             * Format: uri
+             */
+            source_url: string;
+            status: components["schemas"]["CandidateAnalysisStatus"];
+            /** Table Count */
+            table_count: number;
+            /** Table Count Lower Bound */
+            table_count_lower_bound: boolean;
+            /** Tables */
+            tables: components["schemas"]["CandidateTableResponse"][];
+            /** Title */
+            title: string | null;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** AnalysisCollectionRequest */
+        AnalysisCollectionRequest: {
+            /** Analysis Ids */
+            analysis_ids: string[];
+        };
+        /** AnalysisSessionResponse */
+        AnalysisSessionResponse: {
+            /** Bytes Downloaded */
+            bytes_downloaded: number;
+            /** Cancellation Requested */
+            cancellation_requested: boolean;
+            /** Candidate Count */
+            candidate_count: number;
+            /** Candidates */
+            candidates: components["schemas"]["AnalysisCandidateResponse"][];
+            /** Completed At */
+            completed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Document Types */
+            document_types: components["schemas"]["DocumentType"][];
+            /** Error Code */
+            error_code: string | null;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Firecrawl Connection Id */
+            firecrawl_connection_id: string | null;
+            /** Firecrawl Connection Name Snapshot */
+            firecrawl_connection_name_snapshot: string | null;
+            firecrawl_connection_type_snapshot: components["schemas"]["ConnectionType"] | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            job_stage: components["schemas"]["DiscoveryJobStage"];
+            /** Query */
+            query: string;
+            /** Session Byte Limit */
+            session_byte_limit: number;
+            status: components["schemas"]["AnalysisSessionStatus"];
+            /** Tables Required */
+            tables_required: boolean;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /**
+         * AnalysisSessionStatus
+         * @enum {string}
+         */
+        AnalysisSessionStatus: "queued" | "running" | "completed" | "cancelled" | "failed";
+        /**
+         * AuthenticationMode
+         * @enum {string}
+         */
+        AuthenticationMode: "local" | "oidc";
+        /** Body_login_api_v1_auth_login_post */
+        Body_login_api_v1_auth_login_post: {
+            /** Invite */
+            invite?: string | null;
+        };
+        /**
+         * CandidateAnalysisStatus
+         * @enum {string}
+         */
+        CandidateAnalysisStatus: "queued" | "downloading" | "validating" | "converting" | "parsing" | "ready" | "no_tables" | "partial" | "failed" | "cancelled" | "promoted";
+        /** CandidateTableResponse */
+        CandidateTableResponse: {
+            bounding_box: components["schemas"]["TableBoundingBox"];
+            /** Cells */
+            cells: string[][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Markdown */
+            markdown: string;
+            /** Page Num */
+            page_num: number;
+            /** Table Index */
+            table_index: number;
+        };
+        /** CollectionBatchRequest */
+        CollectionBatchRequest: {
+            /** Candidates */
+            candidates: components["schemas"]["CollectionCandidate"][];
+        };
+        /** CollectionCandidate */
+        CollectionCandidate: {
+            document_type: components["schemas"]["DocumentType"];
+            /** Title */
+            title?: string | null;
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+        };
+        /** CollectionJobPageResponse */
+        CollectionJobPageResponse: {
+            /** Items */
+            items: components["schemas"]["CollectionJobResponse"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+            /** Total */
+            total: number;
+        };
+        /** CollectionJobResponse */
+        CollectionJobResponse: {
+            /** Attempt Count */
+            attempt_count: number;
+            /**
+             * Available At
+             * Format: date-time
+             */
+            available_at: string;
+            /** Bytes Downloaded */
+            bytes_downloaded: number;
+            /** Completed At */
+            completed_at: string | null;
+            /** Content Length */
+            content_length: number | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Document Id */
+            document_id: string | null;
+            /** Error Code */
+            error_code: string | null;
+            /** Error Detail */
+            error_detail: string | null;
+            /** Error Retryable */
+            error_retryable: boolean | null;
+            expected_document_type: components["schemas"]["DocumentType"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Source Url
+             * Format: uri
+             */
+            source_url: string;
+            /** Started At */
+            started_at: string | null;
+            status: components["schemas"]["CollectionJobStatus"];
+            /** Title */
+            title: string | null;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /**
+         * CollectionJobStatus
+         * @enum {string}
+         */
+        CollectionJobStatus: "queued" | "downloading" | "validating" | "completed" | "duplicate" | "failed";
         /** ComponentHealth */
         ComponentHealth: {
             /** Detail */
@@ -162,6 +834,71 @@ export interface components {
          * @enum {string}
          */
         ComponentStatus: "available" | "degraded" | "unavailable" | "unsupported" | "not_configured";
+        /**
+         * ConnectionFailureCategory
+         * @enum {string}
+         */
+        ConnectionFailureCategory: "invalid_credentials" | "blocked_destination" | "dns_failure" | "tls_failure" | "timeout" | "rate_limited" | "service_unavailable" | "response_too_large" | "incompatible_response" | "credential_unavailable";
+        /** ConnectionListResponse */
+        ConnectionListResponse: {
+            /** Connections */
+            connections: components["schemas"]["ConnectionSummary"][];
+        };
+        /**
+         * ConnectionStatus
+         * @enum {string}
+         */
+        ConnectionStatus: "never_validated" | "healthy" | "degraded" | "disabled" | "deleted";
+        /** ConnectionSummary */
+        ConnectionSummary: {
+            connection_type: components["schemas"]["ConnectionType"];
+            /** Enabled */
+            enabled: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Default */
+            is_default: boolean;
+            last_failure_category: components["schemas"]["ConnectionFailureCategory"] | null;
+            /** Last Validation Attempt At */
+            last_validation_attempt_at: string | null;
+            /** Last Validation Success At */
+            last_validation_success_at: string | null;
+            /** Name */
+            name: string;
+            /** Normalized Base Url */
+            normalized_base_url?: string | null;
+            status: components["schemas"]["ConnectionStatus"];
+            /** Usable */
+            usable: boolean;
+        };
+        /**
+         * ConnectionType
+         * @enum {string}
+         */
+        ConnectionType: "cloud" | "remote";
+        /** CreateConnectionRequest */
+        CreateConnectionRequest: {
+            /** Base Url */
+            base_url?: string | null;
+            connection_type: components["schemas"]["ConnectionType"];
+            /** Credential */
+            credential: string;
+            /**
+             * Is Default
+             * @default false
+             */
+            is_default: boolean;
+            /** Name */
+            name: string;
+        };
+        /**
+         * DiscoveryJobStage
+         * @enum {string}
+         */
+        DiscoveryJobStage: "queued" | "discovering" | "analyzing" | "completed" | "cancelled" | "failed";
         /** DocumentCandidate */
         DocumentCandidate: {
             /** Description */
@@ -196,6 +933,8 @@ export interface components {
              * @default []
              */
             exclude_domains: string[];
+            /** Firecrawl Connection Id */
+            firecrawl_connection_id?: string | null;
             /**
              * Include Domains
              * @default []
@@ -218,11 +957,107 @@ export interface components {
             /** Rejected Non Document Results */
             rejected_non_document_results: number;
         };
+        /** DocumentExportRequest */
+        DocumentExportRequest: {
+            /**
+             * Relative Directory
+             * @default
+             */
+            relative_directory: string;
+        };
+        /** DocumentExportResponse */
+        DocumentExportResponse: {
+            /** Attempt Count */
+            attempt_count: number;
+            /**
+             * Available At
+             * Format: date-time
+             */
+            available_at: string;
+            /** Completed At */
+            completed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Document Id
+             * Format: uuid
+             */
+            document_id: string;
+            /** Error Code */
+            error_code: string | null;
+            /** Error Detail */
+            error_detail: string | null;
+            /** Exported Relative Path */
+            exported_relative_path: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Relative Directory */
+            relative_directory: string;
+            status: components["schemas"]["ExportStatus"];
+            /** Target Filename */
+            target_filename: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
         /**
          * DocumentType
          * @enum {string}
          */
         DocumentType: "pdf" | "docx";
+        /** DurableAnalysisSearchRequest */
+        DurableAnalysisSearchRequest: {
+            /**
+             * Document Types
+             * @default [
+             *       "pdf",
+             *       "docx"
+             *     ]
+             */
+            document_types: components["schemas"]["DocumentType"][];
+            /**
+             * Exclude Domains
+             * @default []
+             */
+            exclude_domains: string[];
+            /** Firecrawl Connection Id */
+            firecrawl_connection_id?: string | null;
+            /**
+             * Force Refresh
+             * @default false
+             */
+            force_refresh: boolean;
+            /**
+             * Include Domains
+             * @default []
+             */
+            include_domains: string[];
+            /**
+             * Limit
+             * @default 20
+             */
+            limit: number;
+            /** Query */
+            query: string;
+            /**
+             * Tables Required
+             * @default true
+             */
+            tables_required: boolean;
+        };
+        /**
+         * ExportStatus
+         * @enum {string}
+         */
+        ExportStatus: "queued" | "exporting" | "completed" | "failed";
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -252,11 +1087,32 @@ export interface components {
              */
             status: "alive";
         };
+        /** LoginRequiredSession */
+        LoginRequiredSession: {
+            /**
+             * Login Url
+             * @default /api/v1/auth/login
+             */
+            login_url: string;
+            /** Provider Label */
+            provider_label: string;
+            /**
+             * Status
+             * @default login_required
+             * @constant
+             */
+            status: "login_required";
+        };
         /** PairingRequest */
         PairingRequest: {
             /** Code */
             code: string;
         };
+        /**
+         * PublicAnalysisState
+         * @enum {string}
+         */
+        PublicAnalysisState: "valid" | "no_tables" | "partial" | "failed";
         /** PublicSessionStatus */
         PublicSessionStatus: {
             /**
@@ -265,8 +1121,14 @@ export interface components {
              */
             status: "pairing_required";
         };
+        /** ReplaceCredentialRequest */
+        ReplaceCredentialRequest: {
+            /** Credential */
+            credential: string;
+        };
         /** SessionResponse */
         SessionResponse: {
+            authentication_mode: components["schemas"]["AuthenticationMode"];
             /** Csrf Token */
             csrf_token: string;
             /**
@@ -280,6 +1142,75 @@ export interface components {
              * @constant
              */
             status: "authenticated";
+            user: components["schemas"]["UserSummary"] | null;
+            workspace: components["schemas"]["WorkspaceSummary"];
+            /** Workspaces */
+            workspaces: components["schemas"]["WorkspaceSummary"][];
+        };
+        /** StoredDocumentPageResponse */
+        StoredDocumentPageResponse: {
+            /** Items */
+            items: components["schemas"]["StoredDocumentResponse"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+            /** Total */
+            total: number;
+        };
+        /** StoredDocumentResponse */
+        StoredDocumentResponse: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            document_type: components["schemas"]["DocumentType"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Media Type */
+            media_type: string;
+            /** Safe Filename */
+            safe_filename: string;
+            /** Sha256 */
+            sha256: string;
+            /** Size Bytes */
+            size_bytes: number;
+        };
+        /** TableBoundingBox */
+        TableBoundingBox: {
+            /** Height */
+            height: number;
+            /** Width */
+            width: number;
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        };
+        /** UpdateConnectionRequest */
+        UpdateConnectionRequest: {
+            /** Base Url */
+            base_url?: string | null;
+            /** Enabled */
+            enabled?: boolean | null;
+            /** Is Default */
+            is_default?: boolean | null;
+            /** Name */
+            name?: string | null;
+        };
+        /** UserSummary */
+        UserSummary: {
+            /** Display Name */
+            display_name: string | null;
+            /** Email */
+            email: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
         };
         /** ValidationError */
         ValidationError: {
@@ -294,6 +1225,30 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /**
+         * WorkspaceRole
+         * @enum {string}
+         */
+        WorkspaceRole: "owner" | "member";
+        /** WorkspaceSummary */
+        WorkspaceSummary: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            role: components["schemas"]["WorkspaceRole"];
+        };
+        /** WorkspaceSwitchRequest */
+        WorkspaceSwitchRequest: {
+            /**
+             * Workspace Id
+             * Format: uuid
+             */
+            workspace_id: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -303,6 +1258,301 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_activity: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+                job_type?: components["schemas"]["ActivityJobType"] | null;
+                state?: components["schemas"]["ActivityJobState"] | null;
+                creator_id?: string | null;
+                created_after?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivityPageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_activity_history: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                job_type: components["schemas"]["ActivityJobType"];
+                job_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    callback_api_v1_auth_callback_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    login_api_v1_auth_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["Body_login_api_v1_auth_login_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_collection_jobs: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionJobPageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_collection_jobs: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectionBatchRequest"] | components["schemas"]["AnalysisCollectionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionJobResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    clear_completed_collection_jobs: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    retry_collection_job: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                job_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionJobResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_analysis_preview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                candidate_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     search_documents: {
         parameters: {
             query?: never;
@@ -327,6 +1577,530 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DocumentDiscoveryResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_analysis_search: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DurableAnalysisSearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisSessionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_analysis_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisSessionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_analysis_search: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                session_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    retry_analysis_search: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                session_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalysisSessionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_documents: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StoredDocumentPageResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_stored_document: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                document_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_stored_document: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_document_export: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                document_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentExportRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentExportResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_document_exports: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentExportResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_firecrawl_connections: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectionListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_firecrawl_connection: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateConnectionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectionSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_firecrawl_connection: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                connection_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_firecrawl_connection: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                connection_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateConnectionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectionSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    replace_firecrawl_connection_credential: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                connection_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReplaceCredentialRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectionSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    test_firecrawl_connection: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path: {
+                connection_id: string;
+            };
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectionSummary"];
                 };
             };
             /** @description Validation Error */
@@ -521,7 +2295,44 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PublicSessionStatus"] | components["schemas"]["SessionResponse"];
+                    "application/json": components["schemas"]["PublicSessionStatus"] | components["schemas"]["LoginRequiredSession"] | components["schemas"]["SessionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    switch_workspace_api_v1_session_workspace_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Parserium-CSRF"?: string | null;
+            };
+            path?: never;
+            cookie?: {
+                parserium_session?: string | null;
+            };
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkspaceSwitchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionResponse"];
                 };
             };
             /** @description Validation Error */

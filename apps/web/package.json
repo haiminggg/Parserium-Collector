@@ -8,14 +8,20 @@
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",
+    "build:preview": "tsc --noEmit && vite build --config vite.preview.config.ts",
+    "build:cloud": "tsc --noEmit && vite build --config vite.cloud.config.ts",
+    "dev:cloud": "vite --config vite.cloud.config.ts",
     "contract:generate": "openapi-typescript ../../contracts/openapi/dashboard-v1.json -o src/generated/dashboard-v1.d.ts",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@gsap/react": "2.1.2",
     "@mantine/core": "9.5.2",
     "@mantine/hooks": "9.5.2",
     "@tanstack/react-query": "5.102.2",
+    "gsap": "3.15.0",
+    "motion": "^13.1.1",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
@@ -24,6 +30,7 @@
     "@playwright/test": "1.62.1",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.2",
+    "@types/node": "24.13.3",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "@vitejs/plugin-react": "6.1.0",

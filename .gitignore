@@ -10,6 +10,8 @@ htmlcov/
 .coverage
 node_modules/
 dist/
+dist-preview/
+dist-cloud/
 playwright-report/
 test-results/
 *.log

@@ -3,10 +3,12 @@ import "./styles.css";
 
 import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MotionConfig } from "motion/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { App } from "./App";
+import { parseriumTheme } from "./theme";
 
 const rootElement = document.getElementById("root");
 if (rootElement === null) {
@@ -24,11 +26,12 @@ const queryClient = new QueryClient({
 
 createRoot(rootElement).render(
   <StrictMode>
-    <MantineProvider defaultColorScheme="auto">
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </MantineProvider>
+    <MotionConfig reducedMotion="user">
+      <MantineProvider theme={parseriumTheme} forceColorScheme="light">
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </MantineProvider>
+    </MotionConfig>
   </StrictMode>,
 );
-
