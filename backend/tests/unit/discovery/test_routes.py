@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from uuid import UUID
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -11,13 +12,25 @@ from parserium_collector.features.discovery.models import (
     DocumentType,
 )
 from parserium_collector.features.discovery.router import router
+from parserium_collector.features.discovery.scoped import ScopedDiscoveryResult
+from parserium_collector.features.firecrawl_connections.models import ConnectionType
+from parserium_collector.features.identity.models import (
+    AuthenticationMode,
+    WorkspaceRole,
+    WorkspaceScope,
+)
 from parserium_collector.features.session.errors import InvalidSession
-from parserium_collector.features.session.models import AuthenticatedSession
+from parserium_collector.features.session.models import (
+    AuthenticatedSession,
+    WorkspaceSummary,
+)
 from parserium_collector.security import LocalRequestGuardMiddleware
+from parserium_collector.settings import Settings
 
 TEST_SESSION_VALUE = "discovery-session"
 TEST_CSRF_VALUE = "discovery-csrf"
 ORIGIN = {"Origin": "http://127.0.0.1:8080"}
+WORKSPACE_ID = UUID("10000000-0000-4000-8000-000000000001")
 
 
 class DiscoverySessionService:
@@ -27,38 +40,74 @@ class DiscoverySessionService:
         if token != TEST_SESSION_VALUE:
             raise InvalidSession
         return AuthenticatedSession(
+            token_digest="a" * 64,
             csrf_token=TEST_CSRF_VALUE,
             idle_expires_at=now + timedelta(hours=24),
+            authentication_mode=AuthenticationMode.LOCAL,
+            scope=WorkspaceScope(
+                workspace_id=WORKSPACE_ID,
+                user_id=None,
+                role=WorkspaceRole.OWNER,
+            ),
+            workspace_name="Local workspace",
+            email=None,
+            display_name=None,
+            workspaces=(
+                WorkspaceSummary(
+                    id=WORKSPACE_ID,
+                    name="Local workspace",
+                    role=WorkspaceRole.OWNER,
+                ),
+            ),
         )
 
 
 class SuccessfulDiscoveryService:
     """Minimal successful discovery test double."""
 
-    async def search(self, request: DocumentDiscoveryRequest) -> DocumentDiscoveryResponse:
+    async def search(
+        self,
+        scope: WorkspaceScope,
+        request: DocumentDiscoveryRequest,
+        now: datetime,
+    ) -> ScopedDiscoveryResult:
+        assert scope.workspace_id == WORKSPACE_ID
         assert request.query == "bank report"
-        return DocumentDiscoveryResponse(
-            provider_search_ids=["search-1"],
-            candidates=[
-                DocumentCandidate(
-                    url="https://bank.example/report.pdf",
-                    title="Bank report",
-                    document_type=DocumentType.PDF,
-                )
-            ],
-            rejected_non_document_results=1,
+        return ScopedDiscoveryResult(
+            response=DocumentDiscoveryResponse(
+                provider_search_ids=["search-1"],
+                candidates=[
+                    DocumentCandidate(
+                        url="https://bank.example/report.pdf",
+                        title="Bank report",
+                        document_type=DocumentType.PDF,
+                    )
+                ],
+                rejected_non_document_results=1,
+            ),
+            connection_id=request.firecrawl_connection_id,
+            connection_name_snapshot="Selected" if request.firecrawl_connection_id else None,
+            connection_type_snapshot=(
+                ConnectionType.CLOUD if request.firecrawl_connection_id else None
+            ),
         )
 
 
 class FailingDiscoveryService:
     """Minimal failing discovery test double."""
 
-    async def search(self, request: DocumentDiscoveryRequest) -> DocumentDiscoveryResponse:
+    async def search(
+        self,
+        scope: WorkspaceScope,
+        request: DocumentDiscoveryRequest,
+        now: datetime,
+    ) -> ScopedDiscoveryResult:
         raise FirecrawlAdapterError(code="schema_mismatch", retryable=False)
 
 
 def discovery_app(service: object | None) -> FastAPI:
     app = FastAPI()
+    app.state.settings = Settings()
     app.state.session_service = DiscoverySessionService()
     app.state.discovery_service = service
     app.add_middleware(

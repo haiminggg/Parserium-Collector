@@ -1,6 +1,27 @@
 FROM ghcr.io/astral-sh/uv:0.12.5@sha256:e85be844203885286c60ffad8a858d48afb6c5a5c237ca0e67f12e74b8f174b1 AS uv
 
-FROM docker.io/library/python:3.13.15-slim-trixie@sha256:ffb752e139c0a19692a43af8d8523b274222dd68eebad5d583b45c2201c6e30a AS python-base
+FROM docker.io/library/golang:1.24.8-bookworm@sha256:4ed690d6649d63c312b99a6120025ec79ce3b542968a37da53d6236c7c61a848 AS minio-build
+ARG MINIO_COMMIT=9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a
+RUN CGO_ENABLED=0 go install github.com/minio/minio@${MINIO_COMMIT}
+
+FROM docker.io/library/debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171 AS minio-verification
+RUN groupadd --gid 10002 minio \
+    && useradd --uid 10002 --gid 10002 --no-create-home --shell /usr/sbin/nologin minio \
+    && install -d -o 10002 -g 10002 -m 0700 /data /minio-certs
+COPY --from=minio-build /go/bin/minio /usr/local/bin/minio
+COPY --chmod=0555 deploy/minio-entrypoint.sh /usr/local/bin/minio-entrypoint
+USER 10002:10002
+ENTRYPOINT ["/usr/local/bin/minio-entrypoint"]
+
+FROM minio-verification AS minio-hosted-local
+
+FROM docker.io/library/python:3.13.15-slim-trixie@sha256:7e3a6aca9d74f93cca21a91d86a8dad8c34749afd5b4a98ee481c9c47b9f5ed4 AS python-runtime-base
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libreoffice-writer-nogui \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM python-runtime-base AS python-base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -19,6 +40,7 @@ COPY backend/scripts ./scripts
 COPY backend/src ./src
 COPY backend/tests ./tests
 RUN uv sync --frozen --group dev
+RUN .venv/bin/ruff format --check src tests
 RUN .venv/bin/ruff check src tests
 RUN .venv/bin/mypy src
 RUN .venv/bin/pytest -q tests/unit
@@ -49,7 +71,7 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY backend/src ./src
 RUN uv sync --frozen --no-dev
 
-FROM docker.io/library/python:3.13.15-slim-trixie@sha256:ffb752e139c0a19692a43af8d8523b274222dd68eebad5d583b45c2201c6e30a AS runtime
+FROM python-runtime-base AS runtime
 ENV PATH=/app/.venv/bin:$PATH \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -62,6 +84,9 @@ COPY --chown=10001:10001 backend/src /app/src
 COPY --chown=10001:10001 backend/alembic.ini /app/alembic.ini
 COPY --chown=10001:10001 backend/migrations /app/migrations
 COPY --from=web-build --chown=10001:10001 /web/dist /app/static
+COPY --chmod=0555 deploy/container-entrypoint.sh /usr/local/bin/parserium-entrypoint
 USER 10001:10001
+RUN python -c "import parserium_collector.features.storage.factory; import parserium_collector.features.storage.s3"
+ENTRYPOINT ["/usr/local/bin/parserium-entrypoint"]
 EXPOSE 8080
 CMD ["uvicorn", "parserium_collector.main:app", "--host", "0.0.0.0", "--port", "8080", "--no-access-log"]

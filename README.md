@@ -1,12 +1,42 @@
 # Parserium Collector
 
-Parserium Collector is an independent, local-first document collection dashboard designed to work with a self-hosted Firecrawl instance through its HTTP API.
+Parserium Collector is an independent document discovery and collection dashboard designed to work with Firecrawl through its HTTP API.
 
 The repository is in platform-foundation development. It currently makes no claim that discovery, acquisition, document processing, review, export, backup, security acceptance, or scale acceptance is complete.
 
-The current foundation publishes one browser and API port on `127.0.0.1`. PostgreSQL and the worker remain private. Firecrawl, SearXNG, processors, and document collection workflows are not enabled in this slice.
+The self-hosted development stack publishes one browser and API port on `127.0.0.1`. PostgreSQL and the worker remain private. The repository also includes an isolated hosted-local verification stack for Google OpenID Connect, workspace tenancy, cloud artifact storage, and workspace-managed Firecrawl connections.
 
 Parserium Collector is independent software and is not an official Firecrawl product.
+
+## Deployment modes
+
+The development Compose stack explicitly runs in `self_hosted` mode. Local access still
+uses a temporary pairing code from the API container log, and the dashboard remains bound
+to `127.0.0.1` by default.
+
+The repository also contains development verification for invite-only OpenID Connect login,
+workspace isolation, cloud artifact storage, and encrypted per-workspace Firecrawl credentials.
+Hosted mode is not ready for deployment to users. Quotas, audit controls, managed database roles
+with forced row-level security, production key management, monitoring, rate limits, and the
+remaining hosted release gates must be completed first.
+
+## Hosted Firecrawl connections
+
+In hosted mode, a workspace owner opens **Connections**, chooses **Cloud** or **Remote**, enters
+an API token, and saves the connection. Parserium validates the connection before it can be used
+for discovery. A connection test performs one metadata-only search and may consume one Firecrawl
+search credit.
+
+Remote Firecrawl endpoints require HTTPS, bearer-token enforcement, public DNS, and a secure port
+approved by the Parserium operator. Parserium validates DNS and the destination policy before
+connecting. The self-hosted edition continues to use the operator-managed
+`DASHBOARD_FIRECRAWL_BASE_URL` instead of workspace connections.
+
+Hosted mode requires both `DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_FILE` and
+`DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_ID`. Mount the key from an untracked secret file and never
+place credential values in Compose files, environment files, source control, browser storage, or
+logs. `scripts/hosted-local/setup.ps1` generates a development-only wrapping key for the local
+hosted stack. Never copy that key into a production deployment.
 
 ## Development status
 

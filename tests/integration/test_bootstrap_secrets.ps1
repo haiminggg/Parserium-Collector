@@ -14,7 +14,9 @@ try {
   New-Item -ItemType Directory -Path (Join-Path $invalidDirectory 'db_password') -Force | Out-Null
   $failure = $null
   try {
-    & (Join-Path $repository 'scripts\bootstrap-local.ps1') -SecretDirectory $invalidDirectory
+    & (Join-Path $repository 'scripts\bootstrap-local.ps1') `
+      -LocalDirectory (Join-Path $testRoot 'invalid-local') `
+      -SecretDirectory $invalidDirectory
   } catch {
     $failure = $_.Exception.Message
   }
@@ -23,7 +25,9 @@ try {
   }
 
   $validDirectory = Join-Path $testRoot 'valid'
-  $output = & (Join-Path $repository 'scripts\bootstrap-local.ps1') -SecretDirectory $validDirectory
+  $output = & (Join-Path $repository 'scripts\bootstrap-local.ps1') `
+    -LocalDirectory (Join-Path $testRoot 'valid-local') `
+    -SecretDirectory $validDirectory
   $databaseSecret = [IO.File]::ReadAllText((Join-Path $validDirectory 'db_password'))
   $sessionSecret = [IO.File]::ReadAllText((Join-Path $validDirectory 'session_signing_secret'))
   if ($databaseSecret -notmatch '^[A-Za-z0-9_-]{64}$') {

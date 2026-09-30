@@ -1,0 +1,296 @@
+name: parserium-hosted-local
+
+services:
+  db:
+    image: docker.io/library/postgres:18.6-alpine3.24@sha256:d3e1620b530c944afa6e887d22eb899824da68e19c52024bf98f5220c88a65b2
+    environment:
+      POSTGRES_DB: parserium_collector
+      POSTGRES_USER: parserium_collector
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - database:/var/lib/postgresql
+    tmpfs:
+      - /tmp
+      - /run/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U parserium_collector -d parserium_collector"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - private
+
+  minio:
+    image: parserium-minio:hosted-local
+    build:
+      context: ../..
+      target: minio-hosted-local
+    user: "0:0"
+    entrypoint: ["/usr/local/bin/minio-entrypoint"]
+    secrets:
+      - storage_access_key
+      - storage_secret_key
+      - source: minio_tls_certificate
+        target: minio_tls_certificate
+      - source: minio_tls_private_key
+        target: minio_tls_private_key
+    volumes:
+      - minio-data:/data
+    ports:
+      - "127.0.0.1:9000:9000"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /minio-certs:uid=10002,gid=10002,mode=0700
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETPCAP
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - private
+
+  storage-bootstrap:
+    image: parserium-collector:hosted-local
+    build:
+      context: ../..
+      target: runtime
+    user: "0:0"
+    entrypoint: ["/usr/local/bin/parserium-entrypoint"]
+    command: ["python", "-m", "parserium_collector.cli.bootstrap_s3"]
+    environment:
+      PARSERIUM_BOOTSTRAP_S3_ENDPOINT: https://minio:9000
+      PARSERIUM_BOOTSTRAP_S3_REGION: us-east-1
+      PARSERIUM_BOOTSTRAP_S3_BUCKET: parserium-hosted-local
+      PARSERIUM_BOOTSTRAP_S3_ATTEMPTS: "30"
+      PARSERIUM_BOOTSTRAP_S3_DELAY_SECONDS: "2"
+    secrets:
+      - storage_access_key
+      - storage_secret_key
+      - storage_ca_bundle
+    depends_on:
+      minio:
+        condition: service_started
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETPCAP
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - private
+
+  migrate:
+    image: parserium-collector:hosted-local
+    build:
+      context: ../..
+      target: runtime
+    user: "0:0"
+    entrypoint: ["/usr/local/bin/parserium-entrypoint"]
+    command: ["alembic", "-c", "/app/alembic.ini", "upgrade", "head"]
+    environment:
+      DASHBOARD_DB_HOST: db
+      DASHBOARD_DB_NAME: parserium_collector
+      DASHBOARD_DB_USER: parserium_collector
+      DASHBOARD_DB_PASSWORD_FILE: /run/secrets/db_password
+      DASHBOARD_EXPECTED_MIGRATION: 0009_unified_activity_history
+    secrets:
+      - db_password
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETPCAP
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - private
+
+  worker:
+    image: parserium-collector:hosted-local
+    build:
+      context: ../..
+      target: runtime
+    user: "0:0"
+    entrypoint: ["/usr/local/bin/parserium-entrypoint"]
+    command: ["python", "-m", "parserium_collector.worker"]
+    env_file:
+      - ${PARSERIUM_HOSTED_LOCAL_CONFIG_FILE:?hosted-local config is required}
+    environment:
+      DASHBOARD_WORKER_ID: hosted-local-worker-1
+      DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_FILE: /run/secrets/firecrawl_credential_wrapping_key
+      DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_ID: hosted-local-v1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    secrets:
+      - db_password
+      - oidc_client_secret
+      - storage_access_key
+      - storage_secret_key
+      - storage_ca_bundle
+      - firecrawl_credential_wrapping_key
+      - discovery_fingerprint_secret
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      storage-bootstrap:
+        condition: service_completed_successfully
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/lib/parserium-collector-scratch:uid=10001,gid=10001,mode=0700
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETPCAP
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - private
+      - edge
+
+  api:
+    image: parserium-collector:hosted-local
+    build:
+      context: ../..
+      target: runtime
+    user: "0:0"
+    entrypoint: ["/usr/local/bin/parserium-entrypoint"]
+    command:
+      [
+        "uvicorn",
+        "parserium_collector.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8443",
+        "--ssl-certfile",
+        "/tmp/parserium-secrets/tls_certificate",
+        "--ssl-keyfile",
+        "/tmp/parserium-secrets/tls_private_key",
+        "--no-access-log",
+      ]
+    env_file:
+      - ${PARSERIUM_HOSTED_LOCAL_CONFIG_FILE:?hosted-local config is required}
+    environment:
+      DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_FILE: /run/secrets/firecrawl_credential_wrapping_key
+      DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_ID: hosted-local-v1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    secrets:
+      - db_password
+      - session_signing_secret
+      - oidc_client_secret
+      - storage_access_key
+      - storage_secret_key
+      - storage_ca_bundle
+      - firecrawl_credential_wrapping_key
+      - discovery_fingerprint_secret
+      - source: tls_certificate
+        target: tls_certificate
+      - source: tls_private_key
+        target: tls_private_key
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      storage-bootstrap:
+        condition: service_completed_successfully
+      worker:
+        condition: service_started
+    ports:
+      - "127.0.0.1:8443:8443"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/lib/parserium-collector-scratch:uid=10001,gid=10001,mode=0700
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETPCAP
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import ssl,urllib.request; context=ssl.create_default_context(cafile='/tmp/parserium-secrets/storage_ca_bundle'); urllib.request.urlopen('https://127.0.0.1:8443/api/v1/health/live', context=context, timeout=3).read()",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+    networks:
+      - private
+      - edge
+
+secrets:
+  db_password:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/secrets/db_password
+  session_signing_secret:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/secrets/session_signing_secret
+  oidc_client_secret:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/secrets/google_client_secret
+  storage_access_key:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/secrets/minio_access_key
+  storage_secret_key:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/secrets/minio_secret_key
+  storage_ca_bundle:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/pki/ca.pem
+  tls_certificate:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/pki/parserium-cert.pem
+  tls_private_key:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/pki/parserium-key.pem
+  minio_tls_certificate:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/pki/minio-cert.pem
+  minio_tls_private_key:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/pki/minio-key.pem
+  firecrawl_credential_wrapping_key:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/secrets/firecrawl_credential_wrapping_key
+  discovery_fingerprint_secret:
+    file: ${PARSERIUM_HOSTED_LOCAL_STATE_ROOT:?hosted-local state root is required}/secrets/discovery_fingerprint_secret
+
+volumes:
+  database:
+    name: parserium-hosted-local-database
+  minio-data:
+    name: parserium-hosted-local-minio-data
+
+networks:
+  private:
+    internal: true
+  edge:
+    driver: bridge

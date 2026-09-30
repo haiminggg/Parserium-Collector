@@ -4,9 +4,12 @@ from typing import Annotated, cast
 
 from fastapi import Cookie, Depends, Header, HTTPException, Request, status
 
+from parserium_collector.features.identity.models import HostedSessionNotFound
+from parserium_collector.features.identity.service import IdentityService
 from parserium_collector.features.session.errors import InvalidSession
 from parserium_collector.features.session.models import AuthenticatedSession
 from parserium_collector.features.session.service import SessionService
+from parserium_collector.settings import DeploymentMode, Settings
 
 SESSION_COOKIE = "parserium_session"
 
@@ -20,10 +23,14 @@ async def require_authenticated_session(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication required.",
         )
-    service = cast(SessionService, request.app.state.session_service)
     try:
+        settings = cast(Settings, request.app.state.settings)
+        if settings.deployment_mode is DeploymentMode.HOSTED:
+            identity_service = cast(IdentityService, request.app.state.identity_service)
+            return await identity_service.authenticate(session_token, datetime.now(UTC))
+        service = cast(SessionService, request.app.state.session_service)
         return await service.authenticate(session_token, datetime.now(UTC))
-    except InvalidSession as error:
+    except (HostedSessionNotFound, InvalidSession) as error:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication required.",

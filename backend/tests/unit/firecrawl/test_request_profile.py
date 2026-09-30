@@ -3,7 +3,10 @@ import json
 import httpx
 import pytest
 
-from parserium_collector.adapters.firecrawl.client import FirecrawlClient
+from parserium_collector.adapters.firecrawl.client import (
+    FirecrawlClient,
+    parse_metadata_search_response,
+)
 from parserium_collector.adapters.firecrawl.contracts import MetadataSearchRequest
 from parserium_collector.adapters.firecrawl.errors import FirecrawlAdapterError
 
@@ -136,3 +139,57 @@ async def test_metadata_probe_accepts_observed_empty_result_envelope() -> None:
 
     assert result.search_id == "empty-search"
     assert result.results == []
+
+
+def test_shared_response_parser_rejects_redirects_without_reading_a_location() -> None:
+    with pytest.raises(FirecrawlAdapterError) as error:
+        parse_metadata_search_response(302, b"")
+
+    assert error.value.code == "redirect_response"
+    assert error.value.retryable is False
+
+
+def test_shared_response_parser_accepts_the_metadata_contract() -> None:
+    result = parse_metadata_search_response(
+        200,
+        json.dumps(
+            {
+                "success": True,
+                "id": "shared-parser",
+                "data": {"web": []},
+            }
+        ).encode(),
+    )
+
+    assert result.search_id == "shared-parser"
+
+
+def test_shared_response_parser_accepts_documented_metadata_additions() -> None:
+    result = parse_metadata_search_response(
+        200,
+        json.dumps(
+            {
+                "success": True,
+                "id": "populated-search",
+                "warning": "Some sources were unavailable.",
+                "creditsUsed": 1,
+                "data": {
+                    "web": [
+                        {
+                            "url": "https://example.com/report.pdf",
+                            "title": "Report",
+                            "description": "Public document",
+                            "position": 1,
+                            "category": "pdf",
+                        }
+                    ]
+                },
+            }
+        ).encode(),
+    )
+
+    assert result.results[0].model_dump(mode="json") == {
+        "url": "https://example.com/report.pdf",
+        "title": "Report",
+        "description": "Public document",
+    }

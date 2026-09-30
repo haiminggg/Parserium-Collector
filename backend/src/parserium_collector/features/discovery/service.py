@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Sequence
 from typing import Protocol
 from urllib.parse import unquote, urlsplit, urlunsplit
@@ -9,12 +10,15 @@ from parserium_collector.adapters.firecrawl.contracts import (
     MetadataSearchResult,
     SearchResult,
 )
+from parserium_collector.adapters.firecrawl.errors import FirecrawlAdapterError
 from parserium_collector.features.discovery.models import (
     DocumentCandidate,
     DocumentDiscoveryRequest,
     DocumentDiscoveryResponse,
     DocumentType,
 )
+
+LOGGER = logging.getLogger(__name__)
 
 
 class MetadataSearchProvider(Protocol):
@@ -35,14 +39,23 @@ class DiscoveryService:
         rejected = 0
 
         for document_type in request.document_types:
-            result = await self._provider.probe_metadata_search(
-                MetadataSearchRequest(
-                    query=f"{request.query} filetype:{document_type.value}",
-                    limit=request.limit,
-                    include_domains=request.include_domains,
-                    exclude_domains=request.exclude_domains,
+            try:
+                result = await self._provider.probe_metadata_search(
+                    MetadataSearchRequest(
+                        query=f"{request.query} filetype:{document_type.value}",
+                        limit=request.limit,
+                        include_domains=request.include_domains,
+                        exclude_domains=request.exclude_domains,
+                    )
                 )
-            )
+            except FirecrawlAdapterError as error:
+                LOGGER.warning(
+                    "Document metadata search failed: document_type=%s code=%s retryable=%s",
+                    document_type.value,
+                    error.code,
+                    error.retryable,
+                )
+                raise
             search_ids.append(result.search_id)
             bucket, rejected_count = self._direct_candidates(
                 result.results,

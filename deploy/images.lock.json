@@ -6,6 +6,14 @@
       "reference": "mcr.microsoft.com/playwright:v1.62.1-noble",
       "digest": "sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e"
     },
+    "go_build": {
+      "reference": "docker.io/library/golang:1.24.8-bookworm",
+      "digest": "sha256:4ed690d6649d63c312b99a6120025ec79ce3b542968a37da53d6236c7c61a848"
+    },
+    "minio_runtime": {
+      "reference": "docker.io/library/debian:bookworm-slim",
+      "digest": "sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171"
+    },
     "node_build": {
       "reference": "docker.io/library/node:24.19.0-bookworm-slim",
       "digest": "sha256:3638d9a6fe4030bd716be989438248074489337ba3275657f93595428be4fc03"

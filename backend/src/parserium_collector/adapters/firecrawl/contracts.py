@@ -38,10 +38,20 @@ class SearchResult(BaseModel):
     description: str | None = None
 
 
+class FirecrawlWebResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    url: AnyHttpUrl
+    title: str | None = None
+    description: str | None = None
+    position: int | None = None
+    category: str | None = None
+
+
 class FirecrawlSearchData(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    web: list[SearchResult] = Field(default_factory=list)
+    web: list[FirecrawlWebResult] = Field(default_factory=list)
 
 
 class FirecrawlSearchEnvelope(BaseModel):
@@ -51,6 +61,7 @@ class FirecrawlSearchEnvelope(BaseModel):
     id: str
     data: FirecrawlSearchData
     credits_used: int = Field(default=0, alias="creditsUsed", ge=0)
+    warning: str | None = None
 
 
 class MetadataSearchResult(BaseModel):

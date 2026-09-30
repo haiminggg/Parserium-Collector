@@ -1,8 +1,13 @@
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
+from uuid import UUID
 
 import pytest
 
+from parserium_collector.features.identity.models import (
+    AuthenticationMode,
+    WorkspaceRole,
+)
 from parserium_collector.features.session.errors import (
     InvalidCsrfToken,
     InvalidPairingCode,
@@ -10,6 +15,8 @@ from parserium_collector.features.session.errors import (
 )
 from parserium_collector.features.session.models import SessionRecord
 from parserium_collector.features.session.service import SessionService
+
+LOCAL_WORKSPACE_ID = UUID("10000000-0000-4000-8000-000000000001")
 
 
 class InMemorySessionRepository:
@@ -30,18 +37,21 @@ class InMemorySessionRepository:
         code_digest: str,
         token_digest: str,
         now: datetime,
-    ) -> bool:
+    ) -> SessionRecord | None:
         pairing = self.pairings.get(code_digest)
         if pairing is None or pairing[0] <= now or pairing[1] is not None:
-            return False
+            return None
         self.pairings[code_digest] = (pairing[0], now)
-        self.sessions[token_digest] = SessionRecord(
+        record = SessionRecord(
             token_digest=token_digest,
+            workspace_id=LOCAL_WORKSPACE_ID,
+            workspace_name="Local workspace",
             created_at=now,
             last_seen_at=now,
             revoked_at=None,
         )
-        return True
+        self.sessions[token_digest] = record
+        return record
 
     async def load_session(self, token_digest: str) -> SessionRecord | None:
         return self.sessions.get(token_digest)
@@ -60,8 +70,7 @@ class InMemorySessionRepository:
 
     async def has_active_pairing(self, now: datetime) -> bool:
         return any(
-            expires_at > now and used_at is None
-            for expires_at, used_at in self.pairings.values()
+            expires_at > now and used_at is None for expires_at, used_at in self.pairings.values()
         )
 
     async def revoke_all_and_replace_pairing(
@@ -97,6 +106,10 @@ async def test_pairing_code_is_one_time_and_raw_credentials_are_not_stored() -> 
     assert pairing.code not in repository.pairings
     assert issued.token not in repository.sessions
     assert issued.csrf_token != issued.token
+    assert issued.authentication_mode is AuthenticationMode.LOCAL
+    assert issued.scope.workspace_id == LOCAL_WORKSPACE_ID
+    assert issued.scope.user_id is None
+    assert issued.scope.role is WorkspaceRole.OWNER
     with pytest.raises(InvalidPairingCode):
         await sessions.pair(pairing.code, now + timedelta(minutes=2))
 
@@ -138,6 +151,8 @@ async def test_authentication_refreshes_idle_time_and_returns_csrf_token() -> No
 
     assert authenticated.csrf_token == issued.csrf_token
     assert authenticated.idle_expires_at == now + timedelta(hours=25)
+    assert authenticated.authentication_mode is AuthenticationMode.LOCAL
+    assert authenticated.scope == issued.scope
 
 
 async def test_idle_expired_or_revoked_session_is_rejected() -> None:

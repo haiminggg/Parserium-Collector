@@ -27,9 +27,7 @@ class LocalRequestGuardMiddleware:
         headers = Headers(scope=scope)
         host = self._hostname(headers.get("host"))
         if host is None or host.lower() not in self._allowed_hosts:
-            await JSONResponse({"detail": "Invalid host."}, status_code=400)(
-                scope, receive, send
-            )
+            await JSONResponse({"detail": "Invalid host."}, status_code=400)(scope, receive, send)
             return
 
         method = str(scope.get("method", "GET")).upper()

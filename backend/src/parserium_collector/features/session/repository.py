@@ -5,7 +5,11 @@ from uuid import uuid4
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from parserium_collector.adapters.database.tables import local_sessions, pairing_codes
+from parserium_collector.adapters.database.tables import (
+    local_sessions,
+    pairing_codes,
+    workspaces,
+)
 from parserium_collector.features.session.models import SessionRecord
 
 
@@ -22,7 +26,7 @@ class SessionRepository(Protocol):
         code_digest: str,
         token_digest: str,
         now: datetime,
-    ) -> bool: ...
+    ) -> SessionRecord | None: ...
 
     async def load_session(self, token_digest: str) -> SessionRecord | None: ...
 
@@ -69,7 +73,7 @@ class PostgresSessionRepository:
         code_digest: str,
         token_digest: str,
         now: datetime,
-    ) -> bool:
+    ) -> SessionRecord | None:
         consume = (
             update(pairing_codes)
             .where(
@@ -83,30 +87,64 @@ class PostgresSessionRepository:
         async with self._engine.begin() as connection:
             consumed = (await connection.execute(consume)).scalar_one_or_none()
             if consumed is None:
-                return False
+                return None
+            workspace = (
+                (
+                    await connection.execute(
+                        select(workspaces.c.id, workspaces.c.name)
+                        .where(workspaces.c.is_local.is_(True))
+                        .with_for_update()
+                    )
+                )
+                .mappings()
+                .one_or_none()
+            )
+            if workspace is None:
+                raise RuntimeError("The local workspace is unavailable.")
             await connection.execute(
                 insert(local_sessions).values(
                     token_digest=token_digest,
+                    workspace_id=workspace.id,
                     created_at=now,
                     last_seen_at=now,
                     revoked_at=None,
                 )
             )
-        return True
+        return SessionRecord(
+            token_digest=token_digest,
+            workspace_id=workspace.id,
+            workspace_name=workspace.name,
+            created_at=now,
+            last_seen_at=now,
+            revoked_at=None,
+        )
 
     async def load_session(self, token_digest: str) -> SessionRecord | None:
-        statement = select(
-            local_sessions.c.token_digest,
-            local_sessions.c.created_at,
-            local_sessions.c.last_seen_at,
-            local_sessions.c.revoked_at,
-        ).where(local_sessions.c.token_digest == token_digest)
+        statement = (
+            select(
+                local_sessions.c.token_digest,
+                local_sessions.c.workspace_id,
+                workspaces.c.name.label("workspace_name"),
+                local_sessions.c.created_at,
+                local_sessions.c.last_seen_at,
+                local_sessions.c.revoked_at,
+            )
+            .select_from(
+                local_sessions.join(
+                    workspaces,
+                    local_sessions.c.workspace_id == workspaces.c.id,
+                )
+            )
+            .where(local_sessions.c.token_digest == token_digest)
+        )
         async with self._engine.connect() as connection:
             row = (await connection.execute(statement)).mappings().one_or_none()
         if row is None:
             return None
         return SessionRecord(
             token_digest=row.token_digest,
+            workspace_id=row.workspace_id,
+            workspace_name=row.workspace_name,
             created_at=row.created_at,
             last_seen_at=row.last_seen_at,
             revoked_at=row.revoked_at,

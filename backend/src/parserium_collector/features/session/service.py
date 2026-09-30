@@ -1,6 +1,11 @@
 import hmac
 from datetime import datetime, timedelta
 
+from parserium_collector.features.identity.models import (
+    AuthenticationMode,
+    WorkspaceRole,
+    WorkspaceScope,
+)
 from parserium_collector.features.session.crypto import (
     csrf_token,
     generate_pairing_code,
@@ -16,6 +21,7 @@ from parserium_collector.features.session.models import (
     AuthenticatedSession,
     IssuedPairingCode,
     IssuedSession,
+    WorkspaceSummary,
 )
 from parserium_collector.features.session.repository import SessionRepository
 
@@ -62,17 +68,33 @@ class SessionService:
 
     async def pair(self, code: str, now: datetime) -> IssuedSession:
         token = generate_session_token()
-        exchanged = await self._repository.exchange_pairing_code(
+        record = await self._repository.exchange_pairing_code(
             keyed_digest(self._signing_secret, "pairing", code),
             keyed_digest(self._signing_secret, "session", token),
             now,
         )
-        if not exchanged:
+        if record is None:
             raise InvalidPairingCode
+        scope = WorkspaceScope(
+            workspace_id=record.workspace_id,
+            user_id=None,
+            role=WorkspaceRole.OWNER,
+        )
+        workspace = WorkspaceSummary(
+            id=record.workspace_id,
+            name=record.workspace_name,
+            role=WorkspaceRole.OWNER,
+        )
         return IssuedSession(
             token=token,
             csrf_token=csrf_token(self._signing_secret, token),
             idle_expires_at=now + self._session_idle_ttl,
+            authentication_mode=AuthenticationMode.LOCAL,
+            scope=scope,
+            workspace_name=record.workspace_name,
+            email=None,
+            display_name=None,
+            workspaces=(workspace,),
         )
 
     async def authenticate(self, token: str, now: datetime) -> AuthenticatedSession:
@@ -86,8 +108,25 @@ class SessionService:
             raise InvalidSession
         await self._repository.touch_session(token_digest, now)
         return AuthenticatedSession(
+            token_digest=token_digest,
             csrf_token=csrf_token(self._signing_secret, token),
             idle_expires_at=now + self._session_idle_ttl,
+            authentication_mode=AuthenticationMode.LOCAL,
+            scope=WorkspaceScope(
+                workspace_id=record.workspace_id,
+                user_id=None,
+                role=WorkspaceRole.OWNER,
+            ),
+            workspace_name=record.workspace_name,
+            email=None,
+            display_name=None,
+            workspaces=(
+                WorkspaceSummary(
+                    id=record.workspace_id,
+                    name=record.workspace_name,
+                    role=WorkspaceRole.OWNER,
+                ),
+            ),
         )
 
     async def logout(self, token: str, supplied_csrf_token: str, now: datetime) -> None:

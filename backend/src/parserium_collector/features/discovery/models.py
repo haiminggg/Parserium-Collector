@@ -1,6 +1,7 @@
 import re
 from enum import StrEnum
 from typing import Literal
+from uuid import UUID
 
 from pydantic import AnyHttpUrl, BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -24,6 +25,7 @@ class DocumentDiscoveryRequest(BaseModel):
     document_types: tuple[DocumentType, ...] = (DocumentType.PDF, DocumentType.DOCX)
     include_domains: tuple[str, ...] = ()
     exclude_domains: tuple[str, ...] = ()
+    firecrawl_connection_id: UUID | None = None
 
     @field_validator("document_types")
     @classmethod
