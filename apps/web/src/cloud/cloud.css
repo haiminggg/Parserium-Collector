@@ -1587,6 +1587,55 @@
   border-bottom: 1px solid var(--parserium-rule);
 }
 
+.cloud-engine-picker {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 34rem;
+}
+
+.cloud-engine-picker label {
+  color: var(--parserium-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.cloud-engine-picker select {
+  width: 100%;
+  min-height: 2.3rem;
+  padding: 0 0.6rem;
+  color: var(--parserium-text);
+  font-size: 0.85rem;
+  background: transparent;
+  border: 1px solid var(--parserium-rule);
+  border-radius: 4px;
+}
+
+.cloud-engine-description,
+.cloud-engine-facts {
+  margin: 0;
+  color: var(--parserium-muted, var(--parserium-text));
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.cloud-engine-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  font-weight: 600;
+}
+
+.cloud-documents-parser {
+  margin: 0 0 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--parserium-rule);
+  border-radius: 4px;
+}
+
+.cloud-inspector-parser {
+  padding: 1rem 0 0;
+}
+
 .cloud-inspector-source {
   display: inline-flex;
   align-items: center;

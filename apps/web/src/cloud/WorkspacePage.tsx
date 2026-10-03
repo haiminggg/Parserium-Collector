@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Alert, Badge, Button, Checkbox, Drawer, Group, Loader, Modal, PasswordInput, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ParseriumShell } from "../ParseriumShell";
-import { activeJob, api, dateText, errorMessage, jsonOptions, prefix, scoped, sizeText, type Connection, type DocumentRecord, type SearchRecord, type SearchResult, type Workspace } from "./api";
+import { activeJob, api, dateText, errorMessage, jsonOptions, prefix, scoped, sizeText, type Connection, type DocumentRecord, type ParseEngines, type SearchRecord, type SearchResult, type Workspace } from "./api";
+import { EnginePicker, engineLabel } from "./EnginePicker";
 import { CloudActivitySnapshot } from "./CloudActivitySnapshot";
 import { CloudActivityPage } from "./CloudActivityPage";
 import { CloudDocumentsPage } from "./CloudDocumentsPage";
@@ -40,6 +41,7 @@ export function WorkspacePage({ workspace, accountSlot }: { workspace: Workspace
   const [collectionState, setCollectionState] = useState<Record<string, string>>({});
   const [apiKey, setApiKey] = useState("");
   const [connectionNotice, setConnectionNotice] = useState("");
+  const [engineChoice, setEngineChoice] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
   const mounted = useRef(true);
   const uploadAttempt = useRef<{ file: File; id: string } | null>(null);
@@ -54,6 +56,9 @@ export function WorkspacePage({ workspace, accountSlot }: { workspace: Workspace
     refetchInterval: state => state.state.data?.searches.some(search => search.status === "running") ? 3000 : false });
   const connection = useQuery({ queryKey: ["connection", workspace.id], queryFn: ({ signal }) => api<Connection>(scoped("/discovery/connection", workspace.id), { signal }) });
   const health = useQuery({ queryKey: ["health"], queryFn: ({ signal }) => api<{ processing: string }>("/health", { signal }), staleTime: 30000 });
+  const parseEngines = useQuery({ queryKey: ["parse-engines"], queryFn: ({ signal }) => api<ParseEngines>("/parse-engines", { signal }), staleTime: 300000 });
+  const engines = parseEngines.data?.engines || [];
+  const engine = engines.find(item => item.id === engineChoice)?.id || parseEngines.data?.default || "";
   const history = searches.data?.searches || [];
   const currentSearch = history.find(item => item.id === searchId) || history[0];
   const docs = documents.data?.documents || [];
@@ -103,8 +108,9 @@ export function WorkspacePage({ workspace, accountSlot }: { workspace: Workspace
   async function parse(doc: DocumentRecord) {
     setBusy(doc.id); announce(`Validating ${doc.filename}. Larger files can take a moment.`);
     try {
-      await api("/parse-jobs?document=" + encodeURIComponent(doc.id), { method: "POST", headers: { "Idempotency-Key": requestId("parse:" + doc.id) } });
-      requestIds.current.delete("parse:" + doc.id); announce("Parsing queued. You can leave this page and return to the saved result."); await refresh();
+      const key = `parse:${doc.id}:${engine}`;
+      await api("/parse-jobs?document=" + encodeURIComponent(doc.id) + (engine ? "&engine=" + encodeURIComponent(engine) : ""), { method: "POST", headers: { "Idempotency-Key": requestId(key) } });
+      requestIds.current.delete(key); announce("Parsing queued. You can leave this page and return to the saved result."); await refresh();
     } catch (error) { announce((error as Error).message, true); await refresh(); }
     finally { if (mounted.current) setBusy(""); }
   }
@@ -152,6 +158,7 @@ export function WorkspacePage({ workspace, accountSlot }: { workspace: Workspace
     finally { if (mounted.current) setBusy(""); }
   }
 
+  const parserPicker = engines.length ? <EnginePicker engines={engines} value={engine} disabled={!!busy} onChange={setEngineChoice} /> : null;
   const availableResults = currentSearch?.results.filter(item => collectionState[item.id] !== "Saved") || [];
   const pageAlerts = (
     <div className="cloud-page-alerts">
@@ -252,6 +259,7 @@ export function WorkspacePage({ workspace, accountSlot }: { workspace: Workspace
         onDelete={setDeleting}
         onPrevious={() => setOffset(Math.max(0, offset - 50))}
         onNext={() => setOffset(offset + 50)}
+        parserPicker={parserPicker}
       />}
 
       {section === "Activity" && <CloudActivityPage
@@ -310,6 +318,7 @@ export function WorkspacePage({ workspace, accountSlot }: { workspace: Workspace
       {viewedDocument && <article className="cloud-inspector">
         <header className="cloud-inspector-heading"><p className="cloud-eyebrow">{viewedDocument.source_url ? "Collected original" : "Uploaded original"}</p><h2>{viewedDocument.filename}</h2><div className="cloud-inspector-meta"><Status doc={viewedDocument} /><span>{sizeText(viewedDocument.size_bytes)}</span><span>{dateText(viewedDocument.created_at)}</span></div></header>
         <div className="cloud-inspector-actions"><Button component="a" href={`${prefix}/files/${viewedDocument.id}`} variant="outline" color="dark" leftSection={<OperationalIcon name="download" />}>Download original</Button>{viewedDocument.job_status === "succeeded" && <Button component="a" href={`${prefix}/parse-jobs/${viewedDocument.job_id}/output`}>Download Markdown</Button>}{!viewedDocument.job_id && viewedDocument.validation_status !== "invalid" && <Button disabled={!!busy || health.data?.processing === "disabled"} loading={busy === viewedDocument.id} onClick={() => void parse(viewedDocument)}>Parse document</Button>}</div>
+        {!viewedDocument.job_id && viewedDocument.validation_status !== "invalid" ? (parserPicker && <div className="cloud-inspector-parser">{parserPicker}</div>) : viewedDocument.job_engine && <p className="cloud-modal-note">Parsed with {engineLabel(engines, viewedDocument.job_engine)}.</p>}
         {viewedDocument.source_url && <a className="cloud-inspector-source" href={viewedDocument.source_url} target="_blank" rel="noopener noreferrer">View original source <OperationalIcon name="external-link" size={13} /></a>}
         <div className="cloud-inspector-state">{activeJob(viewedDocument) && <Alert color="orange" title={viewedDocument.job_status === "running" ? "Extracting your document" : "Waiting to parse"}>This job continues in the background. Its result will stay here when it finishes.</Alert>}{(viewedDocument.job_error_code || viewedDocument.validation_error_code) && <Alert color="red">{errorMessage(viewedDocument.job_error_code || viewedDocument.validation_error_code || "parser_failed")}</Alert>}</div>
         <section className="cloud-output-panel cloud-inspector-reader" aria-labelledby="cloud-output-title"><div className="cloud-output-heading"><div><p className="cloud-eyebrow">Structured result</p><h3 id="cloud-output-title">Extracted Markdown</h3></div>{markdown !== null && <Button variant="subtle" size="xs" leftSection={<OperationalIcon name="copy" />} onClick={() => { void navigator.clipboard.writeText(markdown).then(() => announce("Markdown copied.")).catch(() => announce("Copy failed. Download the Markdown instead.", true)); }}>Copy</Button>}</div>{outputLoading ? <div className="cloud-output-loading" role="status"><Loader size="sm" /> Loading saved output...</div> : outputError ? <Alert color="red">{outputError}</Alert> : markdown !== null ? <pre className="cloud-markdown">{markdown || "The parser returned no text."}</pre> : <p className="cloud-output-empty">The saved extraction will appear here after parsing.</p>}<p className="cloud-modal-note">Review extracted content against the original, especially table headers and layout.</p></section>

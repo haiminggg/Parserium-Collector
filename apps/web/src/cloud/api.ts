@@ -4,8 +4,10 @@ export interface Session { user: { id: string; email: string }; workspaces: Work
 export interface DocumentRecord {
   id: string; filename: string; size_bytes: number; created_at: number; source_url: string | null;
   validation_status: string; validation_error_code: string | null;
-  job_id: string | null; job_status: string | null; job_error_code: string | null;
+  job_id: string | null; job_status: string | null; job_error_code: string | null; job_engine?: string | null;
 }
+export interface ParseEngine { id: string; label: string; ocr: boolean; license: string; description: string }
+export interface ParseEngines { default: string; engines: ParseEngine[] }
 export interface SearchResult { id: string; title: string; description: string; url: string; file_type: string | null }
 export interface SearchRecord {
   id: string; query: string; file_type: string; status: string; error_code: string | null;
@@ -34,6 +36,9 @@ export function errorMessage(code: string): string {
     parser_timeout: "Parsing exceeded its time limit. Try a smaller or less complex document.",
     parser_unavailable: "The parser could not complete this job. Upload the document again to try a new job.",
     parser_failed: "The parser could not read this document. Try another file.",
+    no_text_extracted: "No text could be extracted. This engine cannot read scanned pages, so upload the document again and choose an engine with OCR.",
+    invalid_engine: "That parser is not available. Refresh the page and choose another.",
+    parse_conflict: "This document already has a parse request. Refresh the documents to see its status.",
     output_too_large: "The extracted output exceeds 10 MiB.",
     parse_in_progress: "Wait for parsing to finish before deleting this document.",
     upload_conflict: "This upload is already in progress. Refresh the documents before trying again.",

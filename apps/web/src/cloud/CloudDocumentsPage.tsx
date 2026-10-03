@@ -25,9 +25,10 @@ interface CloudDocumentsPageProps {
   onDelete: (document: DocumentRecord) => void;
   onPrevious: () => void;
   onNext: () => void;
+  parserPicker?: ReactNode;
 }
 
-export function CloudDocumentsPage({ workspace, documents, visibleDocuments, alerts, error, isPending, isFetching, filter, busy, processingDisabled, offset, hasMore, onFilterChange, onUpload, onRefresh, onInspect, onParse, onDelete, onPrevious, onNext }: CloudDocumentsPageProps) {
+export function CloudDocumentsPage({ workspace, documents, visibleDocuments, alerts, error, isPending, isFetching, filter, busy, processingDisabled, offset, hasMore, onFilterChange, onUpload, onRefresh, onInspect, onParse, onDelete, onPrevious, onNext, parserPicker }: CloudDocumentsPageProps) {
   const ready = documents.filter(document => document.job_status === "succeeded").length;
   const parsing = documents.filter(activeJob).length;
   const attention = documents.filter(document => document.job_status === "failed" || document.validation_status === "invalid").length;
@@ -74,6 +75,8 @@ export function CloudDocumentsPage({ workspace, documents, visibleDocuments, ale
         <Button className="cloud-document-feature-action" size="sm" variant="light" loading={busy === featuredDocument.id} disabled={!!busy || processingDisabled || featuredDocument.validation_status === "invalid"} onClick={() => featuredDocument.job_id ? onInspect(featuredDocument) : onParse(featuredDocument)}>{featuredDocument.job_status === "succeeded" ? "View output" : featuredDocument.job_id ? "Details" : "Parse document"}</Button>
       </aside>}
     </section>
+
+    {parserPicker && <section className="cloud-documents-parser" aria-label="Parser for new parse jobs">{parserPicker}<p className="cloud-modal-note">Applies to the next document you parse. A parsed document keeps the engine it used.</p></section>}
 
     <section className="cloud-library cloud-wall-surface" aria-labelledby="cloud-library-title">
       <div className="cloud-library-heading">

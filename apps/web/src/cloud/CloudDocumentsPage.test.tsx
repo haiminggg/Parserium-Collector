@@ -1,5 +1,6 @@
 import { MantineProvider } from "@mantine/core";
 import { cleanup, render, screen, within } from "@testing-library/react";
+import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { parseriumTheme } from "../theme";
 import type { DocumentRecord } from "./api";
@@ -20,7 +21,7 @@ const document = (id: string, status: string | null, validationStatus = "valid")
   job_error_code: status === "failed" ? "parser_failed" : null,
 });
 
-function renderPage(documents: DocumentRecord[]) {
+function renderPage(documents: DocumentRecord[], parserPicker?: ReactNode) {
   render(<MantineProvider theme={parseriumTheme}><CloudDocumentsPage
     workspace={{ id: "workspace", name: "Research Library", role: "owner" }}
     documents={documents}
@@ -42,6 +43,7 @@ function renderPage(documents: DocumentRecord[]) {
     onDelete={vi.fn()}
     onPrevious={vi.fn()}
     onNext={vi.fn()}
+    parserPicker={parserPicker}
   /></MantineProvider>);
 }
 
@@ -59,6 +61,17 @@ describe("CloudDocumentsPage", () => {
     expect(screen.getAllByRole("button", { name: "View output" })).toHaveLength(2);
     expect(screen.getAllByLabelText(/^Download /)).toHaveLength(2);
     expect(screen.getAllByLabelText(/^Delete /)).toHaveLength(2);
+  });
+
+  it("shows the parser picker only when one is provided", () => {
+    renderPage([document("unparsed-study", null)]);
+    expect(screen.queryByLabelText("Parser for new parse jobs")).not.toBeInTheDocument();
+    cleanup();
+
+    renderPage([document("unparsed-study", null)], <select aria-label="Parser"><option>LiteParse</option></select>);
+    const region = screen.getByLabelText("Parser for new parse jobs");
+    expect(within(region).getByLabelText("Parser")).toBeVisible();
+    expect(within(region).getByText(/keeps the engine it used/)).toBeVisible();
   });
 
   it("hides the saved-document overview when the current page is empty", () => {
