@@ -11,9 +11,11 @@ RUNNER = ROOT / "apps" / "cloud" / "container" / "runner.py"
 RULED_TABLE = ROOT / "tests" / "fixtures" / "analysis" / "ruled-table.pdf"
 
 
-def run_runner(mode: str, source: Path) -> tuple[int, dict[str, object], str]:
+def run_runner(
+    mode: str, source: Path, engine: str | None = None
+) -> tuple[int, dict[str, object], str]:
     completed = subprocess.run(
-        [sys.executable, str(RUNNER), mode, str(source)],
+        [sys.executable, str(RUNNER), mode, str(source), *([engine] if engine else [])],
         check=False,
         capture_output=True,
         text=True,
@@ -94,4 +96,79 @@ def test_validate_rejects_more_than_twenty_pages(tmp_path: Path) -> None:
         "error": "page_limit_exceeded",
         "retryable": False,
     }
+    assert stderr == ""
+
+
+ENGINES = ["liteparse", "markitdown"]
+
+
+def test_parse_defaults_to_liteparse_and_reports_the_engine() -> None:
+    _, result, _ = run_runner("parse", RULED_TABLE)
+
+    assert result["ok"] is True
+    assert result["engine"] == "liteparse"
+
+
+import pytest  # noqa: E402
+
+
+@pytest.mark.parametrize("engine", ENGINES)
+def test_every_engine_parses_the_ruled_table_through_the_runner(engine: str) -> None:
+    returncode, result, stderr = run_runner("parse", RULED_TABLE, engine)
+
+    assert returncode == 0
+    assert result["ok"] is True
+    assert result["engine"] == engine
+    assert result["pageCount"] == 1
+    assert result["tableCount"] == 1
+    markdown = str(result["markdown"])
+    assert all(value in markdown for value in ("Alpha Income", "10.25", "Beta Growth", "22.10"))
+    assert 0 < int(result["runtimeMs"]) <= 60_000  # type: ignore[call-overload]
+    assert stderr == ""
+
+
+@pytest.mark.parametrize("engine", ["", "docling", "../runner", "LITEPARSE"])
+def test_parse_rejects_unknown_engines_without_running_anything(
+    engine: str, tmp_path: Path
+) -> None:
+    returncode, result, stderr = run_runner("parse", RULED_TABLE, engine or "unregistered")
+
+    assert returncode == 0
+    assert result == {"ok": False, "error": "invalid_request", "retryable": False}
+    assert stderr == ""
+
+
+@pytest.mark.parametrize("engine", ENGINES)
+def test_a_document_without_text_fails_instead_of_returning_empty_markdown(
+    engine: str, tmp_path: Path
+) -> None:
+    source = tmp_path / "blank.pdf"
+    write_pdf(source, pages=1)
+
+    returncode, result, stderr = run_runner("parse", source, engine)
+
+    assert returncode == 0
+    assert result["ok"] is False
+    assert result["error"] == "no_text_extracted"
+    assert result["retryable"] is False
+    assert result["engine"] == engine
+    assert "markdown" not in result
+    assert stderr == ""
+
+
+def test_validate_ignores_the_engine_argument() -> None:
+    _, result, _ = run_runner("validate", RULED_TABLE, "markitdown")
+
+    assert result == {"ok": True, "pageCount": 1}
+
+
+@pytest.mark.parametrize("engine", ENGINES)
+def test_a_corrupt_pdf_is_rejected_before_any_engine_runs(engine: str, tmp_path: Path) -> None:
+    source = tmp_path / "corrupt.pdf"
+    source.write_bytes(b"%PDF-1.7 this is not a document")
+
+    returncode, result, stderr = run_runner("parse", source, engine)
+
+    assert returncode == 0
+    assert result == {"ok": False, "error": "invalid_pdf", "retryable": False}
     assert stderr == ""

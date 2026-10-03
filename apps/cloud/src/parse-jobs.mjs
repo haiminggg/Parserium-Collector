@@ -1,4 +1,5 @@
 import {admitParseJob} from './parse-admission.mjs';
+import {isEngine} from './engines.mjs';
 import {digest} from './security.mjs';
 import {originalKey} from './upload-cleanup.mjs';
 
@@ -28,7 +29,7 @@ async function authorizedJob(db,id,userId){
 }
 
 function jobBody(row){
- return {id:row.id,document_id:row.document_id,status:row.status,attempt_count:row.attempt_count,
+ return {id:row.id,document_id:row.document_id,engine:row.engine,status:row.status,attempt_count:row.attempt_count,
   page_count:row.page_count,table_count:row.table_count,error_code:row.error_code,
   output_available:row.status==='succeeded' && typeof row.output_key==='string',created_at:row.created_at,
   updated_at:row.updated_at,completed_at:row.completed_at};
@@ -40,6 +41,8 @@ async function submit(request,env,session,parser){
  const url=new URL(request.url),documentId=url.searchParams.get('document'),requestId=request.headers.get('Idempotency-Key');
  if(!requestId || !UUID.test(requestId))return json({error:'invalid_parse'},400);
  if(!documentId || !UUID.test(documentId))return json({error:'not_found'},404);
+ const requestedEngine=url.searchParams.get('engine');
+ if(requestedEngine!==null && !isEngine(requestedEngine))return json({error:'invalid_engine'},400);
  const document=await authorizedDocument(env.DB,documentId,session.user_id);
  if(!document)return json({error:'not_found'},404);
  if(document.validation_status==='invalid')return json({error:document.format_error_code||document.validation_error_code||'invalid_pdf'},422);
@@ -69,9 +72,9 @@ async function submit(request,env,session,parser){
  }
  const now=Math.floor(Date.now()/1000);
  let admitted;
- try{admitted=await admitParseJob(env.DB,{userId:session.user_id,documentId,requestId},now);}
+ try{admitted=await admitParseJob(env.DB,{userId:session.user_id,documentId,requestId,engine:requestedEngine??undefined},now);}
  catch(error){
-  const statuses={invalid_parse:400,not_found:404,document_not_validated:409,parse_conflict:409,daily_job_limit:429,processing_budget_exceeded:429};
+  const statuses={invalid_parse:400,invalid_engine:400,not_found:404,document_not_validated:409,parse_conflict:409,daily_job_limit:429,processing_budget_exceeded:429};
   return json({error:statuses[error.message]?error.message:'processing_unavailable'},statuses[error.message]||503);
  }
  if(admitted.created){

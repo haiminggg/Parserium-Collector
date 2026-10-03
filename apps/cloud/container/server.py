@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -13,6 +14,9 @@ from pathlib import Path
 MAX_INPUT_BYTES = 10_485_760
 MAX_RESPONSE_BYTES = 10_485_760
 RUNNER = Path(__file__).with_name("runner.py")
+DEFAULT_ENGINE = "liteparse"
+# The runner owns the real allowlist; this only rejects malformed values before spawning it.
+ENGINE_ID = re.compile(r"[a-z0-9][a-z0-9_-]{0,31}")
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -58,6 +62,10 @@ class Handler(BaseHTTPRequestHandler):
         if length < 1:
             self.send_json(400, {"ok": False, "error": "invalid_request", "retryable": False})
             return
+        engine = self.headers.get("X-Parserium-Engine", DEFAULT_ENGINE)
+        if not ENGINE_ID.fullmatch(engine):
+            self.send_json(400, {"ok": False, "error": "invalid_request", "retryable": False})
+            return
         if length > MAX_INPUT_BYTES:
             self.send_json(413, {"ok": False, "error": "upload_too_large", "retryable": False})
             return
@@ -73,7 +81,7 @@ class Handler(BaseHTTPRequestHandler):
                 source = Path(stream.name)
                 stream.write(body)
             completed = subprocess.run(
-                [sys.executable, str(RUNNER), self.path.removeprefix("/"), str(source)],
+                [sys.executable, str(RUNNER), self.path.removeprefix("/"), str(source), engine],
                 check=False,
                 capture_output=True,
                 timeout=55 if self.path == "/parse" else 20,

@@ -2,7 +2,7 @@ import {originalKey} from './upload-cleanup.mjs';
 
 const MAX_OUTPUT=10485760,MAX_RUNTIME=60000,LEASE_SECONDS=90;
 const retryableErrors=new Set(['parser_timeout','parser_unavailable','storage_unavailable','container_start_failed']);
-const permanentErrors=new Set(['parser_failed','output_too_large','original_missing','invalid_pdf','invalid_docx','encrypted_pdf','page_limit_exceeded']);
+const permanentErrors=new Set(['parser_failed','no_text_extracted','output_too_large','original_missing','invalid_pdf','invalid_docx','encrypted_pdf','page_limit_exceeded']);
 const UUID=/^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$/;
 
 export const attemptOutputKey=(row,fence)=>`workspaces/${row.workspace_id}/outputs/${row.id}/${fence}.md`;
@@ -58,7 +58,7 @@ export async function processParseMessage(env,message,now=Math.floor(Date.now()/
  let result;
  try{
   if(!parser || typeof parser.parsePdf!=='function')throw Error('parser unavailable');
-  result=await parser.parsePdf(await original.arrayBuffer());
+  result=await parser.parsePdf(await original.arrayBuffer(),row.engine);
  }catch{result={ok:false,error:'parser_unavailable',retryable:true,runtimeMs:MAX_RUNTIME};}
  if(!result || result.ok!==true){
   const disposition=await completeFailure(env.DB,row,fence,result,now);

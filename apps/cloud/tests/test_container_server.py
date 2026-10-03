@@ -115,3 +115,44 @@ def test_server_rejects_declared_oversize_before_reading_body() -> None:
 
     assert b" 413 " in response
     assert b"upload_too_large" in response
+
+
+def parse_with_engine(base: str, engine: str | None) -> tuple[int, dict[str, object]]:
+    headers = {"Content-Type": "application/pdf"}
+    if engine is not None:
+        headers["X-Parserium-Engine"] = engine
+    call = urllib.request.Request(
+        f"{base}/parse", data=RULED_TABLE.read_bytes(), method="POST", headers=headers
+    )
+    try:
+        with urllib.request.urlopen(call, timeout=60) as response:
+            return response.status, json.loads(response.read())
+    except urllib.error.HTTPError as error:
+        return error.code, json.loads(error.read())
+
+
+def test_server_runs_the_requested_engine() -> None:
+    with running_server() as base:
+        status, payload = parse_with_engine(base, "markitdown")
+
+    assert status == 200
+    assert payload["ok"] is True
+    assert payload["engine"] == "markitdown"
+
+
+def test_server_defaults_to_liteparse_when_no_engine_is_requested() -> None:
+    with running_server() as base:
+        status, payload = parse_with_engine(base, None)
+
+    assert status == 200
+    assert payload["engine"] == "liteparse"
+
+
+def test_server_rejects_malformed_engine_names_before_starting_the_runner() -> None:
+    with running_server() as base:
+        results = [parse_with_engine(base, value) for value in ("Bad Engine!", "../x", "A" * 40)]
+        unknown = parse_with_engine(base, "not-registered")
+
+    assert all(status == 400 for status, _ in results)
+    assert all(payload["error"] == "invalid_request" for _, payload in results)
+    assert unknown[1] == {"ok": False, "error": "invalid_request", "retryable": False}

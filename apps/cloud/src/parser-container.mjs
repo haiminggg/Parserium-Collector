@@ -14,13 +14,13 @@ export class ParserContainer extends Container{
     cancellationOptions:{abort:signal,instanceGetTimeoutMS:15_000,portReadyTimeoutMS:45_000,waitInterval:250},
     startOptions:{enableInternet:false}
    }),
-   fetch:(path,bytes,signal)=>this.containerFetch(`http://localhost${path}`,{
-    method:'POST',headers:{'Content-Type':new Uint8Array(bytes)[0]===80?'application/vnd.openxmlformats-officedocument.wordprocessingml.document':'application/pdf','Content-Length':String(bytes.byteLength)},body:bytes,signal
+   fetch:(path,bytes,signal,engine)=>this.containerFetch(`http://localhost${path}`,{
+    method:'POST',headers:{'Content-Type':new Uint8Array(bytes)[0]===80?'application/vnd.openxmlformats-officedocument.wordprocessingml.document':'application/pdf','Content-Length':String(bytes.byteLength),...(engine?{'X-Parserium-Engine':engine}:{})},body:bytes,signal
    },8080),
    stop:()=>this.stop()
   };
  }
 
  validatePdf(bytes){return coordinateContainerRequest('validate',bytes,this.transport());}
- parsePdf(bytes){return coordinateContainerRequest('parse',bytes,this.transport());}
+ parsePdf(bytes,engine){return coordinateContainerRequest('parse',bytes,this.transport(),{engine});}
 }

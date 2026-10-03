@@ -1,7 +1,9 @@
+import {isEngine} from './engines.mjs';
+
 const MAX_BYTES=10_485_760;
 const validationErrors=new Set(['invalid_pdf','invalid_docx','encrypted_pdf','page_limit_exceeded']);
 const retryableErrors=new Set(['parser_timeout','parser_unavailable','container_start_failed','storage_unavailable']);
-const permanentErrors=new Set([...validationErrors,'parser_failed','output_too_large']);
+const permanentErrors=new Set([...validationErrors,'parser_failed','no_text_extracted','output_too_large']);
 
 function binary(value){
  if(value instanceof ArrayBuffer)return value;
@@ -39,21 +41,24 @@ function failure(action,error,runtimeMs){
  return {ok:false,error,retryable};
 }
 
-function sanitize(action,value){
+function sanitize(action,value,engine){
  if(!value || typeof value!=='object')throw Error('invalid_response');
  if(value.ok!==true)return failure(action,value.error,value.runtimeMs);
+ // A successful parse must come from the engine that was requested, never a silent substitute.
+ if(action==='parse' && engine!==undefined && value.engine!==engine)throw Error('invalid_response');
  if(!Number.isSafeInteger(value.pageCount) || value.pageCount<1 || value.pageCount>20)throw Error('invalid_response');
  if(action==='validate')return {ok:true,pageCount:value.pageCount};
  if(!Number.isSafeInteger(value.tableCount) || value.tableCount<0 || typeof value.markdown!=='string' ||
     new TextEncoder().encode(value.markdown).byteLength>MAX_BYTES || !Number.isSafeInteger(value.runtimeMs) ||
     value.runtimeMs<1 || value.runtimeMs>60_000)throw Error('invalid_response');
- return {ok:true,pageCount:value.pageCount,tableCount:value.tableCount,markdown:value.markdown,runtimeMs:value.runtimeMs};
+ return {ok:true,...(engine!==undefined?{engine}:{}),pageCount:value.pageCount,tableCount:value.tableCount,markdown:value.markdown,runtimeMs:value.runtimeMs};
 }
 
 async function safeStop(transport){try{await transport.stop();}catch{/* A failed stop cannot expose platform details. */}}
 
-export async function coordinateContainerRequest(action,input,transport,{timeoutMs=60_000}={}){
+export async function coordinateContainerRequest(action,input,transport,{timeoutMs=60_000,engine}={}){
  if(!['validate','parse'].includes(action))throw Error('invalid_action');
+ if(engine!==undefined && !isEngine(engine))throw Error('invalid_engine');
  const bytes=binary(input);
  if(bytes.byteLength<5 || bytes.byteLength>MAX_BYTES)throw Error('invalid_input');
  if(!transport || typeof transport.start!=='function' || typeof transport.fetch!=='function' || typeof transport.stop!=='function')
@@ -64,8 +69,8 @@ export async function coordinateContainerRequest(action,input,transport,{timeout
  let phase='start',result;
  try{
   await transport.start(controller.signal);phase='request';
-  const response=await transport.fetch('/'+action,bytes,controller.signal);
-  result=sanitize(action,await responseJson(response));
+  const response=await transport.fetch('/'+action,bytes,controller.signal,engine);
+  result=sanitize(action,await responseJson(response),engine);
  }catch{
   result=phase==='start'?{ok:false,error:'container_start_failed',retryable:true}:
    failure(action,controller.signal.aborted?'parser_timeout':'parser_unavailable',60_000);

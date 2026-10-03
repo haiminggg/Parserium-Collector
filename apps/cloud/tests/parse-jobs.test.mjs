@@ -92,7 +92,7 @@ test('job status and Markdown output are workspace-authorized and durable',async
  await db.prepare("UPDATE parse_jobs SET status='succeeded',attempt_count=1,runtime_ms=7000,output_key=?,output_size_bytes=?,page_count=1,table_count=1,updated_at=?,completed_at=? WHERE id=?")
   .bind(outputKey,new TextEncoder().encode(markdown).byteLength,completedAt,completedAt,job.id).run();
  const status=await parseRoute(request(`/parse-jobs/${job.id}`),env,session);
- assert.equal(status.status,200);assert.deepEqual((await status.json()).job,{id:job.id,document_id:source.id,status:'succeeded',attempt_count:1,page_count:1,table_count:1,error_code:null,output_available:true,created_at:job.created_at,updated_at:completedAt,completed_at:completedAt});
+ assert.equal(status.status,200);assert.deepEqual((await status.json()).job,{id:job.id,document_id:source.id,engine:'liteparse',status:'succeeded',attempt_count:1,page_count:1,table_count:1,error_code:null,output_available:true,created_at:job.created_at,updated_at:completedAt,completed_at:completedAt});
  const output=await parseRoute(request(`/parse-jobs/${job.id}/output`),env,session);
  assert.equal(output.status,200);assert.equal(await output.text(),markdown);assert.match(output.headers.get('Content-Type'),/^text\/markdown/);assert.equal(output.headers.get('Cache-Control'),'no-store');
  assert.equal((await parseRoute(request(`/parse-jobs/${job.id}`),env,outsider)).status,404);
