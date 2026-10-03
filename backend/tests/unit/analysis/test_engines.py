@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 import pytest
@@ -86,7 +87,20 @@ def test_count_markdown_tables(markdown: str, expected: int) -> None:
     assert count_markdown_tables(markdown) == expected
 
 
-@pytest.mark.parametrize("engine_id", ["liteparse", "markitdown"])
+# Known bug: on Linux LiteParse drops the header row of this ruled table (the first row becomes
+# "Alpha Income"). Windows is fine and MarkItDown is fine. Strict, so fixing it fails the test and
+# forces this marker to be removed.
+LITEPARSE_LINUX_HEADER_BUG = pytest.mark.xfail(
+    sys.platform.startswith("linux"),
+    reason="LiteParse drops the ruled-table header row on Linux",
+    strict=True,
+)
+
+
+@pytest.mark.parametrize(
+    "engine_id",
+    [pytest.param("liteparse", marks=LITEPARSE_LINUX_HEADER_BUG), "markitdown"],
+)
 def test_every_engine_extracts_the_ruled_table_fixture(engine_id: str) -> None:
     output = get_engine(engine_id).parse(request_for(RULED))
 
