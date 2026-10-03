@@ -12,9 +12,11 @@ from liteparse import (
 )
 
 from parserium_collector.features.analysis.parser import (
+    LITEPARSE_PAGE_SEPARATOR,
     AnalysisParserError,
     AnalysisParserTimeoutError,
     LiteParseAdapter,
+    _page_ranges,
     markdown_table,
 )
 
@@ -107,6 +109,7 @@ def adapter_with(
             parser_timeout_seconds=120,
             screenshot_dpi=150,
             parser_factory=factory,
+            ocr_mode="always",
         ),
         config,
     )
@@ -121,7 +124,8 @@ def test_parse_maps_table_blocks_cells_bounds_and_page_limit() -> None:
     assert parser.parsed == b"deterministic validated PDF fixture"
     assert config["max_pages"] == 200
     assert config["extract_blocks"] is True
-    assert config["parse_timeout"] == 120
+    assert config["parse_timeout"] == pytest.approx(120, abs=1)
+    assert config["ocr_enabled"] is True
     assert config["pool_size"] == 1
     assert parser.closed is True
     assert result.page_count == 240
@@ -235,3 +239,150 @@ def test_close_failure_does_not_mask_a_sanitized_parse_failure() -> None:
         adapter.parse_pdf(b"validated fixture")
 
     assert "test-only" not in str(captured.value)
+
+
+def text_page(number: int, text: str, *, blocks: list[LayoutBlock] | None = None) -> ParsedPage:
+    return ParsedPage(
+        page_num=number,
+        width=612,
+        height=792,
+        text=text,
+        markdown=text,
+        blocks=blocks if blocks is not None else [],
+    )
+
+
+def scripted_adapter(
+    text_pass: ParseResult,
+    ocr_pass: ParseResult | None = None,
+    **adapter_options: Any,
+) -> tuple[LiteParseAdapter, list[dict[str, Any]]]:
+    calls: list[dict[str, Any]] = []
+    doubles = {
+        False: DeterministicLiteParseTestDouble(text_pass, []),
+        True: DeterministicLiteParseTestDouble(ocr_pass or text_pass, []),
+    }
+
+    def factory(**kwargs: Any) -> DeterministicLiteParseTestDouble:
+        calls.append(kwargs)
+        return doubles[bool(kwargs["ocr_enabled"])]
+
+    adapter = LiteParseAdapter(
+        page_limit=200,
+        parser_timeout_seconds=120,
+        screenshot_dpi=150,
+        parser_factory=factory,
+        **adapter_options,
+    )
+    return adapter, calls
+
+
+BODY = "A page with a real text layer that comfortably clears the threshold."
+
+
+def test_auto_mode_skips_ocr_when_every_page_has_a_text_layer() -> None:
+    text_pass = ParseResult(
+        pages=[text_page(1, BODY), text_page(2, BODY)],
+        text=f"{BODY}{LITEPARSE_PAGE_SEPARATOR}{BODY}",
+        total_pages=2,
+    )
+    adapter, calls = scripted_adapter(text_pass)
+
+    analysis = adapter.parse_pdf(b"validated fixture")
+
+    assert [call["ocr_enabled"] for call in calls] == [False]
+    assert "target_pages" not in calls[0]
+    assert analysis.markdown == text_pass.text
+
+
+def test_auto_mode_runs_ocr_only_on_pages_without_text_and_merges_in_order() -> None:
+    text_pass = ParseResult(
+        pages=[text_page(1, BODY), text_page(2, ""), text_page(3, BODY), text_page(4, "  \n ")],
+        text="ignored for merged results",
+        total_pages=4,
+    )
+    ocr_pass = ParseResult(
+        pages=[text_page(2, "Recognised page two"), text_page(4, "Recognised page four")],
+        text="ignored",
+        total_pages=4,
+    )
+    adapter, calls = scripted_adapter(text_pass, ocr_pass)
+
+    analysis = adapter.parse_pdf(b"validated fixture")
+
+    assert [call["ocr_enabled"] for call in calls] == [False, True]
+    assert calls[1]["target_pages"] == "2,4"
+    assert analysis.markdown == LITEPARSE_PAGE_SEPARATOR.join(
+        [BODY, "Recognised page two", BODY, "Recognised page four"]
+    )
+    assert analysis.page_count == 4
+    assert analysis.analyzed_page_count == 4
+
+
+def test_auto_mode_keeps_tables_found_on_recognised_pages() -> None:
+    table = table_result().pages[1].blocks
+    text_pass = ParseResult(
+        pages=[text_page(1, BODY), text_page(2, "")],
+        text="ignored",
+        total_pages=2,
+    )
+    ocr_pass = ParseResult(
+        pages=[text_page(2, "Fund NAV", blocks=table)],
+        text="ignored",
+        total_pages=2,
+    )
+    adapter, _ = scripted_adapter(text_pass, ocr_pass)
+
+    analysis = adapter.parse_pdf(b"validated fixture")
+
+    assert len(analysis.tables) == 1
+    assert analysis.tables[0].page_num == 2
+    assert analysis.preview_page_num == 2
+
+
+def test_second_pass_receives_only_the_remaining_time_budget() -> None:
+    text_pass = ParseResult(pages=[text_page(1, "")], text="", total_pages=1)
+    ocr_pass = ParseResult(pages=[text_page(1, "Recognised")], text="", total_pages=1)
+    adapter, calls = scripted_adapter(text_pass, ocr_pass)
+
+    adapter.parse_pdf(b"validated fixture")
+
+    assert calls[1]["parse_timeout"] <= calls[0]["parse_timeout"] <= 120
+
+
+def test_auto_mode_fails_safely_when_ocr_returns_no_page_for_a_scanned_page() -> None:
+    text_pass = ParseResult(pages=[text_page(1, BODY), text_page(2, "")], text="", total_pages=2)
+    ocr_pass = ParseResult(pages=[], text="", total_pages=2)
+    adapter, _ = scripted_adapter(text_pass, ocr_pass)
+
+    with pytest.raises(AnalysisParserError, match="no text for scanned pages"):
+        adapter.parse_pdf(b"validated fixture")
+
+
+@pytest.mark.parametrize(("mode", "expected"), (("never", False), ("always", True)))
+def test_fixed_ocr_modes_parse_once_with_ocr_forced(mode: str, expected: bool) -> None:
+    result = ParseResult(pages=[text_page(1, "")], text="", total_pages=1)
+    adapter, calls = scripted_adapter(result, ocr_mode=mode)
+
+    adapter.parse_pdf(b"validated fixture")
+
+    assert [call["ocr_enabled"] for call in calls] == [expected]
+
+
+def test_invalid_ocr_options_are_rejected() -> None:
+    with pytest.raises(ValueError, match="OCR mode"):
+        LiteParseAdapter(
+            page_limit=10, parser_timeout_seconds=5, screenshot_dpi=72, ocr_mode="sometimes"  # type: ignore[arg-type]
+        )
+    with pytest.raises(ValueError, match="OCR text threshold"):
+        LiteParseAdapter(
+            page_limit=10, parser_timeout_seconds=5, screenshot_dpi=72, ocr_min_page_chars=0
+        )
+
+
+@pytest.mark.parametrize(
+    ("pages", "expected"),
+    (([2], "2"), ([1, 2, 3], "1-3"), ([1, 2, 3, 5], "1-3,5"), ([7, 3, 4, 3], "3-4,7")),
+)
+def test_page_ranges_compress_consecutive_pages(pages: list[int], expected: str) -> None:
+    assert _page_ranges(pages) == expected

@@ -17,6 +17,7 @@ dependencies = [
   "httpcore==1.0.9",
   "httpx==0.28.1",
   "liteparse==2.14.0",
+  "markitdown[pdf]==0.1.8",
   "pydantic==2.13.4",
   "pydantic-settings==2.15.0",
   "pypdf==6.16.2",

@@ -1,8 +1,9 @@
+import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from math import isfinite
 from pathlib import Path
-from typing import Protocol, cast
+from typing import Literal, Protocol, cast
 
 from liteparse import (
     LiteParse,
@@ -13,6 +14,12 @@ from liteparse import (
 from liteparse.types import LayoutBlock, ParsedPage
 
 from parserium_collector.features.analysis.models import TableBoundingBox
+
+
+OcrMode = Literal["auto", "always", "never"]
+
+# LiteParse 2.14.0 joins per-page Markdown with this separator. A real-parser test pins it.
+LITEPARSE_PAGE_SEPARATOR = "\n\n-----\n\n"
 
 
 class AnalysisParserError(RuntimeError):
@@ -63,6 +70,21 @@ class LiteParseRuntime(Protocol):
     def close(self) -> None: ...
 
 
+def _page_ranges(page_numbers: Sequence[int]) -> str:
+    """Format sorted page numbers as a LiteParse target-pages selector such as ``1-3,5``."""
+    ranges: list[str] = []
+    ordered = sorted(set(page_numbers))
+    start = previous = ordered[0]
+    for number in (*ordered[1:], None):
+        if number is not None and number == previous + 1:
+            previous = number
+            continue
+        ranges.append(str(start) if start == previous else f"{start}-{previous}")
+        if number is not None:
+            start = previous = number
+    return ",".join(ranges)
+
+
 def _markdown_cell(value: str) -> str:
     flattened = " ".join(value.splitlines())
     return flattened.replace("\\", "\\\\").replace("|", "\\|")
@@ -104,6 +126,8 @@ class LiteParseAdapter:
         parser_timeout_seconds: float,
         screenshot_dpi: float,
         parser_factory: Callable[..., LiteParseRuntime] | None = None,
+        ocr_mode: OcrMode = "auto",
+        ocr_min_page_chars: int = 25,
     ) -> None:
         if page_limit < 1 or page_limit > 1000:
             raise ValueError("The parser page limit must be between 1 and 1000.")
@@ -111,28 +135,43 @@ class LiteParseAdapter:
             raise ValueError("The parser timeout must be positive.")
         if screenshot_dpi <= 0:
             raise ValueError("The screenshot DPI must be positive.")
+        if ocr_mode not in ("auto", "always", "never"):
+            raise ValueError("The OCR mode must be auto, always, or never.")
+        if ocr_min_page_chars < 1:
+            raise ValueError("The OCR text threshold must be positive.")
         self._page_limit = page_limit
         self._parser_timeout_seconds = parser_timeout_seconds
         self._screenshot_dpi = screenshot_dpi
+        self._ocr_mode = ocr_mode
+        self._ocr_min_page_chars = ocr_min_page_chars
         self._parser_factory = parser_factory or cast(
             Callable[..., LiteParseRuntime],
             LiteParse,
         )
 
     def parse_pdf(self, file_data: bytes | Path) -> ParsedDocumentAnalysis:
-        parser = self._parser_factory(
-            max_pages=self._page_limit,
-            extract_blocks=True,
-            output_format="markdown",
-            continue_on_page_error=True,
-            quiet=True,
-            num_workers=1,
-            pool_size=1,
-            parse_timeout=self._parser_timeout_seconds,
-        )
+        """Parse a PDF, running OCR only on pages that have no usable text layer.
+
+        OCR dominates parse time (about 400 times the cost of text-layer extraction on a
+        born-digital page), so ``auto`` mode first parses every page with OCR disabled and
+        then re-parses only the pages that came back without text.
+        """
+        deadline = time.monotonic() + self._parser_timeout_seconds
         try:
-            result = parser.parse(file_data)
-            return self._map_result(result)
+            if self._ocr_mode != "auto":
+                result = self._run(file_data, ocr=self._ocr_mode == "always", deadline=deadline)
+                return self._map_pages(result.pages, result.total_pages, result.text)
+            result = self._run(file_data, ocr=False, deadline=deadline)
+            scanned = self._pages_without_text(result.pages)
+            if not scanned:
+                return self._map_pages(result.pages, result.total_pages, result.text)
+            ocr_result = self._run(
+                file_data,
+                ocr=True,
+                deadline=deadline,
+                target_pages=_page_ranges(scanned),
+            )
+            return self._merge(result, ocr_result, set(scanned))
         except AnalysisParserError:
             raise
         except (ParseTimeoutError, TimeoutError) as error:
@@ -141,8 +180,58 @@ class LiteParseAdapter:
             ) from error
         except Exception as error:
             raise AnalysisParserError("Document analysis could not parse the PDF.") from error
+
+    def _run(
+        self,
+        file_data: bytes | Path,
+        *,
+        ocr: bool,
+        deadline: float,
+        target_pages: str | None = None,
+    ) -> ParseResult:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise AnalysisParserTimeoutError(
+                "Document analysis exceeded the configured parser timeout."
+            )
+        options: dict[str, object] = {
+            "max_pages": self._page_limit,
+            "extract_blocks": True,
+            "output_format": "markdown",
+            "continue_on_page_error": True,
+            "quiet": True,
+            "num_workers": 1,
+            "pool_size": 1,
+            "parse_timeout": remaining,
+            "ocr_enabled": ocr,
+        }
+        if target_pages is not None:
+            options["target_pages"] = target_pages
+        parser = self._parser_factory(**options)
+        try:
+            return parser.parse(file_data)
         finally:
             self._close_safely(parser)
+
+    def _pages_without_text(self, pages: Sequence[ParsedPage]) -> list[int]:
+        return [
+            page.page_num
+            for page in pages
+            if len("".join((page.text or "").split())) < self._ocr_min_page_chars
+        ]
+
+    def _merge(
+        self,
+        text_pass: ParseResult,
+        ocr_pass: ParseResult,
+        scanned: set[int],
+    ) -> ParsedDocumentAnalysis:
+        recognised = {page.page_num: page for page in ocr_pass.pages if page.page_num in scanned}
+        if set(recognised) != scanned:
+            raise AnalysisParserError("Document analysis returned no text for scanned pages.")
+        pages = [recognised.get(page.page_num, page) for page in text_pass.pages]
+        markdown = LITEPARSE_PAGE_SEPARATOR.join(page.markdown or "" for page in pages)
+        return self._map_pages(pages, text_pass.total_pages, markdown)
 
     def render_preview(self, file_path: Path, *, page_num: int) -> RenderedPreview:
         if page_num < 1:
@@ -191,22 +280,26 @@ class LiteParseAdapter:
             return
 
     @staticmethod
-    def _map_result(result: ParseResult) -> ParsedDocumentAnalysis:
-        if not result.pages:
+    def _map_pages(
+        pages: Sequence[ParsedPage],
+        total_pages: int,
+        markdown: str,
+    ) -> ParsedDocumentAnalysis:
+        if not pages:
             raise AnalysisParserError("Document analysis returned no pages.")
         tables: list[ParsedTable] = []
-        for page in result.pages:
+        for page in pages:
             page_tables = [block for block in (page.blocks or ()) if block.kind == "table"]
             for table_index, block in enumerate(page_tables):
                 tables.append(LiteParseAdapter._map_table(page, table_index, block))
-        page_count = max(result.total_pages, len(result.pages))
+        page_count = max(total_pages, len(pages))
         return ParsedDocumentAnalysis(
             page_count=page_count,
-            analyzed_page_count=len(result.pages),
+            analyzed_page_count=len(pages),
             tables=tuple(tables),
-            table_count_lower_bound=page_count > len(result.pages),
+            table_count_lower_bound=page_count > len(pages),
             preview_page_num=tables[0].page_num if tables else 1,
-            markdown=result.text,
+            markdown=markdown,
         )
 
     @staticmethod
