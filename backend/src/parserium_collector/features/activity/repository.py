@@ -21,6 +21,7 @@ from sqlalchemy import (
 from sqlalchemy.engine import RowMapping
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.sql.elements import ColumnElement
+from sqlalchemy.sql.selectable import Subquery
 
 from parserium_collector.adapters.database.tables import (
     candidate_analyses,
@@ -94,7 +95,7 @@ class PostgresActivityRepository:
         self._engine = engine
 
     @staticmethod
-    def _activity_query(workspace_id: UUID):
+    def _activity_query(workspace_id: UUID) -> Subquery:
         discovery_user = users.alias("discovery_user")
         collection_user = users.alias("collection_user")
         analysis_user = users.alias("analysis_user")

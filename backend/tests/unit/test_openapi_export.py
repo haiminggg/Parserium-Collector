@@ -10,6 +10,8 @@ def test_rendered_openapi_is_deterministic_and_contains_public_routes() -> None:
     assert first == second
     document = json.loads(first)
     assert sorted(document["paths"]) == [
+        "/api/v1/activity",
+        "/api/v1/activity/{job_type}/{job_id}",
         "/api/v1/auth/callback",
         "/api/v1/auth/login",
         "/api/v1/collection/jobs",
@@ -19,6 +21,7 @@ def test_rendered_openapi_is_deterministic_and_contains_public_routes() -> None:
         "/api/v1/discovery/search",
         "/api/v1/discovery/searches",
         "/api/v1/discovery/searches/{session_id}",
+        "/api/v1/discovery/searches/{session_id}/retry",
         "/api/v1/documents",
         "/api/v1/documents/{document_id}",
         "/api/v1/documents/{document_id}/download",

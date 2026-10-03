@@ -124,6 +124,7 @@ def test_durable_discovery_session_metadata_matches_the_migration() -> None:
         "provider_request_started_at",
         "firecrawl_credential_revision_snapshot",
         "creation_reason",
+        "history_deleted_at",
     }
     assert session.c.request_fingerprint.type.length == 64
     assert session.c.request_fingerprint_version.nullable

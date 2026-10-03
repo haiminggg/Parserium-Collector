@@ -1,3 +1,4 @@
+import base64
 import logging
 from collections.abc import Awaitable, Callable
 from pathlib import Path
@@ -196,9 +197,17 @@ async def test_maintenance_failure_is_safely_logged_and_retried(
     assert "sensitive provider response" not in caplog.text  # type: ignore[attr-defined]
 
 
+def fingerprint_secret_file(tmp_path: Path) -> Path:
+    path = tmp_path / "fingerprint-secret"
+    path.write_bytes(b"f" * 32)
+    return path
+
+
 def hosted_worker_settings(tmp_path: Path) -> Settings:
     oidc_secret = tmp_path / "oidc-secret"
     oidc_secret.write_text(token_urlsafe(48), encoding="utf-8")
+    wrapping_key = tmp_path / "wrapping-key"
+    wrapping_key.write_bytes(base64.b64encode(b"k" * 32))
     return Settings(
         deployment_mode="hosted",
         public_origin="https://app.parserium.test",
@@ -214,6 +223,9 @@ def hosted_worker_settings(tmp_path: Path) -> Settings:
         storage_region="us-east-1",
         storage_bucket="parserium-artifacts",
         scratch_root=tmp_path / "scratch",
+        credential_encryption_key_file=wrapping_key,
+        credential_encryption_key_id="hosted-v1",
+        discovery_fingerprint_secret_file=fingerprint_secret_file(tmp_path),
     )
 
 
@@ -232,6 +244,7 @@ async def test_worker_constructs_one_storage_runtime_shared_by_all_workers(
             storage_root=tmp_path / "durable",
             scratch_root=tmp_path / "scratch",
             export_root=export_root,
+            discovery_fingerprint_secret_file=fingerprint_secret_file(tmp_path),
         )
     )
     engine = AsyncMock()

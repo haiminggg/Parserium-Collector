@@ -19,7 +19,8 @@ from parserium_collector.features.analysis.parser import (
     LiteParseAdapter,
 )
 
-FIXTURES = Path(__file__).resolve().parents[4] / "tests" / "fixtures" / "analysis"
+# Copies of tests/fixtures/analysis, because the backend image only ships backend/tests.
+FIXTURES = Path(__file__).resolve().parents[2] / "fixtures" / "analysis"
 RULED = FIXTURES / "ruled-table.pdf"
 BORDERLESS = FIXTURES / "borderless-table.pdf"
 FUNDS = ("Alpha Income", "Beta Growth", "10.25", "22.10")

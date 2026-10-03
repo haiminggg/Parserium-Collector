@@ -163,6 +163,8 @@ def test_hosted_runtime_constructs_workspace_connection_stack_without_global_pro
     oidc_secret.write_bytes(b"o" * 32)
     wrapping_key = tmp_path / "firecrawl-wrapping-key"
     wrapping_key.write_bytes(base64.b64encode(b"k" * 32))
+    fingerprint_secret = tmp_path / "fingerprint-secret"
+    fingerprint_secret.write_bytes(b"f" * 32)
     settings = Settings(
         deployment_mode=DeploymentMode.HOSTED,
         storage_backend="s3",
@@ -180,6 +182,7 @@ def test_hosted_runtime_constructs_workspace_connection_stack_without_global_pro
         oidc_redirect_uri="https://app.parserium.test/api/v1/auth/callback",
         credential_encryption_key_file=wrapping_key,
         credential_encryption_key_id="hosted-v1",
+        discovery_fingerprint_secret_file=fingerprint_secret,
         static_root=tmp_path / "missing",
     )
     engine = AsyncMock()
@@ -231,7 +234,10 @@ def test_app_constructs_one_storage_runtime_shared_by_all_api_consumers(
 ) -> None:
     export_root = tmp_path / "exports"
     export_root.mkdir()
+    fingerprint_secret = tmp_path / "fingerprint-secret"
+    fingerprint_secret.write_bytes(b"f" * 32)
     settings = Settings(
+        discovery_fingerprint_secret_file=fingerprint_secret,
         static_root=tmp_path / "missing",
         storage_root=tmp_path / "durable",
         scratch_root=tmp_path / "scratch",
