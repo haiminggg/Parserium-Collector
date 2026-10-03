@@ -17,3 +17,8 @@ test-results/
 *.log
 .DS_Store
 Thumbs.db
+
+# Parser engine benchmark: generated corpus, private real documents and results
+tools/benchmark/corpus/
+tools/benchmark/real/
+tools/benchmark/results/
