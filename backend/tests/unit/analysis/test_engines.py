@@ -107,9 +107,7 @@ def test_text_layer_engines_find_the_borderless_table(engine_id: str) -> None:
 # MarkItDown sniffs content and echoes non-PDF bytes back as text, so it relies on the caller
 # validating the PDF first. The container runner does, and its tests cover every engine.
 @pytest.mark.parametrize("engine_id", ["liteparse"])
-def test_engines_never_invent_content_from_unreadable_input(
-    engine_id: str, tmp_path: Path
-) -> None:
+def test_engines_never_invent_content_from_unreadable_input(engine_id: str, tmp_path: Path) -> None:
     broken = tmp_path / "broken.pdf"
     broken.write_bytes(b"%PDF-1.7 this is not a document")
 

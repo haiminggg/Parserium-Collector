@@ -15,7 +15,6 @@ from liteparse.types import LayoutBlock, ParsedPage
 
 from parserium_collector.features.analysis.models import TableBoundingBox
 
-
 OcrMode = Literal["auto", "always", "never"]
 
 # LiteParse 2.14.0 joins per-page Markdown with this separator. A real-parser test pins it.

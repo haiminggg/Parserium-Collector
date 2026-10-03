@@ -372,7 +372,10 @@ def test_fixed_ocr_modes_parse_once_with_ocr_forced(mode: str, expected: bool) -
 def test_invalid_ocr_options_are_rejected() -> None:
     with pytest.raises(ValueError, match="OCR mode"):
         LiteParseAdapter(
-            page_limit=10, parser_timeout_seconds=5, screenshot_dpi=72, ocr_mode="sometimes"  # type: ignore[arg-type]
+            page_limit=10,
+            parser_timeout_seconds=5,
+            screenshot_dpi=72,
+            ocr_mode="sometimes",  # type: ignore[arg-type]
         )
     with pytest.raises(ValueError, match="OCR text threshold"):
         LiteParseAdapter(
