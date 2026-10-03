@@ -3,6 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 from pypdf import PdfWriter
 
 
@@ -42,6 +43,13 @@ def test_validate_accepts_real_pdf_and_reports_literal_page_count() -> None:
     assert stderr == ""
 
 
+# Known bug: on Linux LiteParse emits the header row as plain text above the table instead of as the
+# first table row, and Windows does not. Strict, so fixing it fails this test and removes the marker.
+@pytest.mark.xfail(
+    sys.platform.startswith("linux"),
+    reason="LiteParse puts the ruled-table header row outside the table on Linux",
+    strict=True,
+)
 def test_parse_returns_real_ruled_table_markdown() -> None:
     returncode, result, stderr = run_runner("parse", RULED_TABLE)
 

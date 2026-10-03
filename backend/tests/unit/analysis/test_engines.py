@@ -87,12 +87,12 @@ def test_count_markdown_tables(markdown: str, expected: int) -> None:
     assert count_markdown_tables(markdown) == expected
 
 
-# Known bug: on Linux LiteParse drops the header row of this ruled table (the first row becomes
-# "Alpha Income"). Windows is fine and MarkItDown is fine. Strict, so fixing it fails the test and
-# forces this marker to be removed.
+# Known bug: on Linux LiteParse emits the header row of this ruled table as plain text above the
+# table instead of as its first row. Windows and MarkItDown are fine. Strict, so fixing it fails
+# the test and forces this marker to be removed.
 LITEPARSE_LINUX_HEADER_BUG = pytest.mark.xfail(
     sys.platform.startswith("linux"),
-    reason="LiteParse drops the ruled-table header row on Linux",
+    reason="LiteParse puts the ruled-table header row outside the table on Linux",
     strict=True,
 )
 
