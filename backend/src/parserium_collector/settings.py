@@ -65,9 +65,7 @@ class Settings(BaseSettings):
     db_user: str = "parserium_collector"
     db_password_file: Path = Path("/run/secrets/db_password")
     session_signing_secret_file: Path = Path("/run/secrets/session_signing_secret")
-    discovery_fingerprint_secret_file: Path = Path(
-        "/run/secrets/discovery_fingerprint_secret"
-    )
+    discovery_fingerprint_secret_file: Path = Path("/run/secrets/discovery_fingerprint_secret")
     pairing_ttl_seconds: int = Field(default=600, ge=60, le=3600)
     session_idle_seconds: int = Field(default=86400, ge=300, le=604800)
     session_cookie_secure: bool = False

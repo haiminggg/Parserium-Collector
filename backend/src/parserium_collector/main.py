@@ -274,9 +274,7 @@ def create_app(
         if activity_service is not None:
             application.state.activity_service = activity_service
         elif engine is not None:
-            application.state.activity_service = ActivityService(
-                PostgresActivityRepository(engine)
-            )
+            application.state.activity_service = ActivityService(PostgresActivityRepository(engine))
         else:
             application.state.activity_service = None
         try:

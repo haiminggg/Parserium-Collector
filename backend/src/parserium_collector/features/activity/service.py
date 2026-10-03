@@ -111,11 +111,7 @@ class ActivityService:
         response_data.pop("retryable")
         return ActivityJobResponse(
             **response_data,
-            can_cancel=(
-                authorized
-                and item.job_type is ActivityJobType.DISCOVERY
-                and not terminal
-            ),
+            can_cancel=(authorized and item.job_type is ActivityJobType.DISCOVERY and not terminal),
             can_retry=(
                 authorized
                 and (

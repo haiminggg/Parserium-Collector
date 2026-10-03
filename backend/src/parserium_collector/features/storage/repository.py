@@ -702,8 +702,7 @@ class PostgresArtifactRepository:
                 discovery_analysis_sessions.c.id == candidate_analyses.c.session_id,
             )
             .where(
-                candidate_analyses.c.id
-                == artifact_references.c.candidate_analysis_id,
+                candidate_analyses.c.id == artifact_references.c.candidate_analysis_id,
                 discovery_analysis_sessions.c.status.in_(("queued", "running")),
             )
         )

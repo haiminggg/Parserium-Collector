@@ -165,9 +165,7 @@ async def test_worker_lookup_requires_exact_current_healthy_revision(
         NOW,
     )
 
-    assert (
-        await repository.get_usable_connection_for_job(WORKSPACE_A, CONNECTION_A, 1) is None
-    )
+    assert await repository.get_usable_connection_for_job(WORKSPACE_A, CONNECTION_A, 1) is None
     await make_healthy(repository, CONNECTION_A)
 
     exact = await repository.get_usable_connection_for_job(WORKSPACE_A, CONNECTION_A, 1)
@@ -184,9 +182,7 @@ async def test_worker_lookup_requires_exact_current_healthy_revision(
         NOW + timedelta(seconds=2),
     )
     assert disabled is not None
-    assert (
-        await repository.get_usable_connection_for_job(WORKSPACE_A, CONNECTION_A, 1) is None
-    )
+    assert await repository.get_usable_connection_for_job(WORKSPACE_A, CONNECTION_A, 1) is None
 
 
 async def test_repository_persists_validation_rotation_tombstone_and_rewrap(

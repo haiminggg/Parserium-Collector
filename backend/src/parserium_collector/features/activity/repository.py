@@ -389,13 +389,17 @@ class PostgresActivityRepository:
         activity = self._activity_query(workspace_id)
         async with self._engine.connect() as connection:
             row = (
-                await connection.execute(
-                    select(activity).where(
-                        activity.c.job_type == job_type.value,
-                        activity.c.id == job_id,
+                (
+                    await connection.execute(
+                        select(activity).where(
+                            activity.c.job_type == job_type.value,
+                            activity.c.id == job_id,
+                        )
                     )
                 )
-            ).mappings().one_or_none()
+                .mappings()
+                .one_or_none()
+            )
         return None if row is None else self._record(row)
 
     async def soft_delete_activity(

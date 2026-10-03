@@ -94,9 +94,7 @@ class DiscoveryRepositoryTestDouble:
         self.provider_started = session_id
         return True
 
-    async def is_discovery_cancellation_requested(
-        self, session_id: UUID, worker_id: str
-    ) -> bool:
+    async def is_discovery_cancellation_requested(self, session_id: UUID, worker_id: str) -> bool:
         return self.cancellation_requested
 
     async def complete_discovery(
@@ -115,9 +113,7 @@ class DiscoveryRepositoryTestDouble:
         self.failure_code = code
         return True
 
-    async def cancel_discovery(
-        self, session_id: UUID, worker_id: str, now: datetime
-    ) -> bool:
+    async def cancel_discovery(self, session_id: UUID, worker_id: str, now: datetime) -> bool:
         self.cancelled = True
         return True
 

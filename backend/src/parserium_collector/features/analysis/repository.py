@@ -1286,22 +1286,22 @@ class PostgresAnalysisRepository:
             cache_reusable_until = min(now + timedelta(minutes=15), retained_until)
             completed = (
                 await connection.execute(
-                update(discovery_analysis_sessions)
-                .where(
-                    discovery_analysis_sessions.c.id == session_id,
-                    discovery_analysis_sessions.c.status == AnalysisSessionStatus.RUNNING.value,
-                    discovery_analysis_sessions.c.job_stage == "analyzing",
-                    discovery_analysis_sessions.c.cancellation_requested.is_(False),
-                )
-                .values(
-                    status=AnalysisSessionStatus.COMPLETED.value,
-                    job_stage="completed",
-                    cache_reusable_until=cache_reusable_until,
-                    expires_at=retained_until,
-                    updated_at=now,
-                    completed_at=now,
-                )
-                .returning(discovery_analysis_sessions.c.id)
+                    update(discovery_analysis_sessions)
+                    .where(
+                        discovery_analysis_sessions.c.id == session_id,
+                        discovery_analysis_sessions.c.status == AnalysisSessionStatus.RUNNING.value,
+                        discovery_analysis_sessions.c.job_stage == "analyzing",
+                        discovery_analysis_sessions.c.cancellation_requested.is_(False),
+                    )
+                    .values(
+                        status=AnalysisSessionStatus.COMPLETED.value,
+                        job_stage="completed",
+                        cache_reusable_until=cache_reusable_until,
+                        expires_at=retained_until,
+                        updated_at=now,
+                        completed_at=now,
+                    )
+                    .returning(discovery_analysis_sessions.c.id)
                 )
             ).scalar_one_or_none()
             if completed is not None:
@@ -1316,11 +1316,8 @@ class PostgresAnalysisRepository:
                 await connection.execute(
                     update(artifact_references)
                     .where(
-                        artifact_references.c.candidate_analysis_id.in_(
-                            session_candidate_ids
-                        ),
-                        artifact_references.c.lifecycle
-                        == ArtifactLifecycle.TEMPORARY.value,
+                        artifact_references.c.candidate_analysis_id.in_(session_candidate_ids),
+                        artifact_references.c.lifecycle == ArtifactLifecycle.TEMPORARY.value,
                         artifact_references.c.removed_at.is_(None),
                     )
                     .values(expires_at=retained_until)

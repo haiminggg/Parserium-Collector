@@ -350,13 +350,17 @@ async def test_retry_requires_matching_reconstructable_failed_or_cancelled_paren
     assert retried.session.creation_reason is DiscoveryCreationReason.RETRY
     async with database_engine.connect() as connection:
         link = (
-            await connection.execute(
-                select(discovery_job_links).where(
-                    discovery_job_links.c.child_session_id == retried.session.id,
-                    discovery_job_links.c.workspace_id == WORKSPACE_A,
+            (
+                await connection.execute(
+                    select(discovery_job_links).where(
+                        discovery_job_links.c.child_session_id == retried.session.id,
+                        discovery_job_links.c.workspace_id == WORKSPACE_A,
+                    )
                 )
             )
-        ).mappings().one()
+            .mappings()
+            .one()
+        )
     assert link.parent_session_id == original.session.id
     assert link.reason == "retry"
 
@@ -531,13 +535,17 @@ async def test_conflict_restarts_when_winner_becomes_terminal_before_recovery(
     assert all(result.disposition is SubmissionDisposition.CREATED for result in results)
     async with database_engine.connect() as connection:
         states = (
-            await connection.execute(
-                select(discovery_analysis_sessions.c.status).where(
-                    discovery_analysis_sessions.c.workspace_id == WORKSPACE_A,
-                    discovery_analysis_sessions.c.request_fingerprint == FINGERPRINT,
+            (
+                await connection.execute(
+                    select(discovery_analysis_sessions.c.status).where(
+                        discovery_analysis_sessions.c.workspace_id == WORKSPACE_A,
+                        discovery_analysis_sessions.c.request_fingerprint == FINGERPRINT,
+                    )
                 )
             )
-        ).scalars().all()
+            .scalars()
+            .all()
+        )
     assert sorted(states) == ["cancelled", "queued"]
 
 
@@ -585,12 +593,16 @@ async def test_audit_metadata_is_safe_and_policy_updates_are_scoped(
     assert (await repository.get_policy(WORKSPACE_B)).concurrency_limit == 1
     async with database_engine.connect() as connection:
         events = (
-            await connection.execute(
-                select(discovery_job_events).where(
-                    discovery_job_events.c.workspace_id == WORKSPACE_A
+            (
+                await connection.execute(
+                    select(discovery_job_events).where(
+                        discovery_job_events.c.workspace_id == WORKSPACE_A
+                    )
                 )
             )
-        ).mappings().all()
+            .mappings()
+            .all()
+        )
     for event in events:
         if event.event_type == "concurrency_updated":
             assert event.safe_metadata == {"old": 1, "new": 5}
@@ -649,26 +661,38 @@ async def test_discovery_claim_marker_and_completion_are_atomic(
 
     async with database_engine.connect() as connection:
         session = (
-            await connection.execute(
-                select(discovery_analysis_sessions).where(
-                    discovery_analysis_sessions.c.id == claim.session.id
+            (
+                await connection.execute(
+                    select(discovery_analysis_sessions).where(
+                        discovery_analysis_sessions.c.id == claim.session.id
+                    )
                 )
             )
-        ).mappings().one()
+            .mappings()
+            .one()
+        )
         candidates = (
-            await connection.execute(
-                select(candidate_analyses).where(
-                    candidate_analyses.c.session_id == claim.session.id
+            (
+                await connection.execute(
+                    select(candidate_analyses).where(
+                        candidate_analyses.c.session_id == claim.session.id
+                    )
                 )
             )
-        ).mappings().all()
+            .mappings()
+            .all()
+        )
         event_types = (
-            await connection.execute(
-                select(discovery_job_events.c.event_type)
-                .where(discovery_job_events.c.session_id == claim.session.id)
-                .order_by(discovery_job_events.c.created_at, discovery_job_events.c.id)
+            (
+                await connection.execute(
+                    select(discovery_job_events.c.event_type)
+                    .where(discovery_job_events.c.session_id == claim.session.id)
+                    .order_by(discovery_job_events.c.created_at, discovery_job_events.c.id)
+                )
             )
-        ).scalars().all()
+            .scalars()
+            .all()
+        )
 
     assert session.status == "running"
     assert session.job_stage == "analyzing"
@@ -703,12 +727,16 @@ async def test_database_rejects_invalid_lifecycle_ownership_and_duplicate_active
             )
     async with database_engine.connect() as connection:
         original = (
-            await connection.execute(
-                select(discovery_analysis_sessions).where(
-                    discovery_analysis_sessions.c.id == created.session.id
+            (
+                await connection.execute(
+                    select(discovery_analysis_sessions).where(
+                        discovery_analysis_sessions.c.id == created.session.id
+                    )
                 )
             )
-        ).mappings().one()
+            .mappings()
+            .one()
+        )
     duplicate = dict(original)
     duplicate["id"] = uuid4()
     duplicate["created_at"] = NOW + timedelta(seconds=1)

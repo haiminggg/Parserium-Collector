@@ -119,9 +119,7 @@ class DiscoveryJobRepository(Protocol):
         self, session_id: UUID, worker_id: str, code: str, now: datetime
     ) -> bool: ...
 
-    async def cancel_discovery(
-        self, session_id: UUID, worker_id: str, now: datetime
-    ) -> bool: ...
+    async def cancel_discovery(self, session_id: UUID, worker_id: str, now: datetime) -> bool: ...
 
     async def recover_uncertain_discovery(self, now: datetime) -> bool: ...
 
@@ -661,11 +659,7 @@ class PostgresDiscoveryJobRepository:
                 await connection.execute(insert(candidate_analyses).values(candidate_values))
             terminal = not candidate_values
             retained_until = now + (claim.session.expires_at - claim.session.created_at)
-            cache_deadline = (
-                min(now + _CACHE_REUSE_DURATION, retained_until)
-                if terminal
-                else None
-            )
+            cache_deadline = min(now + _CACHE_REUSE_DURATION, retained_until) if terminal else None
             await connection.execute(
                 update(discovery_analysis_sessions)
                 .where(
