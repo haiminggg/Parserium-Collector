@@ -190,6 +190,7 @@ def validate_verification(document: dict[str, Any]) -> None:
         fail("test-firecrawl must drop all capabilities")
     if set(firecrawl.get("cap_add") or []) != {
         "CHOWN",
+        "DAC_READ_SEARCH",
         "SETGID",
         "SETPCAP",
         "SETUID",
@@ -638,7 +639,7 @@ def validate_hosted_local(document: dict[str, Any], state_root: Path) -> None:
         fail("hosted-local minio root credentials must not appear in the environment")
 
     expected_entrypoint = ["/usr/local/bin/parserium-entrypoint"]
-    expected_caps = {"CHOWN", "SETGID", "SETPCAP", "SETUID"}
+    expected_caps = {"CHOWN", "DAC_READ_SEARCH", "SETGID", "SETPCAP", "SETUID"}
     for name in ("api", "migrate", "storage-bootstrap", "worker"):
         service = services[name]
         if service.get("user") != "0:0" or service.get("entrypoint") != expected_entrypoint:
@@ -744,7 +745,7 @@ def main() -> int:
         if "no-new-privileges:true" not in (service.get("security_opt") or []):
             fail(f"{name} does not set no-new-privileges")
 
-    secret_handoff_caps = {"CHOWN", "SETGID", "SETPCAP", "SETUID"}
+    secret_handoff_caps = {"CHOWN", "DAC_READ_SEARCH", "SETGID", "SETPCAP", "SETUID"}
     for name in ("api", "migrate", "worker"):
         service = services[name]
         if service.get("user") != "0:0":
