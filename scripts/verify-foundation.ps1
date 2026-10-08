@@ -249,7 +249,9 @@ try {
     & './tests/integration/test_hosted_local_commands.ps1'
   } else {
     & sh './scripts/bootstrap-local.sh'
+    if ($LASTEXITCODE -ne 0) { throw 'Local bootstrap failed.' }
     & sh './tests/integration/test_bootstrap_config.sh'
+    if ($LASTEXITCODE -ne 0) { throw 'Bootstrap configuration test failed.' }
   }
   $python = if (Get-Command python -ErrorAction SilentlyContinue) { 'python' } else { 'python3' }
   $imageLock = Get-Content -LiteralPath 'deploy/images.lock.json' -Raw | ConvertFrom-Json
@@ -316,6 +318,12 @@ try {
     --verification-config .local/verification-compose.json
 
   New-Item -ItemType Directory -Path $verificationExportRoot -Force | Out-Null
+  if ($IsLinux) {
+    # The worker writes exports as user 10001. Docker Desktop maps ownership, a Linux host does not.
+    docker run --rm --user 0:0 --entrypoint chown --volume "${verificationExportRoot}:/exports" `
+      parserium-collector:dev 10001:10001 /exports
+    if ($LASTEXITCODE -ne 0) { throw 'Could not prepare the verification export directory.' }
+  }
   $env:PARSERIUM_EXPORT_ROOT = $verificationExportRoot.Replace('\', '/')
   $env:PARSERIUM_VERIFICATION_PORT = [string]$verificationPort
   if (
@@ -544,6 +552,9 @@ try {
         [Microsoft.VisualBasic.FileIO.RecycleOption]::SendToRecycleBin
       )
     } else {
+      # Exports belong to user 10001 in private folders, so empty the directory as root first.
+      docker run --rm --user 0:0 --entrypoint sh --volume "${verificationExportRoot}:/exports" `
+        parserium-collector:dev -c 'find /exports -mindepth 1 -delete'
       Remove-Item -LiteralPath $verificationExportRoot -Recurse -Force
     }
   }

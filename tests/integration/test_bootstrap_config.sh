@@ -20,7 +20,7 @@ trap cleanup EXIT INT TERM
 mkdir -p "$TEST_ROOT"
 
 default_local="$TEST_ROOT/default"
-"$REPOSITORY/scripts/bootstrap-local.sh" "$default_local" >/dev/null
+sh "$REPOSITORY/scripts/bootstrap-local.sh" "$default_local" >/dev/null
 test -d "$default_local/exports"
 test -f "$default_local/config.env"
 grep -Fqx "PARSERIUM_EXPORT_ROOT=$default_local/exports" "$default_local/config.env"

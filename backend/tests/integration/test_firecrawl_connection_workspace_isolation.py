@@ -152,7 +152,9 @@ async def test_analysis_snapshot_is_tenant_safe_and_contains_no_connection_secre
     assert session.firecrawl_connection_id == CONNECTION_A
     assert session.firecrawl_connection_name_snapshot == "Workspace A only"
     assert session.firecrawl_connection_type_snapshot is ConnectionType.CLOUD
-    assert "credential" not in str(session).lower()
+    # The snapshot may name the credential revision, but must never carry the secret itself.
+    assert "test-only-credential" not in str(session)
+    assert "envelope" not in str(session).lower()
     with pytest.raises(IntegrityError):
         await analysis.create_analysis_session(
             SCOPE_B,
