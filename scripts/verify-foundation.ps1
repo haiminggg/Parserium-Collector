@@ -281,7 +281,10 @@ try {
     Remove-Item -LiteralPath $verificationPkiRoot -Recurse -Force
   }
   New-Item -ItemType Directory -Path $verificationPkiRoot | Out-Null
-  docker run --rm --volume $mount --workdir /workspace `
+  # The test image runs as root. On a Linux host its 0600 files would then be unreadable by this
+  # script, so generate them as the calling user. Docker Desktop maps ownership on its own.
+  $hostUser = if ($IsLinux) { @('--user', ('{0}:{1}' -f (id -u), (id -g))) } else { @() }
+  docker run --rm @hostUser --volume $mount --workdir /workspace `
     --entrypoint /app/.venv/bin/python `
     parserium-collector-backend-test:verify `
     tests/fixtures/generate_verification_pki.py `
