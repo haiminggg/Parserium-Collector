@@ -1,0 +1,3485 @@
+.cloud-app {
+  min-width: 0;
+  min-height: 100dvh;
+}
+
+.cloud-settings-button,
+.cloud-sign-out {
+  min-height: 2.25rem;
+  padding-inline: 0.35rem;
+  color: var(--parserium-text-muted);
+  font-size: 0.76rem;
+  font-weight: 520;
+  background: transparent;
+  border-radius: 2px;
+}
+
+.cloud-settings-button:hover,
+.cloud-sign-out:hover {
+  color: var(--parserium-accent);
+  background: transparent;
+}
+
+.cloud-account {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.cloud-workspace-select {
+  width: clamp(8rem, 12vw, 11rem);
+}
+
+.cloud-workspace-select input {
+  min-height: 2.25rem;
+  padding-inline: 0.25rem 1.8rem;
+  color: var(--parserium-text);
+  font-size: 0.76rem;
+  font-weight: 620;
+  background: transparent;
+  border-color: transparent;
+  border-radius: 2px;
+}
+
+.cloud-workspace-select input:hover,
+.cloud-workspace-select input:focus {
+  border-color: var(--parserium-rule);
+}
+
+.cloud-hero-copy {
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.cloud-hero-copy .collect-description {
+  color: var(--parserium-text-muted);
+  font-size: 0.82rem;
+}
+
+.cloud-firecrawl-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0 0.65rem;
+  color: var(--parserium-text);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  border: 0;
+}
+
+.cloud-firecrawl-selector[data-ready] {
+  color: var(--parserium-success);
+}
+
+.cloud-firecrawl-selector span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cloud-compact-select {
+  display: flex;
+  flex: 0 1 10rem;
+  min-width: 0;
+  padding: 0;
+}
+
+.cloud-compact-select select {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 1.9rem 0 0.55rem;
+  color: var(--parserium-text);
+  font-size: 0.8rem;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.cloud-page-alerts {
+  display: grid;
+  gap: 0.5rem;
+  flex: 0 0 auto;
+  margin-top: 0.85rem;
+}
+
+.cloud-page-alerts:empty {
+  display: none;
+}
+
+.cloud-inline-help {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  min-height: 2.65rem;
+  gap: 1rem;
+  padding: 0.35rem 0.85rem;
+  margin-top: 0.7rem;
+  color: var(--parserium-text-muted);
+  font-size: 0.72rem;
+  background: color-mix(in srgb, var(--parserium-surface-muted) 62%, transparent);
+  border: 1px solid var(--parserium-border-soft);
+}
+
+.cloud-inline-help .mantine-Button-root {
+  flex: 0 0 auto;
+  color: var(--parserium-accent);
+}
+
+.cloud-discovery-results {
+  grid-template-rows: 3.55rem minmax(0, 1fr);
+}
+
+.cloud-result-grid {
+  grid-template-columns: 2.45rem minmax(16rem, 1.4fr) minmax(8rem, 0.7fr) 5rem 5.5rem;
+  min-width: 43rem;
+}
+
+.cloud-result-document {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.16rem;
+  padding-block: 0.72rem;
+}
+
+.cloud-result-description,
+.cloud-result-feedback {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  color: var(--parserium-text-muted);
+  font-size: 0.67rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cloud-result-feedback {
+  color: var(--parserium-error);
+}
+
+.cloud-result-action {
+  color: var(--parserium-accent-dark);
+  border-radius: 2px;
+}
+
+.cloud-result-action-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.cloud-overflow-marquee,
+.cloud-overflow-marquee-viewport {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cloud-overflow-marquee-content {
+  display: inline-block;
+  min-width: max-content;
+  transform: translateX(0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cloud-overflow-marquee[data-overflow="true"]:hover .cloud-overflow-marquee-content,
+  .result-title:focus-visible .cloud-overflow-marquee[data-overflow="true"] .cloud-overflow-marquee-content {
+    animation: cloud-overflow-pan var(--cloud-overflow-duration) ease-in-out infinite;
+    will-change: transform;
+  }
+}
+
+@keyframes cloud-overflow-pan {
+  0% {
+    transform: translateX(0);
+  }
+
+  45%, 58% {
+    transform: translateX(calc(-1 * var(--cloud-overflow-distance)));
+  }
+
+  90%, 100% {
+    transform: translateX(0);
+  }
+}
+
+.cloud-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 16rem;
+  padding: 2rem 1.5rem;
+  color: var(--parserium-text-muted);
+  text-align: center;
+}
+
+.cloud-empty h3 {
+  margin: 0.9rem 0 0.35rem;
+  color: var(--parserium-text);
+  font-size: 0.92rem;
+  font-weight: 620;
+}
+
+.cloud-empty p {
+  max-width: 25rem;
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.65;
+}
+
+.cloud-collect-rail {
+  display: grid;
+  grid-area: queue;
+  align-self: start;
+  gap: 1rem;
+  min-width: 0;
+  margin: 14px 0 16px;
+}
+
+.cloud-collect-rail .cloud-collection-panel {
+  grid-area: auto;
+  width: 100%;
+  margin: 0;
+  overflow: hidden auto;
+}
+
+.cloud-collection-copy,
+.cloud-rail-foot {
+  color: var(--parserium-text-muted);
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.cloud-collection-copy {
+  margin: -0.3rem 0 1rem;
+}
+
+.cloud-selected-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 15rem;
+  padding: 0.9rem 0 0.9rem 1.1rem;
+  margin: 0 0 1rem;
+  overflow-y: auto;
+  color: var(--parserium-text);
+  font-size: 0.73rem;
+  line-height: 1.5;
+  border-top: 1px solid var(--parserium-border-soft);
+  border-bottom: 1px solid var(--parserium-border-soft);
+}
+
+.cloud-selected-list li + li {
+  margin-top: 0.55rem;
+}
+
+.cloud-collect-button {
+  flex: 0 0 auto;
+  min-height: 2.65rem;
+  color: white;
+  background: var(--parserium-accent);
+  border-radius: 2px;
+}
+
+.cloud-collect-button:hover:not(:disabled) {
+  background: var(--parserium-accent-dark);
+}
+
+.cloud-rail-foot {
+  margin: 0.75rem 0 0;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.64rem;
+}
+
+.cloud-text-button {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 0.45rem;
+  min-height: 2rem;
+  margin-top: 0.45rem;
+  color: var(--parserium-accent);
+  font-size: 0.72rem;
+}
+
+.cloud-activity-snapshot {
+  min-width: 0;
+  padding: 1.25rem 1.2rem 1rem;
+  color: var(--parserium-text);
+  background: var(--parserium-surface);
+  border: 1px solid var(--parserium-rule);
+  border-radius: 0.85rem;
+  box-shadow: 3px 5px 14px #dad4c626;
+}
+
+.cloud-activity-snapshot-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.95rem;
+  border-bottom: 1px solid var(--parserium-border-soft);
+}
+
+.cloud-activity-snapshot-heading h2 {
+  margin: 0.2rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.cloud-activity-snapshot-count {
+  color: var(--parserium-text-muted);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cloud-activity-snapshot-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 9.5rem;
+  padding: 1.2rem 0.5rem;
+  color: var(--parserium-text-muted);
+  text-align: center;
+}
+
+.cloud-activity-snapshot-empty p {
+  margin: 0.65rem 0 0;
+  color: var(--parserium-text);
+  font-size: 0.75rem;
+  font-weight: 620;
+}
+
+.cloud-activity-snapshot-empty small {
+  margin-top: 0.2rem;
+  font-size: 0.66rem;
+}
+
+.cloud-activity-snapshot-timeline {
+  position: relative;
+  padding-top: 0.35rem;
+}
+
+.cloud-activity-snapshot-line {
+  position: absolute;
+  top: 1.2rem;
+  bottom: 1.1rem;
+  left: 0.33rem;
+  width: 1px;
+  background: linear-gradient(180deg, var(--parserium-accent) 0%, var(--parserium-rule) 76%, transparent 100%);
+}
+
+.cloud-activity-snapshot-timeline ol {
+  position: relative;
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cloud-activity-snapshot-timeline li {
+  position: relative;
+  min-width: 0;
+  padding-left: 1.65rem;
+}
+
+.cloud-activity-snapshot-marker {
+  position: absolute;
+  top: 1.05rem;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+.cloud-activity-snapshot-marker-core,
+.cloud-activity-snapshot-marker-pulse {
+  position: absolute;
+  width: 0.56rem;
+  height: 0.56rem;
+  background: var(--parserium-text-muted);
+  border: 2px solid var(--parserium-surface);
+  border-radius: 50%;
+}
+
+.cloud-activity-snapshot-marker-pulse {
+  width: 0.9rem;
+  height: 0.9rem;
+  background: transparent;
+  border: 1px solid var(--parserium-accent);
+  animation: cloud-activity-snapshot-pulse 2.3s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.cloud-activity-snapshot-timeline li[data-state="active"] .cloud-activity-snapshot-marker-core {
+  background: var(--parserium-accent);
+}
+
+.cloud-activity-snapshot-timeline li[data-state="completed"] .cloud-activity-snapshot-marker-core {
+  background: var(--parserium-success);
+}
+
+.cloud-activity-snapshot-timeline li[data-state="failed"] .cloud-activity-snapshot-marker-core {
+  background: var(--parserium-error);
+}
+
+.cloud-activity-snapshot-entry {
+  display: grid;
+  gap: 0.22rem;
+  min-width: 0;
+  padding: 0.75rem 0 0.85rem;
+  border-bottom: 1px solid var(--parserium-border-soft);
+}
+
+.cloud-activity-snapshot-entry > strong {
+  overflow: hidden;
+  font-size: 0.78rem;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cloud-activity-snapshot-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.cloud-activity-snapshot-meta time,
+.cloud-activity-snapshot-entry > span:last-child {
+  color: var(--parserium-text-muted);
+  font-size: 0.62rem;
+}
+
+.cloud-activity-snapshot-meta time {
+  overflow: hidden;
+  font-family: var(--mantine-font-family-monospace);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cloud-activity-snapshot-entry > span:last-child {
+  line-height: 1.5;
+}
+
+.cloud-activity-snapshot-link {
+  margin-top: 0.75rem;
+}
+
+@keyframes cloud-activity-snapshot-pulse {
+  0%, 100% {
+    opacity: 0.62;
+    transform: scale(0.82);
+  }
+
+  50% {
+    opacity: 0.12;
+    transform: scale(1.38);
+  }
+}
+
+.cloud-documents-utility {
+  grid-template-columns: minmax(13rem, 1fr) auto auto;
+}
+
+.cloud-documents-upload {
+  min-height: 2.55rem;
+  color: var(--parserium-text);
+  background: transparent;
+  border-color: var(--parserium-rule);
+  border-radius: 2px;
+}
+
+.cloud-documents-upload:hover {
+  color: var(--parserium-accent);
+  background: var(--parserium-accent-wash);
+}
+
+.cloud-documents-page .cloud-page-alerts,
+.cloud-activity-page .cloud-page-alerts {
+  margin: 0 0 1rem;
+}
+
+.cloud-library-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--parserium-rule-strong);
+  border-bottom: 1px solid var(--parserium-rule);
+}
+
+.cloud-library-toolbar .mantine-TextInput-root {
+  width: min(24rem, 72%);
+}
+
+.cloud-library-toolbar input,
+.cloud-settings input {
+  color: var(--parserium-text);
+  background: var(--parserium-surface);
+  border-color: var(--parserium-rule);
+  border-radius: 2px;
+}
+
+.cloud-documents-table {
+  min-width: 58rem;
+}
+
+.cloud-documents-table th:nth-child(1) { width: 38%; }
+.cloud-documents-table th:nth-child(2) { width: 12%; }
+.cloud-documents-table th:nth-child(3) { width: 10%; }
+.cloud-documents-table th:nth-child(4) { width: 15%; }
+.cloud-documents-table th:nth-child(5) { width: 25%; }
+
+.cloud-document-title {
+  width: 100%;
+  padding: 0;
+  color: var(--parserium-text);
+  text-align: left;
+  background: transparent;
+  border: 0;
+}
+
+.cloud-document-title:hover {
+  color: var(--parserium-accent);
+}
+
+.cloud-activity {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 1.25rem;
+  margin-top: 1.4rem;
+}
+
+.cloud-activity > section {
+  min-width: 0;
+  overflow: hidden;
+  border-bottom: 1px solid var(--parserium-rule);
+}
+
+.cloud-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.6rem;
+  gap: 1rem;
+  padding: 0 0.7rem;
+  border-bottom: 1px solid var(--parserium-rule);
+}
+
+.cloud-section-heading h2 {
+  margin: 0;
+  color: var(--parserium-text);
+  font-size: 0.92rem;
+  font-weight: 620;
+}
+
+.cloud-history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+  padding: 0.9rem 0.7rem;
+  color: var(--parserium-text);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--parserium-border-soft);
+}
+
+.cloud-history-row:hover {
+  color: var(--parserium-accent);
+  background: var(--parserium-accent-wash);
+}
+
+.cloud-history-row strong,
+.cloud-history-row small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cloud-history-row strong {
+  font-size: 0.8rem;
+  font-weight: 620;
+}
+
+.cloud-history-row small {
+  margin-top: 0.25rem;
+  color: var(--parserium-text-muted);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.64rem;
+}
+
+.cloud-history-row > span:last-child {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 0.45rem;
+  font-size: 0.7rem;
+}
+
+.cloud-subtle,
+.cloud-settings > p,
+.cloud-modal-note {
+  color: var(--parserium-text-muted);
+  font-size: 0.72rem;
+  line-height: 1.7;
+}
+
+.cloud-activity > section > .cloud-subtle {
+  padding: 0 0.7rem 0.8rem;
+}
+
+.cloud-global-alert {
+  position: fixed;
+  z-index: 400;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  max-width: min(28rem, 90vw);
+}
+
+.cloud-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100dvh;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.cloud-center .auth-brand-mark {
+  width: 2.8rem;
+  height: 3.1rem;
+}
+
+.cloud-center p {
+  color: var(--parserium-text-muted);
+}
+
+.cloud-dropzone {
+  padding: 2.6rem 1.25rem;
+  color: var(--parserium-text);
+  text-align: center;
+  background: var(--parserium-canvas);
+  border: 1px dashed var(--parserium-rule-strong);
+  border-radius: 2px;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.cloud-dropzone.is-dragging {
+  background: var(--parserium-accent-wash);
+  border-color: var(--parserium-accent);
+}
+
+.cloud-dropzone h3 {
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.cloud-dropzone p {
+  color: var(--parserium-text-muted);
+  font-size: 0.72rem;
+}
+
+.cloud-eyebrow {
+  color: var(--parserium-text-muted);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.cloud-settings h2,
+.cloud-inspector h2 {
+  overflow-wrap: anywhere;
+  color: var(--parserium-text);
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+}
+
+.cloud-settings form {
+  margin: 1.4rem 0;
+}
+
+.cloud-settings > a {
+  display: block;
+  margin: 1.4rem 0;
+  font-size: 0.76rem;
+}
+
+.cloud-settings-limits {
+  padding-top: 1.35rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--parserium-rule);
+}
+
+.cloud-settings-limits h3 {
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.cloud-settings-limits p {
+  color: var(--parserium-text-muted);
+  font-size: 0.7rem;
+  line-height: 1.75;
+}
+
+.cloud-inspector .mantine-Group-root > span:not(.mantine-Badge-root) {
+  color: var(--parserium-text-muted);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.68rem;
+}
+
+.cloud-inspector-source {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.76rem;
+}
+
+.cloud-output-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+  border-bottom: 1px solid var(--parserium-rule);
+}
+
+.cloud-output-heading h3 {
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.cloud-markdown {
+  max-height: 65dvh;
+  padding: 1.25rem;
+  overflow: auto;
+  color: var(--parserium-text);
+  font: 0.72rem/1.75 var(--mantine-font-family-monospace);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--parserium-canvas);
+  border: 1px solid var(--parserium-rule);
+}
+
+.cloud-modal,
+.cloud-modal-header,
+.cloud-modal-body {
+  color: var(--parserium-text);
+  background: var(--parserium-surface);
+}
+
+.cloud-modal {
+  border: 1px solid var(--parserium-rule);
+  border-radius: 3px;
+  box-shadow: 0 1.5rem 4rem rgba(28, 25, 20, 0.14);
+}
+
+.cloud-modal-header {
+  min-height: 3.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--parserium-rule);
+}
+
+.cloud-modal-body {
+  padding: 0.75rem 1.5rem 1.5rem;
+}
+
+@media (max-width: 63.99em) {
+  .cloud-activity {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cloud-collect-rail .cloud-collection-panel {
+    min-height: 24rem;
+  }
+
+  .cloud-documents-table th:nth-child(4),
+  .cloud-documents-table td:nth-child(4),
+  .cloud-documents-table th:nth-child(5),
+  .cloud-documents-table td:nth-child(5) {
+    display: table-cell;
+  }
+
+  .cloud-documents-table th:nth-child(1) { width: 38%; }
+  .cloud-documents-table th:nth-child(2) { width: 12%; }
+  .cloud-documents-table th:nth-child(3) { width: 10%; }
+  .cloud-documents-table th:nth-child(4) { width: 15%; }
+  .cloud-documents-table th:nth-child(5) { width: 25%; }
+
+  .cloud-documents-page .activity-table-scroll {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 47.99em) {
+  .cloud-workspace-select {
+    width: 6.7rem;
+  }
+
+  .cloud-workspace-select input,
+  .cloud-sign-out {
+    font-size: 0.68rem;
+  }
+
+  .cloud-settings-button {
+    width: 2rem;
+    padding: 0;
+  }
+
+  .cloud-settings-button .mantine-Button-label {
+    display: none;
+  }
+
+  .cloud-compact-select {
+    flex: 1 1 calc(50% - 0.3rem);
+  }
+
+  .cloud-inline-help {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-block: 0.7rem;
+  }
+
+  .cloud-documents-utility {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .cloud-documents-upload {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .cloud-documents-utility .documents-utility-open {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .cloud-library-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cloud-library-toolbar .mantine-TextInput-root {
+    width: 100%;
+  }
+
+  .cloud-activity-page .activity-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cloud-history-row {
+    padding-inline: 0.4rem;
+  }
+}
+
+@media (max-width: 25em) {
+  .cloud-workspace-select {
+    width: 5.6rem;
+  }
+
+  .cloud-sign-out {
+    padding-inline: 0.15rem;
+  }
+}
+
+/* Editorial cloud destinations */
+.cloud-documents-page,
+.cloud-activity-page {
+  height: auto;
+  min-height: calc(100dvh - var(--app-shell-header-height));
+  overflow: visible;
+  padding-top: clamp(2rem, 3.5vw, 3.75rem);
+}
+
+.cloud-editorial-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 2rem;
+  padding-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+}
+
+.cloud-editorial-heading h1 {
+  max-width: 12ch;
+  margin: 0.45rem 0 0;
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-weight: 630;
+  letter-spacing: -0.072em;
+  line-height: 0.9;
+  text-wrap: balance;
+}
+
+.cloud-editorial-heading .activity-introduction {
+  max-width: 42rem;
+  margin-top: 0.65rem;
+  font-size: clamp(0.92rem, 1.35vw, 1.12rem);
+  line-height: 1.6;
+}
+
+.cloud-editorial-heading .connections-primary-action {
+  min-width: 11rem;
+  min-height: 3rem;
+  margin-bottom: 0.2rem;
+  border-radius: 0.55rem;
+}
+
+.cloud-documents-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.9rem;
+  min-height: 0;
+  border: 0;
+}
+
+.cloud-document-manifest {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.55fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3.5rem);
+  min-width: 0;
+  padding: 1.2rem clamp(1.25rem, 2.5vw, 2.25rem);
+  background: color-mix(in srgb, var(--parserium-surface-muted) 68%, transparent);
+  border-radius: 0.75rem;
+  box-shadow: 0 1.2rem 3rem color-mix(in srgb, var(--parserium-text) 5%, transparent);
+}
+
+.cloud-overview-copy h2 {
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  font-weight: 620;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.cloud-overview-copy > p {
+  margin: 0.5rem 0 0;
+  color: var(--parserium-text-muted);
+  font-size: 0.78rem;
+}
+
+.cloud-editorial-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.5rem, 1.5vw, 1.25rem);
+  margin-top: 0;
+  border: 0;
+}
+
+.cloud-editorial-metrics > div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.75rem 0.75rem 0.75rem 0;
+}
+
+.cloud-editorial-metrics strong {
+  color: var(--parserium-text);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: clamp(1.45rem, 2.4vw, 2.3rem);
+  font-weight: 540;
+  line-height: 1;
+}
+
+.cloud-editorial-metrics [data-state="active"] strong {
+  color: var(--parserium-accent);
+}
+
+.cloud-editorial-metrics [data-state="failed"] strong {
+  color: var(--parserium-error);
+}
+
+.cloud-editorial-metrics span {
+  overflow: hidden;
+  color: var(--parserium-text-muted);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.045em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cloud-library {
+  margin-top: clamp(1.35rem, 2.5vw, 2.25rem);
+}
+
+.cloud-library-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  min-height: 4rem;
+  padding-bottom: 0.75rem;
+  border: 0;
+}
+
+.cloud-library-heading h2,
+.cloud-timeline-heading h2,
+.cloud-search-ledger .cloud-section-heading h2 {
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.25rem, 2vw, 1.8rem);
+  font-weight: 610;
+  letter-spacing: -0.035em;
+}
+
+.cloud-library-heading .cloud-library-toolbar {
+  align-items: center;
+  flex: 0 1 32rem;
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+}
+
+.cloud-library-heading .cloud-library-toolbar .mantine-TextInput-root {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+
+.cloud-library-heading .cloud-library-toolbar input {
+  min-height: 2.7rem;
+  padding-left: 2.5rem;
+  background: color-mix(in srgb, var(--parserium-surface) 86%, transparent);
+  border-color: var(--parserium-rule);
+  border-radius: 0.45rem;
+}
+
+.cloud-library-ledger {
+  margin-top: 0;
+  padding: 0 0.75rem;
+  background: color-mix(in srgb, var(--parserium-surface) 78%, transparent);
+  border: 0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1rem 3rem color-mix(in srgb, var(--parserium-text) 4%, transparent);
+}
+
+.cloud-library-ledger .activity-table thead {
+  border-bottom: 1px solid var(--parserium-border-soft);
+}
+
+.cloud-library-ledger .activity-row td {
+  border-top: 0;
+}
+
+.cloud-library-ledger .activity-row {
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.cloud-library-ledger .activity-row:hover {
+  background: color-mix(in srgb, var(--parserium-accent-wash) 52%, transparent);
+  transform: translateX(0.2rem);
+}
+
+.cloud-library .activity-pagination {
+  min-height: 3.25rem;
+  border-top: 0;
+}
+
+.cloud-activity-summary {
+  gap: 0.35rem;
+  margin-bottom: clamp(1.35rem, 2.5vw, 2.25rem);
+  padding: 0.55rem;
+  background: color-mix(in srgb, var(--parserium-surface-muted) 68%, transparent);
+  border: 0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1.2rem 3rem color-mix(in srgb, var(--parserium-text) 5%, transparent);
+}
+
+.cloud-activity-summary .activity-summary-item {
+  padding: 0.75rem 0.9rem;
+  border: 0;
+  border-radius: 0.45rem;
+}
+
+.cloud-activity-summary .activity-summary-item[data-state="active"] {
+  background: color-mix(in srgb, var(--parserium-accent-wash) 58%, transparent);
+}
+
+.cloud-activity-editorial {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(19rem, 0.7fr);
+  align-items: start;
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+}
+
+.cloud-timeline-panel,
+.cloud-search-ledger {
+  min-width: 0;
+  margin-top: 0;
+  border: 0;
+}
+
+.cloud-timeline-heading,
+.cloud-search-ledger .cloud-section-heading {
+  min-height: 4.35rem;
+  padding: 0;
+  border: 0;
+}
+
+.cloud-timeline-wrap {
+  position: relative;
+  padding: 0.45rem 0 0;
+}
+
+.cloud-timeline-line {
+  position: absolute;
+  top: 0.45rem;
+  bottom: 0;
+  left: 1.05rem;
+  width: 1px;
+  background: linear-gradient(180deg, var(--parserium-accent) 0%, var(--parserium-rule) 72%, transparent 100%);
+}
+
+.cloud-timeline-list {
+  position: relative;
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cloud-timeline-event {
+  position: relative;
+  min-width: 0;
+  padding-left: 3.2rem;
+}
+
+.cloud-timeline-marker {
+  position: absolute;
+  top: 1.55rem;
+  left: 0.7rem;
+  display: grid;
+  place-items: center;
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.cloud-timeline-marker-core,
+.cloud-timeline-marker-pulse {
+  position: absolute;
+  width: 0.65rem;
+  height: 0.65rem;
+  background: var(--parserium-text-muted);
+  border: 2px solid var(--parserium-canvas);
+  border-radius: 50%;
+}
+
+.cloud-timeline-marker-pulse {
+  width: 1rem;
+  height: 1rem;
+  background: transparent;
+  border: 1px solid var(--parserium-accent);
+  will-change: transform, opacity;
+}
+
+.cloud-timeline-event[data-state="active"] .cloud-timeline-marker-core {
+  background: var(--parserium-accent);
+}
+
+.cloud-timeline-event[data-state="completed"] .cloud-timeline-marker-core {
+  background: var(--parserium-success);
+}
+
+.cloud-timeline-event[data-state="failed"] .cloud-timeline-marker-core {
+  background: var(--parserium-error);
+}
+
+.cloud-timeline-card {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 0.4rem;
+  padding: 1.05rem 1.15rem 1.15rem;
+  color: var(--parserium-text);
+  text-align: left;
+  background: color-mix(in srgb, var(--parserium-surface) 82%, transparent);
+  border: 0;
+  border-radius: 0.65rem 0.3rem 0.65rem 0.3rem;
+  box-shadow: 0 0.8rem 2.2rem color-mix(in srgb, var(--parserium-text) 4%, transparent);
+  transition: background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.cloud-timeline-card::after {
+  position: absolute;
+  top: 0.8rem;
+  bottom: 0.8rem;
+  left: 0;
+  width: 2px;
+  content: "";
+  background: var(--parserium-accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 220ms ease;
+}
+
+.cloud-timeline-card:hover::after,
+.cloud-timeline-card:focus-visible::after {
+  transform: scaleY(1);
+}
+
+.cloud-timeline-card:hover,
+.cloud-timeline-card:focus-visible {
+  background: color-mix(in srgb, var(--parserium-surface) 96%, transparent);
+  box-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--parserium-text) 7%, transparent);
+  transform: translateX(0.2rem);
+}
+
+.cloud-timeline-event[data-state="active"] .cloud-timeline-card {
+  background: color-mix(in srgb, var(--parserium-accent-wash) 36%, var(--parserium-surface));
+}
+
+.cloud-timeline-card > strong {
+  overflow: hidden;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cloud-timeline-meta,
+.cloud-timeline-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.cloud-timeline-meta > span:first-child,
+.cloud-timeline-description {
+  color: var(--parserium-text-muted);
+  font-size: 0.7rem;
+}
+
+.cloud-timeline-meta > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.cloud-timeline-meta > span:first-child b {
+  color: var(--parserium-accent-dark);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+}
+
+.cloud-timeline-action {
+  justify-content: flex-start;
+  margin-top: 0.25rem;
+  color: var(--parserium-accent-dark);
+  font-size: 0.7rem;
+  font-weight: 620;
+}
+
+.cloud-scope-note {
+  margin: 0;
+  padding: 0.8rem 0 1rem 3.2rem;
+  color: var(--parserium-text-muted);
+  font-size: 0.66rem;
+  line-height: 1.55;
+}
+
+.cloud-search-ledger {
+  padding: 0.3rem;
+  background: color-mix(in srgb, var(--parserium-surface-muted) 72%, transparent);
+  border-radius: 0.85rem 0.4rem 0.85rem 0.4rem;
+  box-shadow: 0 1.2rem 3rem color-mix(in srgb, var(--parserium-text) 5%, transparent);
+  overflow: hidden;
+}
+
+.cloud-search-ledger .cloud-history-row {
+  min-height: 4.5rem;
+  border: 0;
+  border-radius: 0.5rem;
+  transition: color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.cloud-search-ledger .cloud-history-row:hover,
+.cloud-search-ledger .cloud-history-row:focus-visible {
+  background: color-mix(in srgb, var(--parserium-surface) 88%, transparent);
+  transform: translateX(0.15rem);
+}
+
+.cloud-search-ledger .cloud-section-heading,
+.cloud-search-ledger .cloud-history-row,
+.cloud-search-ledger > .cloud-empty,
+.cloud-search-ledger > .mantine-Alert-root {
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+.cloud-search-ledger > .cloud-empty {
+  min-height: 13rem;
+}
+
+.cloud-search-row > span:first-child {
+  min-width: 0;
+}
+
+.cloud-search-record {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cloud-search-record > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.cloud-search-index {
+  color: var(--parserium-accent-dark);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.62rem;
+  font-weight: 650;
+}
+
+.cloud-search-row > span:last-child {
+  color: var(--parserium-accent-dark);
+}
+
+/* Editorial cloud overlays */
+.cloud-modal-intro {
+  margin-bottom: 1.5rem;
+}
+
+.cloud-modal-intro h2,
+.cloud-delete-message h2 {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-weight: 620;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.cloud-modal-intro > p:last-child,
+.cloud-delete-message p {
+  margin: 0.75rem 0 0;
+  color: var(--parserium-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.cloud-dropzone {
+  display: grid;
+  justify-items: center;
+  min-height: 18rem;
+  align-content: center;
+  padding: 2.5rem 1.25rem;
+  background: color-mix(in srgb, var(--parserium-surface-muted) 62%, transparent);
+  border-radius: 0.6rem;
+}
+
+.cloud-dropzone-icon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--parserium-accent);
+  background: var(--parserium-surface);
+  border: 1px solid var(--parserium-rule);
+  border-radius: 50%;
+}
+
+.cloud-upload-constraints {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1rem;
+  border-top: 1px solid var(--parserium-rule);
+  border-bottom: 1px solid var(--parserium-rule);
+}
+
+.cloud-upload-constraints > span {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem;
+  color: var(--parserium-text-muted);
+  font-size: 0.68rem;
+  border-left: 1px solid var(--parserium-border-soft);
+}
+
+.cloud-upload-constraints > span:first-child {
+  border-left: 0;
+}
+
+.cloud-upload-constraints strong {
+  color: var(--parserium-text);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.61rem;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.cloud-modal-actions {
+  padding-top: 1rem;
+}
+
+.cloud-drawer-intro {
+  padding: 1rem 0 2rem;
+  border-bottom: 1px solid var(--parserium-rule-strong);
+}
+
+.cloud-drawer-intro h2,
+.cloud-inspector-heading h2 {
+  max-width: 13ch;
+  margin: 0.45rem 0 0;
+  font-size: clamp(2.4rem, 5vw, 4.1rem);
+  font-weight: 610;
+  letter-spacing: -0.065em;
+  line-height: 0.91;
+}
+
+.cloud-drawer-intro > p:last-child {
+  max-width: 31rem;
+  margin: 1rem 0 0;
+  color: var(--parserium-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.cloud-settings-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 8rem;
+  color: var(--parserium-text-muted);
+  font-size: 0.75rem;
+}
+
+.cloud-connection-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--parserium-rule);
+}
+
+.cloud-connection-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cloud-connection-heading h3 {
+  margin: 0.2rem 0 0;
+  font-size: 1.4rem;
+  font-weight: 620;
+  letter-spacing: -0.035em;
+}
+
+.cloud-connection-date {
+  margin: -0.4rem 0 0;
+  color: var(--parserium-text-muted);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.64rem;
+}
+
+.cloud-settings .cloud-connection-card form {
+  margin: 0.35rem 0 0;
+}
+
+.cloud-settings .mantine-InputWrapper-description {
+  color: var(--parserium-text-muted);
+}
+
+.cloud-connection-link {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  gap: 0.4rem;
+  color: var(--parserium-accent-dark);
+  font-size: 0.75rem;
+}
+
+.cloud-settings .cloud-settings-limits {
+  padding-top: 2rem;
+  margin-top: 1rem;
+  border-top: 0;
+}
+
+.cloud-settings-limits h3 {
+  margin: 0.25rem 0 1rem;
+  font-size: 1.2rem;
+  letter-spacing: -0.025em;
+}
+
+.cloud-settings-limits dl {
+  margin: 0;
+  border-top: 1px solid var(--parserium-rule-strong);
+}
+
+.cloud-settings-limits dl > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.78rem 0;
+  border-bottom: 1px solid var(--parserium-border-soft);
+}
+
+.cloud-settings-limits dt,
+.cloud-settings-limits dd {
+  margin: 0;
+  font-size: 0.72rem;
+}
+
+.cloud-settings-limits dt {
+  color: var(--parserium-text-muted);
+}
+
+.cloud-settings-limits dd {
+  color: var(--parserium-text);
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.cloud-inspector-heading {
+  padding: 1rem 0 2rem;
+  border-bottom: 1px solid var(--parserium-rule-strong);
+}
+
+.cloud-inspector-heading h2 {
+  max-width: 18ch;
+  overflow-wrap: anywhere;
+}
+
+.cloud-inspector-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 1.25rem;
+}
+
+.cloud-inspector-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--parserium-rule);
+}
+
+.cloud-engine-picker {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 34rem;
+}
+
+.cloud-engine-picker label {
+  color: var(--parserium-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.cloud-engine-picker select {
+  width: 100%;
+  min-height: 2.3rem;
+  padding: 0 0.6rem;
+  color: var(--parserium-text);
+  font-size: 0.85rem;
+  background: transparent;
+  border: 1px solid var(--parserium-rule);
+  border-radius: 4px;
+}
+
+.cloud-engine-description,
+.cloud-engine-facts {
+  margin: 0;
+  color: var(--parserium-muted, var(--parserium-text));
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.cloud-engine-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  font-weight: 600;
+}
+
+.cloud-documents-parser {
+  margin: 0 0 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--parserium-rule);
+  border-radius: 4px;
+}
+
+.cloud-inspector-parser {
+  padding: 1rem 0 0;
+}
+
+.cloud-inspector-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.2rem;
+}
+
+.cloud-inspector-state {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.cloud-output-panel {
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--parserium-rule-strong);
+}
+
+.cloud-output-heading {
+  min-height: 5rem;
+  margin-top: 0;
+}
+
+.cloud-output-heading h3 {
+  margin: 0.2rem 0 0;
+  font-size: 1.15rem;
+}
+
+.cloud-output-loading,
+.cloud-output-empty {
+  min-height: 10rem;
+  margin: 0;
+  padding: 2rem 1.25rem;
+  color: var(--parserium-text-muted);
+  background: color-mix(in srgb, var(--parserium-surface-muted) 58%, transparent);
+  border: 1px solid var(--parserium-rule);
+}
+
+.cloud-output-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.cloud-markdown {
+  min-height: 14rem;
+  background: color-mix(in srgb, var(--parserium-surface-muted) 62%, transparent);
+  border-radius: 0.35rem;
+}
+
+.cloud-delete-message {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--parserium-rule);
+}
+
+.cloud-delete-message > span {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--parserium-error);
+  background: color-mix(in srgb, var(--parserium-error) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--parserium-error) 25%, var(--parserium-rule));
+  border-radius: 50%;
+}
+
+@media (max-width: 63.99em) {
+  .cloud-documents-overview,
+  .cloud-activity-editorial {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cloud-search-ledger {
+    order: 2;
+  }
+}
+
+@media (max-width: 47.99em) {
+  .cloud-documents-page,
+  .cloud-activity-page {
+    padding-top: 2rem;
+  }
+
+  .cloud-editorial-heading {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 1.25rem;
+    padding-bottom: 2rem;
+  }
+
+  .cloud-editorial-heading h1 {
+    max-width: 10ch;
+    font-size: clamp(2.7rem, 14vw, 4.6rem);
+    line-height: 0.9;
+  }
+
+  .cloud-editorial-heading .connections-primary-action {
+    width: 100%;
+  }
+
+  .cloud-document-manifest {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .cloud-editorial-metrics,
+  .cloud-activity-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cloud-editorial-metrics > div:nth-child(odd),
+  .cloud-activity-summary .activity-summary-item:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .cloud-library-heading {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .cloud-library-heading .cloud-library-toolbar {
+    align-items: stretch;
+    flex: none;
+    flex-direction: column;
+  }
+
+  .cloud-library-heading .cloud-library-toolbar .mantine-TextInput-root {
+    width: 100%;
+  }
+
+  .cloud-library-ledger {
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .cloud-documents-page .activity-table-scroll {
+    overflow-x: visible;
+  }
+
+  .cloud-documents-table,
+  .cloud-documents-table tbody,
+  .cloud-documents-table .activity-row {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .cloud-documents-table thead {
+    display: none;
+  }
+
+  .cloud-documents-table .activity-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.7rem 1rem;
+    padding: 1.1rem;
+    background: color-mix(in srgb, var(--parserium-surface) 88%, transparent);
+    border-radius: 0.75rem;
+    box-shadow: 0 0.8rem 2.2rem color-mix(in srgb, var(--parserium-text) 5%, transparent);
+  }
+
+  .cloud-documents-table .activity-row td {
+    display: block;
+    width: auto;
+    height: auto;
+    padding: 0;
+    border: 0;
+  }
+
+  .cloud-documents-table .activity-row td:nth-child(1),
+  .cloud-documents-table .activity-row td:nth-child(5) {
+    display: block;
+    grid-column: 1 / -1;
+  }
+
+  .cloud-documents-table .activity-row td:nth-child(4) {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .cloud-documents-table .activity-row td:nth-child(3)::before,
+  .cloud-documents-table .activity-row td:nth-child(4)::before {
+    color: var(--parserium-text-muted);
+    font-family: var(--mantine-font-family-monospace);
+    font-size: 0.56rem;
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .cloud-documents-table .activity-row td:nth-child(3)::before {
+    content: "Size  ";
+  }
+
+  .cloud-documents-table .activity-row td:nth-child(4)::before {
+    content: "Added";
+  }
+
+  .cloud-documents-table .activity-row-actions {
+    justify-content: flex-start;
+    padding-top: 0.25rem;
+  }
+
+  .cloud-documents-table .activity-row-actions .mantine-Button-root {
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+  }
+
+  .cloud-timeline-event {
+    padding-left: 2.4rem;
+  }
+
+  .cloud-timeline-line {
+    left: 0.75rem;
+  }
+
+  .cloud-timeline-marker {
+    left: 0.4rem;
+  }
+
+  .cloud-scope-note {
+    padding-left: 2.4rem;
+  }
+
+  .cloud-upload-constraints {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cloud-upload-constraints > span,
+  .cloud-upload-constraints > span:first-child {
+    border-top: 1px solid var(--parserium-border-soft);
+    border-left: 0;
+  }
+
+  .cloud-upload-constraints > span:first-child {
+    border-top: 0;
+  }
+
+  .cloud-inspector-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cloud-inspector-actions .mantine-Button-root {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud-timeline-marker-pulse,
+  .cloud-activity-snapshot-marker-pulse {
+    animation: none;
+    opacity: 0;
+  }
+
+  .cloud-overflow-marquee[data-overflow="true"] .cloud-overflow-marquee-content,
+  .cloud-overflow-marquee[data-overflow="true"]:hover .cloud-overflow-marquee-content,
+  .result-title:focus-visible .cloud-overflow-marquee[data-overflow="true"] .cloud-overflow-marquee-content {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    animation: none;
+    transform: none;
+  }
+}
+
+/* Evidence Wall */
+.cloud-app,
+.cloud-modal,
+.parserium-drawer {
+  --cloud-wall-paper: #f3f0e8;
+  --cloud-wall-sheet: #fbfaf6;
+  --cloud-wall-sheet-muted: #ebe7dc;
+  --cloud-wall-ink: #171916;
+  --cloud-wall-graphite: #716f68;
+  --cloud-wall-rule: #cbc6b9;
+  --cloud-wall-rule-strong: #9e9a90;
+  --cloud-wall-forest: #315d48;
+  --cloud-wall-forest-soft: #dce7de;
+  --cloud-wall-amber: #a66b22;
+  --cloud-wall-failure: #9c4134;
+}
+
+.cloud-app {
+  min-height: 100dvh;
+  color: var(--cloud-wall-ink);
+  background-color: var(--cloud-wall-paper);
+}
+
+.cloud-app .workspace-shell .mantine-AppShell-main {
+  position: relative;
+  min-height: 100dvh;
+  background-color: var(--cloud-wall-paper);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--cloud-wall-graphite) 24%, transparent) 0.6px, transparent 0.7px);
+  background-position: 0 0;
+  background-size: 18px 18px;
+}
+
+.cloud-app .workspace-shell .mantine-AppShell-main::before {
+  position: fixed;
+  inset: var(--app-shell-header-height) 0 auto;
+  z-index: 0;
+  height: 7rem;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--cloud-wall-paper) 93%, transparent);
+  content: "";
+}
+
+.cloud-wall-page {
+  position: relative;
+  z-index: 1;
+}
+
+.cloud-wall-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 2rem;
+  padding: clamp(1.5rem, 2.2vw, 2.25rem) 0 1.25rem;
+}
+
+.cloud-wall-kicker {
+  color: var(--cloud-wall-graphite);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cloud-wall-heading h1,
+.cloud-collect-page .discovery-hero-title {
+  max-width: none;
+  margin: 0.45rem 0 0;
+  color: var(--cloud-wall-ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(3.4rem, 5.4vw, 5.6rem);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.86;
+  text-wrap: balance;
+}
+
+.cloud-wall-introduction,
+.cloud-collect-page .collect-description {
+  max-width: 42rem;
+  margin-top: 0.85rem;
+  color: var(--cloud-wall-graphite);
+  font-size: clamp(0.86rem, 1vw, 1rem);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.cloud-evidence-rail {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 0.55rem clamp(1rem, 2vw, 1.75rem) 0.6rem;
+  color: var(--cloud-wall-graphite);
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 78%, transparent);
+  border-top: 1px solid var(--cloud-wall-rule-strong);
+  border-bottom: 1px solid var(--cloud-wall-rule);
+}
+
+.cloud-evidence-rail ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 54rem;
+  padding: 0;
+  margin: 0 auto;
+  list-style: none;
+}
+
+.cloud-evidence-rail ol::before {
+  position: absolute;
+  top: 0.82rem;
+  right: 12.5%;
+  left: 12.5%;
+  height: 1px;
+  background: var(--cloud-wall-rule);
+  content: "";
+}
+
+.cloud-evidence-rail li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.36rem;
+  min-width: 0;
+  color: var(--cloud-wall-graphite);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.6rem;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.cloud-evidence-rail-marker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  color: var(--cloud-wall-graphite);
+  background: var(--cloud-wall-paper);
+  border: 1px solid var(--cloud-wall-rule-strong);
+  border-radius: 50%;
+  transition: color 220ms cubic-bezier(0.32, 0.72, 0, 1), background 220ms cubic-bezier(0.32, 0.72, 0, 1), transform 220ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.cloud-evidence-rail li[data-active="true"] {
+  color: var(--cloud-wall-forest);
+}
+
+.cloud-evidence-rail li[data-active="true"] .cloud-evidence-rail-marker {
+  color: #fff;
+  background: var(--cloud-wall-forest);
+  border-color: var(--cloud-wall-forest);
+  transform: translateY(-1px);
+}
+
+/* Collect wall */
+.workspace-shell .cloud-operations-grid.cloud-collect-page {
+  grid-template-columns: minmax(15rem, 0.7fr) minmax(28rem, 1.55fr) minmax(17rem, 0.76fr);
+  grid-template-rows: auto auto minmax(32rem, auto) auto;
+  grid-template-areas:
+    "hero hero hero"
+    "rail rail rail"
+    "command results queue"
+    "documents documents documents";
+  gap: 0 1rem;
+  max-width: 100rem;
+  height: auto;
+  min-height: calc(100dvh - var(--app-shell-header-height));
+  padding-top: 0;
+  overflow: visible;
+}
+
+.cloud-collect-page .discovery-hero {
+  grid-area: hero;
+  min-height: 11.5rem;
+  padding: 2.5rem 0 1.75rem;
+  overflow: visible;
+}
+
+.cloud-collect-page .cloud-evidence-rail {
+  grid-area: rail;
+}
+
+.cloud-collect-page .discovery-command-frame {
+  position: relative;
+  grid-area: command;
+  align-self: start;
+  height: auto;
+  min-height: 25.5rem;
+  padding: 1.15rem;
+  margin-top: 1rem;
+  overflow: visible;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 94%, transparent);
+  border: 0;
+  border-left: 3px solid var(--cloud-wall-ink);
+  border-radius: 0;
+  box-shadow: 0.65rem 0.8rem 0 color-mix(in srgb, var(--cloud-wall-rule) 30%, transparent);
+}
+
+.cloud-collect-page .discovery-command-frame::after {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  pointer-events: none;
+  border-right: 1px solid var(--cloud-wall-rule-strong);
+  border-bottom: 1px solid var(--cloud-wall-rule-strong);
+  content: "";
+}
+
+.cloud-collect-page .collect-command-heading {
+  align-items: flex-start;
+  min-height: 3rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--cloud-wall-rule);
+}
+
+.cloud-collect-page .collect-command-heading > span {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.workspace-shell .cloud-collect-page .discovery-command,
+.workspace-shell .cloud-collect-page .discovery-command[data-has-connection-selector] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  height: auto;
+  gap: 0.65rem;
+}
+
+.cloud-collect-page .discovery-query {
+  height: 4.2rem;
+}
+
+.cloud-collect-page .discovery-query .mantine-Input-input {
+  padding-left: 3rem;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1rem;
+  background: transparent;
+  border: 1px solid var(--cloud-wall-rule-strong);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.cloud-collect-page .discovery-primary-action {
+  width: 100%;
+  height: 3.35rem;
+  min-height: 3.35rem;
+  margin: 0;
+  background: var(--cloud-wall-forest);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.cloud-collect-page .collect-options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin-top: 1rem;
+  border-top: 1px solid var(--cloud-wall-rule);
+}
+
+.workspace-shell .cloud-collect-page .collect-options .firecrawl-selector,
+.workspace-shell .cloud-collect-page .collect-options .document-type-summary,
+.cloud-collect-page .collect-settings-button {
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 2.9rem;
+  padding-inline: 0.25rem;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--cloud-wall-rule) 65%, transparent);
+  border-radius: 0;
+}
+
+.cloud-collect-page .collect-options select {
+  padding-left: 0.25rem;
+}
+
+.cloud-collect-page .command-summary {
+  display: block;
+  margin-top: 0.85rem;
+  font-size: 0.62rem;
+}
+
+.cloud-collect-page .discovery-content {
+  grid-area: results;
+  min-height: 32rem;
+}
+
+.cloud-collect-page .cloud-discovery-results {
+  position: relative;
+  min-height: 32rem;
+  margin: 1rem 0 1.25rem;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 95%, transparent);
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: 0;
+  box-shadow: 0.45rem 0.55rem 0 color-mix(in srgb, var(--cloud-wall-rule) 22%, transparent);
+}
+
+.cloud-collect-page .result-toolbar {
+  min-height: 4.15rem;
+  padding-inline: 1.15rem;
+  border-bottom: 1px solid var(--cloud-wall-rule-strong);
+}
+
+.cloud-collect-page .result-toolbar-title {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.cloud-selection-trace {
+  position: absolute;
+  top: 3.1rem;
+  right: 0.75rem;
+  left: 0.75rem;
+  z-index: 2;
+  width: calc(100% - 1.5rem);
+  height: 2.6rem;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.cloud-selection-trace path {
+  fill: none;
+  stroke: var(--cloud-wall-forest);
+  stroke-dasharray: 2 6;
+  stroke-linecap: round;
+  stroke-width: 1.2;
+  animation: cloud-evidence-trace 9s linear infinite;
+}
+
+@keyframes cloud-evidence-trace {
+  to { stroke-dashoffset: -96; }
+}
+
+.cloud-collect-page .cloud-result-grid {
+  position: relative;
+  min-width: 40rem;
+  transition: color 180ms cubic-bezier(0.32, 0.72, 0, 1), background 180ms cubic-bezier(0.32, 0.72, 0, 1), transform 180ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.cloud-collect-page .result-row {
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 88%, transparent);
+}
+
+.cloud-collect-page .result-row:hover,
+.cloud-collect-page .result-row:focus-within {
+  z-index: 1;
+  background: #fffef9;
+  transform: translateX(0.28rem);
+}
+
+.cloud-collect-page .result-row[data-focused="true"] {
+  z-index: 1;
+  background: #fffef9;
+  box-shadow: inset 3px 0 0 var(--cloud-wall-rule-strong);
+}
+
+.cloud-collect-page .result-row[data-selected="true"] {
+  background: var(--cloud-wall-forest-soft);
+  box-shadow: inset 3px 0 0 var(--cloud-wall-forest);
+}
+
+.cloud-source-index {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.45rem;
+  color: var(--cloud-wall-graphite);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.cloud-collect-page .cloud-collect-rail {
+  grid-area: queue;
+  gap: 1rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.workspace-shell .cloud-collect-page .cloud-collection-panel,
+.cloud-collect-page .cloud-activity-snapshot {
+  position: relative;
+  min-height: 0;
+  padding: 1.2rem;
+  overflow: visible;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 96%, transparent);
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: 0;
+  box-shadow: 0.4rem 0.5rem 0 color-mix(in srgb, var(--cloud-wall-rule) 24%, transparent);
+}
+
+.workspace-shell .cloud-collect-page .cloud-collection-panel::before,
+.cloud-collect-page .cloud-activity-snapshot::before {
+  position: absolute;
+  inset: 0.32rem -0.35rem -0.35rem 0.35rem;
+  z-index: -1;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--cloud-wall-sheet-muted) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cloud-wall-rule) 70%, transparent);
+  content: "";
+}
+
+.cloud-collect-page .queue-heading h2,
+.cloud-collect-page .cloud-activity-snapshot-heading h2 {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+.cloud-collect-page .cloud-selected-list {
+  padding-left: 0;
+  list-style: none;
+  counter-reset: selected-evidence;
+}
+
+.cloud-collect-page .cloud-selected-list li {
+  position: relative;
+  padding-left: 2rem;
+  counter-increment: selected-evidence;
+}
+
+.cloud-collect-page .cloud-selected-list li::before {
+  position: absolute;
+  left: 0;
+  color: var(--cloud-wall-forest);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.6rem;
+  content: counter(selected-evidence, decimal-leading-zero);
+}
+
+.cloud-collect-page .cloud-collect-button {
+  background: var(--cloud-wall-forest);
+  border-radius: 0;
+}
+
+.cloud-collect-page .cloud-documents-utility {
+  grid-area: documents;
+  min-height: 4.5rem;
+  margin-top: 0;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 82%, transparent);
+  border: 0;
+  border-top: 1px solid var(--cloud-wall-rule-strong);
+  border-bottom: 1px solid var(--cloud-wall-rule);
+  border-radius: 0;
+}
+
+/* Corpus wall */
+.cloud-documents-page,
+.cloud-activity-page {
+  width: min(100%, 100rem);
+  margin-inline: auto;
+  padding: 0 2rem 2.5rem;
+}
+
+.cloud-wall-heading .connections-primary-action {
+  min-width: 11rem;
+  min-height: 3rem;
+  color: #fff;
+  background: var(--cloud-wall-forest);
+  border-radius: 0;
+}
+
+.cloud-corpus-index {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.55fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3.5rem);
+  padding: 1.2rem clamp(1.25rem, 2.5vw, 2.25rem);
+  margin-top: 1rem;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 82%, transparent);
+  border-top: 1px solid var(--cloud-wall-rule-strong);
+  border-bottom: 1px solid var(--cloud-wall-rule);
+}
+
+.cloud-corpus-index h2 {
+  margin: 0.25rem 0 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(1.4rem, 2vw, 1.85rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+.cloud-corpus-index-copy > p {
+  margin: 0.5rem 0 0;
+  color: var(--cloud-wall-graphite);
+  font-size: 0.76rem;
+}
+
+.cloud-corpus-index .cloud-editorial-metrics > div {
+  position: relative;
+  padding-left: 0.85rem;
+  border-left: 1px solid var(--cloud-wall-rule);
+}
+
+.cloud-corpus-index .cloud-editorial-metrics strong {
+  font-size: clamp(1.6rem, 2.5vw, 2.5rem);
+}
+
+.cloud-library.cloud-wall-surface {
+  margin-top: 1.5rem;
+}
+
+.cloud-wall-surface .cloud-library-heading {
+  min-height: 4.75rem;
+  padding: 0.65rem 0.25rem 0.85rem;
+  border-bottom: 1px solid var(--cloud-wall-rule-strong);
+}
+
+.cloud-wall-surface .cloud-library-heading h2,
+.cloud-trace-lane .cloud-section-heading h2 {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-weight: 500;
+}
+
+.cloud-wall-surface .cloud-library-toolbar input {
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 82%, transparent);
+  border-color: var(--cloud-wall-rule);
+  border-radius: 0;
+}
+
+.cloud-corpus-ledger {
+  padding: 0;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 84%, transparent);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.cloud-corpus-ledger .activity-job-identity {
+  grid-template-columns: auto 2.15rem minmax(0, 1fr);
+}
+
+.cloud-corpus-ledger .activity-table th {
+  color: var(--cloud-wall-graphite);
+  background: color-mix(in srgb, var(--cloud-wall-sheet-muted) 66%, transparent);
+}
+
+.cloud-corpus-ledger .activity-row {
+  position: relative;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 80%, transparent);
+  box-shadow: inset 3px 0 0 transparent;
+}
+
+.cloud-corpus-ledger .activity-row[data-state="active"] {
+  box-shadow: inset 3px 0 0 var(--cloud-wall-amber);
+}
+
+.cloud-corpus-ledger .activity-row[data-state="failed"] {
+  box-shadow: inset 3px 0 0 var(--cloud-wall-failure);
+}
+
+.cloud-corpus-ledger .activity-row[data-state="ready"] {
+  box-shadow: inset 3px 0 0 var(--cloud-wall-forest);
+}
+
+.cloud-corpus-ledger .activity-row:hover {
+  background: #fffef9;
+  transform: translateX(0.22rem);
+}
+
+.cloud-corpus-index-number {
+  flex: 0 0 auto;
+  color: var(--cloud-wall-graphite);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.58rem;
+  font-weight: 700;
+}
+
+/* Trace wall */
+.cloud-trace-index {
+  margin: 1rem 0 1.2rem;
+  padding: 0;
+  background: transparent;
+  border-top: 1px solid var(--cloud-wall-rule-strong);
+  border-bottom: 1px solid var(--cloud-wall-rule);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.cloud-trace-index .activity-summary-item {
+  border-left: 1px solid var(--cloud-wall-rule);
+  border-radius: 0;
+}
+
+.cloud-trace-wall {
+  grid-template-columns: minmax(0, 1.45fr) minmax(22rem, 0.82fr);
+  gap: 1rem;
+}
+
+.cloud-trace-lane {
+  position: relative;
+  padding: 1rem;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 88%, transparent);
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: 0;
+  box-shadow: 0.45rem 0.55rem 0 color-mix(in srgb, var(--cloud-wall-rule) 22%, transparent);
+}
+
+.cloud-trace-lane .cloud-section-heading {
+  min-height: 3.35rem;
+  padding: 0 0.15rem 0.45rem;
+  border-bottom: 1px solid var(--cloud-wall-rule-strong);
+}
+
+.cloud-trace-lane .cloud-timeline-card {
+  min-height: 7rem;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 76%, transparent);
+  border: 0;
+  border-left: 1px solid var(--cloud-wall-rule);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.cloud-trace-lane .cloud-timeline-card:hover,
+.cloud-trace-lane .cloud-timeline-card:focus-visible {
+  background: #fffef9;
+  transform: translateX(0.2rem);
+}
+
+.cloud-trace-lane .cloud-timeline-card::after {
+  display: none;
+}
+
+.cloud-trace-type {
+  display: inline-block;
+  margin-right: 0.45rem;
+  color: var(--cloud-wall-forest);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.56rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cloud-search-lane {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: color-mix(in srgb, var(--cloud-wall-sheet-muted) 72%, transparent);
+  overflow: visible;
+}
+
+.cloud-search-lane .cloud-history-row {
+  min-height: 5.2rem;
+  margin: 0;
+  padding-inline: 0.5rem;
+  background: var(--cloud-wall-sheet);
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: 12px;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--cloud-wall-graphite) 5%, transparent);
+}
+
+.cloud-search-lane .cloud-history-row:hover,
+.cloud-search-lane .cloud-history-row:focus-visible {
+  background: var(--cloud-wall-sheet);
+  border-color: var(--cloud-wall-rule-strong);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--cloud-wall-graphite) 9%, transparent);
+}
+
+.cloud-search-lane .cloud-search-record > span:last-child::before {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--cloud-wall-forest);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  content: "Search";
+}
+
+/* Evidence Wall overlays */
+.cloud-modal,
+.parserium-drawer {
+  color: var(--cloud-wall-ink);
+  background: var(--cloud-wall-paper);
+}
+
+.cloud-modal-header,
+.parserium-drawer-header {
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 78%, transparent);
+  border-bottom-color: var(--cloud-wall-rule-strong);
+}
+
+.cloud-modal-intro h2,
+.cloud-drawer-intro h2,
+.cloud-inspector-heading h2,
+.cloud-delete-message h2 {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-weight: 500;
+}
+
+.cloud-dropzone {
+  position: relative;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 78%, transparent);
+  border: 1px dashed var(--cloud-wall-rule-strong);
+  border-radius: 0;
+  box-shadow: 0.55rem 0.65rem 0 color-mix(in srgb, var(--cloud-wall-rule) 26%, transparent);
+}
+
+.cloud-dropzone-icon,
+.cloud-delete-message > span {
+  border-radius: 0;
+}
+
+.cloud-connection-card,
+.cloud-settings-limits {
+  position: relative;
+  padding-inline: 1rem;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 76%, transparent);
+  border-left: 3px solid var(--cloud-wall-forest);
+}
+
+.cloud-settings-limits {
+  border-left-color: var(--cloud-wall-ink);
+}
+
+.cloud-inspector-heading {
+  position: relative;
+  padding-left: 1rem;
+  border-left: 3px solid var(--cloud-wall-forest);
+}
+
+.cloud-inspector-reader {
+  padding: 1rem;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 78%, transparent);
+  border: 1px solid var(--cloud-wall-rule);
+  border-top: 1px solid var(--cloud-wall-rule-strong);
+  box-shadow: 0.55rem 0.65rem 0 color-mix(in srgb, var(--cloud-wall-rule) 24%, transparent);
+}
+
+.cloud-inspector-reader .cloud-markdown,
+.cloud-inspector-reader .cloud-output-loading,
+.cloud-inspector-reader .cloud-output-empty {
+  background: var(--cloud-wall-sheet);
+  border: 0;
+  border-radius: 0;
+}
+
+@media (max-width: 79.99em) {
+  .workspace-shell .cloud-operations-grid.cloud-collect-page {
+    grid-template-columns: minmax(14rem, 0.62fr) minmax(24rem, 1.35fr) minmax(15rem, 0.72fr);
+    padding-inline: 1.5rem;
+  }
+
+  .cloud-collect-page .cloud-result-grid {
+    min-width: 38rem;
+  }
+}
+
+@media (max-width: 63.99em) {
+  .workspace-shell .cloud-operations-grid.cloud-collect-page {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas:
+      "hero"
+      "rail"
+      "command"
+      "results"
+      "queue"
+      "documents";
+  }
+
+  .cloud-collect-page .discovery-command-frame {
+    min-height: 0;
+  }
+
+  .cloud-collect-page .cloud-discovery-results,
+  .cloud-collect-page .discovery-content {
+    min-height: 24rem;
+  }
+
+  .cloud-selection-trace {
+    display: none;
+  }
+
+  .cloud-collect-page .cloud-collect-rail {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .cloud-trace-wall {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cloud-search-lane {
+    order: 2;
+  }
+}
+
+@media (max-width: 47.99em) {
+  .cloud-documents-page,
+  .cloud-activity-page,
+  .workspace-shell .cloud-operations-grid.cloud-collect-page {
+    padding-inline: 1rem;
+  }
+
+  .workspace-shell .cloud-operations-grid.cloud-collect-page {
+    padding-top: 6.75rem;
+  }
+
+  .cloud-wall-heading {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 1.1rem;
+    padding-top: 1.75rem;
+  }
+
+  .cloud-wall-heading h1,
+  .cloud-collect-page .discovery-hero-title {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+    line-height: 0.88;
+  }
+
+  .cloud-app .cloud-page-title {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+    line-height: 0.88;
+  }
+
+  .cloud-wall-heading .connections-primary-action {
+    width: 100%;
+  }
+
+  .cloud-collect-page .discovery-hero {
+    min-height: 9rem;
+    padding: 1.6rem 0 1.3rem;
+  }
+
+  .cloud-evidence-rail {
+    padding-inline: 0.25rem;
+  }
+
+  .cloud-evidence-rail li {
+    font-size: 0.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  .cloud-evidence-rail-marker {
+    width: 1.7rem;
+    height: 1.7rem;
+  }
+
+  .cloud-collect-page .cloud-collect-rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cloud-corpus-index {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .cloud-corpus-index .cloud-editorial-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cloud-corpus-index .cloud-editorial-metrics > div:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .cloud-corpus-ledger .activity-row {
+    overflow: hidden;
+    background: color-mix(in srgb, var(--cloud-wall-sheet) 92%, transparent);
+    border: 1px solid var(--cloud-wall-rule);
+    border-radius: 0;
+    box-shadow: inset 3px 0 0 var(--cloud-wall-rule), 0.35rem 0.45rem 0 color-mix(in srgb, var(--cloud-wall-rule) 22%, transparent);
+  }
+
+  .cloud-corpus-ledger .activity-row[data-state="active"] { box-shadow: inset 3px 0 0 var(--cloud-wall-amber), 0.35rem 0.45rem 0 color-mix(in srgb, var(--cloud-wall-rule) 22%, transparent); }
+  .cloud-corpus-ledger .activity-row[data-state="failed"] { box-shadow: inset 3px 0 0 var(--cloud-wall-failure), 0.35rem 0.45rem 0 color-mix(in srgb, var(--cloud-wall-rule) 22%, transparent); }
+  .cloud-corpus-ledger .activity-row[data-state="ready"] { box-shadow: inset 3px 0 0 var(--cloud-wall-forest), 0.35rem 0.45rem 0 color-mix(in srgb, var(--cloud-wall-rule) 22%, transparent); }
+
+  .cloud-trace-lane {
+    padding: 0.75rem;
+    box-shadow: 0.35rem 0.45rem 0 color-mix(in srgb, var(--cloud-wall-rule) 22%, transparent);
+  }
+
+  .cloud-trace-index {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cloud-inspector-reader {
+    padding: 0.75rem;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud-selection-trace path {
+    animation: none;
+  }
+
+  .cloud-collect-page .result-row,
+  .cloud-corpus-ledger .activity-row,
+  .cloud-trace-lane .cloud-timeline-card {
+    transform: none !important;
+  }
+}
+
+/* Archival editorial fidelity layer. Keeps the existing Evidence Wall behavior while
+   matching the approved rounded reference screens. */
+.cloud-app,
+.cloud-modal,
+.parserium-drawer {
+  --cloud-wall-paper: #f6f5f1;
+  --cloud-wall-sheet: #fffefd;
+  --cloud-wall-sheet-muted: #f0f1ed;
+  --cloud-wall-ink: #17202a;
+  --cloud-wall-graphite: #65707a;
+  --cloud-wall-rule: #dfe3df;
+  --cloud-wall-rule-strong: #b9c2be;
+  --cloud-wall-forest: #28664f;
+  --cloud-wall-forest-soft: #e5f1eb;
+  --cloud-wall-amber: #a5681e;
+  --cloud-wall-failure: #be4f2f;
+  --cloud-wall-radius: 16px;
+  --cloud-wall-shadow: 0 16px 34px rgba(39, 59, 52, 0.07);
+}
+
+.cloud-app {
+  background: var(--cloud-wall-paper);
+}
+
+.cloud-app .workspace-shell .mantine-AppShell-main {
+  background-color: var(--cloud-wall-paper);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--cloud-wall-graphite) 11%, transparent) 0.6px, transparent 0.7px);
+  background-size: 22px 22px;
+}
+
+.cloud-app .workspace-shell .mantine-AppShell-main::before {
+  height: 5rem;
+  background: color-mix(in srgb, var(--cloud-wall-paper) 88%, transparent);
+}
+
+.cloud-app .parserium-header {
+  top: 0.75rem;
+  right: clamp(1rem, 3vw, 2.75rem);
+  left: clamp(1rem, 3vw, 2.75rem);
+  width: auto;
+  height: 64px;
+  overflow: hidden;
+  background: rgba(255, 254, 253, 0.94);
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: var(--cloud-wall-radius);
+  box-shadow: 0 8px 24px rgba(39, 59, 52, 0.06);
+}
+
+.cloud-app .workspace-shell .header-content {
+  padding-inline: clamp(1rem, 2.25vw, 2rem);
+}
+
+.cloud-app .workspace-shell .parserium-brand-mark {
+  color: var(--cloud-wall-ink);
+}
+
+.cloud-app .workspace-shell .dashboard-navigation-button[data-active] {
+  color: var(--cloud-wall-forest);
+}
+
+.cloud-app .workspace-shell .dashboard-navigation-underline {
+  background: var(--cloud-wall-forest);
+  border-radius: 999px;
+}
+
+.cloud-app .workspace-shell .dashboard-navigation-button:hover {
+  background: var(--cloud-wall-forest-soft);
+}
+
+.cloud-wall-page {
+  isolation: isolate;
+}
+
+.cloud-wall-page::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: -1;
+  width: min(60vw, 62rem);
+  height: 18rem;
+  pointer-events: none;
+  content: "";
+  opacity: 0.42;
+  background: url("/archival-leaf-study.png") right top / contain no-repeat;
+  mix-blend-mode: multiply;
+}
+
+.cloud-wall-heading {
+  padding-top: clamp(2rem, 3.8vw, 3.4rem);
+}
+
+.cloud-wall-heading h1,
+.cloud-collect-page .discovery-hero-title {
+  font-size: clamp(3rem, 5.2vw, 5.25rem);
+  line-height: 0.9;
+}
+
+.cloud-app .cloud-page-title {
+  margin: 0.45rem 0 0;
+  color: var(--cloud-wall-ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(3.4rem, 5.4vw, 5.6rem);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.86;
+  text-wrap: balance;
+}
+
+.cloud-evidence-rail {
+  padding-block: 0.75rem 0.8rem;
+  background: color-mix(in srgb, var(--cloud-wall-sheet) 88%, transparent);
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: var(--cloud-wall-radius);
+  box-shadow: var(--cloud-wall-shadow);
+}
+
+.cloud-evidence-rail-marker {
+  background: var(--cloud-wall-sheet);
+  border-color: var(--cloud-wall-rule-strong);
+}
+
+.cloud-collect-page .discovery-command-frame,
+.cloud-collect-page .cloud-discovery-results,
+.workspace-shell .cloud-collect-page .cloud-collection-panel,
+.cloud-collect-page .cloud-activity-snapshot,
+.cloud-trace-lane,
+.cloud-library.cloud-wall-surface,
+.cloud-document-feature,
+.cloud-corpus-index,
+.cloud-editorial-metrics > div {
+  background: var(--cloud-wall-sheet);
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: var(--cloud-wall-radius);
+  box-shadow: var(--cloud-wall-shadow);
+}
+
+.cloud-collect-page .discovery-command-frame {
+  border-left: 1px solid var(--cloud-wall-rule);
+  padding: 1.25rem;
+}
+
+.cloud-collect-page .discovery-query .mantine-Input-input,
+.cloud-library-toolbar input {
+  border-color: var(--cloud-wall-rule);
+  border-radius: 12px;
+  background: var(--cloud-wall-sheet);
+}
+
+.cloud-collect-page .discovery-primary-action,
+.cloud-wall-heading .connections-primary-action,
+.cloud-collect-page .cloud-collect-button {
+  min-height: 3rem;
+  border-radius: 12px;
+  background: var(--cloud-wall-forest);
+  border-color: var(--cloud-wall-forest);
+  box-shadow: 0 8px 18px rgba(40, 102, 79, 0.16);
+}
+
+.cloud-collect-page .discovery-primary-action:hover,
+.cloud-wall-heading .connections-primary-action:hover,
+.cloud-collect-page .cloud-collect-button:hover {
+  background: #1f5541;
+}
+
+.cloud-collect-page .cloud-discovery-results,
+.cloud-collect-page .cloud-collection-panel,
+.cloud-collect-page .cloud-activity-snapshot {
+  overflow: hidden;
+}
+
+.cloud-collect-page .result-row:hover,
+.cloud-corpus-ledger .activity-row:hover,
+.cloud-trace-lane .cloud-timeline-card:hover,
+.cloud-trace-lane .cloud-timeline-card:focus-visible {
+  background: var(--cloud-wall-forest-soft);
+  transform: translateY(-1px);
+}
+
+.cloud-collect-page .cloud-collect-rail {
+  gap: 1rem;
+}
+
+.cloud-documents-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(19rem, 0.75fr);
+  gap: 1rem;
+  align-items: stretch;
+  margin-top: 1rem;
+}
+
+.cloud-documents-overview-main,
+.cloud-document-feature {
+  min-width: 0;
+}
+
+.cloud-documents-overview .cloud-corpus-index {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  height: 100%;
+  margin-top: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--cloud-wall-rule);
+}
+
+.cloud-corpus-index-copy {
+  padding-inline: 0.25rem;
+}
+
+.cloud-corpus-index-copy h2 {
+  font-size: clamp(1.75rem, 2.6vw, 2.4rem);
+}
+
+.cloud-editorial-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.cloud-editorial-metrics > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  gap: 0.25rem 0.6rem;
+  min-height: 6.5rem;
+  padding: 1rem;
+  border: 1px solid var(--cloud-wall-rule);
+  box-shadow: none;
+}
+
+.cloud-editorial-metrics > div > strong {
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--cloud-wall-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.cloud-editorial-metrics > div > span {
+  grid-column: 1;
+  grid-row: 2;
+  color: var(--cloud-wall-graphite);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cloud-editorial-metrics > div > svg {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  padding: 0.55rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--cloud-wall-forest);
+  background: var(--cloud-wall-forest-soft);
+  border-radius: 12px;
+}
+
+.cloud-editorial-metrics > div[data-state="active"] > strong,
+.cloud-editorial-metrics > div[data-state="active"] > svg {
+  color: var(--cloud-wall-failure);
+}
+
+.cloud-editorial-metrics > div[data-state="active"] > svg {
+  background: color-mix(in srgb, var(--cloud-wall-failure) 10%, white);
+}
+
+.cloud-editorial-metrics > div[data-state="failed"] > svg {
+  color: var(--cloud-wall-amber);
+  background: color-mix(in srgb, var(--cloud-wall-amber) 12%, white);
+}
+
+.cloud-document-feature {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.cloud-document-feature-heading,
+.cloud-document-feature-title,
+.cloud-document-feature-meta,
+.cloud-document-feature-state {
+  display: flex;
+  align-items: center;
+}
+
+.cloud-document-feature-heading {
+  justify-content: space-between;
+  color: var(--cloud-wall-forest);
+}
+
+.cloud-document-feature-title {
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0;
+  color: var(--cloud-wall-ink);
+  text-align: left;
+  background: transparent;
+  border: 0;
+}
+
+.cloud-document-feature-title:hover strong,
+.cloud-document-feature-title:focus-visible strong {
+  color: var(--cloud-wall-forest);
+}
+
+.cloud-document-feature-title > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.cloud-document-feature-title strong {
+  overflow: hidden;
+  font-size: 1.08rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cloud-document-feature-title small,
+.cloud-document-feature-meta small {
+  color: var(--cloud-wall-graphite);
+  font-size: 0.76rem;
+}
+
+.cloud-document-feature-meta {
+  gap: 1.25rem;
+  padding-block: 0.9rem;
+  border-top: 1px solid var(--cloud-wall-rule);
+  border-bottom: 1px solid var(--cloud-wall-rule);
+}
+
+.cloud-document-feature-meta > span {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.cloud-document-feature-meta > span + span {
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--cloud-wall-rule);
+}
+
+.cloud-document-feature-meta strong {
+  color: var(--cloud-wall-ink);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cloud-document-feature-state {
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cloud-document-feature-action {
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 12px;
+  color: var(--cloud-wall-forest);
+  background: var(--cloud-wall-forest-soft);
+}
+
+.cloud-library.cloud-wall-surface {
+  margin-top: 1rem;
+  padding: 1.25rem;
+}
+
+.cloud-wall-surface .cloud-library-heading {
+  min-height: auto;
+  padding: 0 0 1rem;
+  border-bottom: 1px solid var(--cloud-wall-rule);
+}
+
+.cloud-corpus-ledger {
+  margin-top: 1rem;
+  overflow: hidden;
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: 12px;
+}
+
+.cloud-corpus-ledger .activity-table th {
+  background: var(--cloud-wall-sheet-muted);
+}
+
+.cloud-corpus-ledger .activity-row {
+  background: var(--cloud-wall-sheet);
+  box-shadow: none;
+}
+
+.cloud-corpus-ledger .activity-row[data-state="active"] { box-shadow: inset 3px 0 0 var(--cloud-wall-amber); }
+.cloud-corpus-ledger .activity-row[data-state="failed"] { box-shadow: inset 3px 0 0 var(--cloud-wall-failure); }
+.cloud-corpus-ledger .activity-row[data-state="ready"] { box-shadow: inset 3px 0 0 var(--cloud-wall-forest); }
+
+.cloud-corpus-ledger .activity-row:hover {
+  background: var(--cloud-wall-forest-soft);
+  transform: none;
+}
+
+.cloud-trace-index {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+  border: 0;
+}
+
+.cloud-trace-index .activity-summary-item {
+  min-height: 6rem;
+  padding: 1rem;
+  background: var(--cloud-wall-sheet);
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: var(--cloud-wall-radius);
+  box-shadow: var(--cloud-wall-shadow);
+}
+
+.cloud-trace-index .activity-summary-item[data-state="active"] .activity-summary-value {
+  color: var(--cloud-wall-failure);
+}
+
+.cloud-trace-lane {
+  padding: 1.25rem;
+  border-radius: var(--cloud-wall-radius);
+  box-shadow: var(--cloud-wall-shadow);
+}
+
+.cloud-search-lane {
+  background: var(--cloud-wall-sheet);
+}
+
+.cloud-trace-lane .cloud-timeline-card,
+.cloud-search-lane .cloud-history-row {
+  background: var(--cloud-wall-sheet-muted);
+  border-radius: 12px;
+}
+
+.cloud-trace-lane .cloud-timeline-card {
+  border-left: 0;
+}
+
+.cloud-search-lane .cloud-history-row {
+  border-bottom: 0;
+}
+
+.cloud-modal,
+.parserium-drawer {
+  background: var(--cloud-wall-paper);
+}
+
+.cloud-modal-header,
+.parserium-drawer-header {
+  background: var(--cloud-wall-sheet);
+  border-bottom-color: var(--cloud-wall-rule);
+}
+
+.cloud-modal-intro,
+.cloud-drawer-intro {
+  position: relative;
+  isolation: isolate;
+}
+
+.cloud-drawer-intro::after,
+.cloud-modal-intro::after {
+  position: absolute;
+  top: -1rem;
+  right: -1.5rem;
+  z-index: -1;
+  width: 14rem;
+  height: 10rem;
+  pointer-events: none;
+  content: "";
+  opacity: 0.35;
+  background: url("/archival-leaf-study.png") right top / contain no-repeat;
+}
+
+.cloud-dropzone,
+.cloud-connection-card,
+.cloud-settings-limits,
+.cloud-inspector-reader {
+  border-radius: var(--cloud-wall-radius);
+  box-shadow: var(--cloud-wall-shadow);
+}
+
+.cloud-dropzone {
+  background: var(--cloud-wall-sheet);
+  border: 1px dashed var(--cloud-wall-rule-strong);
+}
+
+.cloud-connection-card,
+.cloud-settings-limits {
+  padding: 1.25rem;
+  background: var(--cloud-wall-sheet);
+  border: 1px solid var(--cloud-wall-rule);
+  border-left: 3px solid var(--cloud-wall-forest);
+}
+
+.cloud-settings-limits {
+  border-left-color: var(--cloud-wall-ink);
+}
+
+.cloud-inspector-heading {
+  padding: 1.25rem;
+  border: 1px solid var(--cloud-wall-rule);
+  border-left: 3px solid var(--cloud-wall-forest);
+  border-radius: var(--cloud-wall-radius);
+  background: var(--cloud-wall-sheet);
+}
+
+.cloud-inspector-reader {
+  background: var(--cloud-wall-sheet);
+  border: 1px solid var(--cloud-wall-rule);
+}
+
+.cloud-inspector-reader .cloud-markdown,
+.cloud-inspector-reader .cloud-output-loading,
+.cloud-inspector-reader .cloud-output-empty {
+  border-radius: 12px;
+  background: var(--cloud-wall-sheet-muted);
+}
+
+@media (min-width: 64em) {
+  .cloud-wall-heading {
+    padding-top: 1.6rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .cloud-evidence-rail {
+    padding-block: 0.55rem 0.6rem;
+  }
+
+  .cloud-documents-page .cloud-page-alerts,
+  .cloud-activity-page .cloud-page-alerts {
+    margin-bottom: 0.7rem;
+  }
+
+  .cloud-documents-overview {
+    margin-top: 0.75rem;
+  }
+
+  .cloud-documents-overview .cloud-corpus-index,
+  .cloud-document-feature {
+    padding: 1rem;
+  }
+
+  .cloud-documents-overview .cloud-corpus-index {
+    gap: 0.75rem;
+  }
+
+  .cloud-editorial-metrics > div {
+    min-height: 5.6rem;
+    padding: 0.8rem;
+  }
+
+  .cloud-document-feature {
+    gap: 0.7rem;
+  }
+
+  .cloud-library.cloud-wall-surface {
+    margin-top: 0.75rem;
+    padding: 1rem;
+  }
+
+  .cloud-activity-page .cloud-timeline-heading,
+  .cloud-activity-page .cloud-search-ledger .cloud-section-heading {
+    min-height: 3.25rem;
+  }
+
+  .cloud-activity-page .cloud-timeline-heading h2,
+  .cloud-activity-page .cloud-search-ledger .cloud-section-heading h2 {
+    font-size: 1.55rem;
+    line-height: 1;
+  }
+}
+
+@media (max-width: 63.99em) {
+  .cloud-documents-overview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 47.99em) {
+  .cloud-app .parserium-header {
+    top: 0.5rem;
+    right: 0.75rem;
+    left: 0.75rem;
+    height: 60px;
+  }
+
+  .cloud-wall-page::before {
+    display: none;
+  }
+
+  .cloud-editorial-metrics,
+  .cloud-trace-index {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cloud-library.cloud-wall-surface {
+    padding: 0.9rem;
+  }
+
+  .cloud-document-feature,
+  .cloud-documents-overview .cloud-corpus-index {
+    padding: 1rem;
+  }
+}
+
+/* Final destination polish: keep page titles and search records consistent
+   after the shared workspace styles are loaded. */
+.cloud-app .cloud-page-title {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(3.4rem, 5.4vw, 5.6rem);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.86;
+}
+
+.cloud-app .cloud-search-lane {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cloud-app .cloud-search-lane .cloud-history-row {
+  margin: 0;
+  background: var(--cloud-wall-sheet);
+  border: 1px solid var(--cloud-wall-rule);
+  border-radius: 12px;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--cloud-wall-graphite) 5%, transparent);
+}
+
+.cloud-app .cloud-search-lane .cloud-history-row:hover,
+.cloud-app .cloud-search-lane .cloud-history-row:focus-visible {
+  background: var(--cloud-wall-sheet);
+  border-color: var(--cloud-wall-rule-strong);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--cloud-wall-graphite) 9%, transparent);
+}
+
+.cloud-app .workspace-shell .cloud-page-title {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(3.4rem, 5.4vw, 5.6rem);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.86;
+}
+
+@media (max-width: 47.99em) {
+  .cloud-app .cloud-page-title {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+    line-height: 0.88;
+  }
+
+  .cloud-app .workspace-shell .cloud-page-title {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+    line-height: 0.88;
+  }
+}

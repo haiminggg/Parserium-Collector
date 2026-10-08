@@ -10,17 +10,29 @@ requires-python = ">=3.13,<3.14"
 license = "AGPL-3.0-or-later"
 dependencies = [
   "alembic==1.19.1",
+  "boto3==1.43.83",
+  "cryptography==50.0.1",
+  "defusedxml==0.7.1",
   "fastapi==0.141.1",
+  "httpcore==1.0.9",
   "httpx==0.28.1",
+  "liteparse==2.14.0",
+  "markitdown[pdf]==0.1.8",
   "pydantic==2.13.4",
   "pydantic-settings==2.15.0",
+  "pypdf==6.16.2",
   "psycopg[binary,pool]==3.3.4",
   "sqlalchemy==2.0.52",
   "uvicorn[standard]==0.52.4",
+  "authlib==1.7.2",
+  "itsdangerous==2.2.0",
+  "email-validator==2.3.0",
+  "python-multipart==0.0.32",
 ]
 
 [dependency-groups]
 dev = [
+  "boto3-stubs[s3]==1.43.83",
   "httpx2==2.10.0",
   "mypy==2.3.1",
   "pytest==9.1.1",
@@ -28,6 +40,7 @@ dev = [
   "pytest-cov==7.1.0",
   "respx==0.23.1",
   "ruff==0.16.4",
+  "types-defusedxml==0.7.0.20260504",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -48,7 +61,10 @@ src = ["src"]
 select = ["E", "F", "I", "UP", "B", "ASYNC", "S"]
 
 [tool.ruff.lint.per-file-ignores]
+"src/parserium_collector/features/acquisition/network_backend.py" = ["ASYNC109"]
 "tests/**/*.py" = ["S101"]
+"tests/unit/acquisition/test_network_backend.py" = ["ASYNC109", "S104"]
+"tests/unit/acquisition/test_network_policy.py" = ["S104"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["parserium_collector"]

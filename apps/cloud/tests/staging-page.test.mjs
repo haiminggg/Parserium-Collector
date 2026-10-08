@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import {test} from 'node:test';
+import vm from 'node:vm';
+import {runtime} from './runtime.mjs';
+test('staging serves parsing controls with restrictive CSP and explicit scope',async t=>{
+ const mf=await runtime();t.after(()=>mf.dispose());
+ const r=await mf.dispatchFetch('https://cloud.test/');
+ assert.equal(r.status,200);
+ assert.equal(r.headers.get('Referrer-Policy'),'same-origin');
+ assert.match(r.headers.get('Content-Security-Policy'),/frame-ancestors 'none'/);
+ const html=await r.text();
+ assert.match(html,/Google sign-in test/);
+ assert.match(html,/id="upload"/);
+ assert.match(html,/Parse PDF/);
+ assert.match(html,/Firecrawl.*DOCX.*unavailable/i);
+ const js=await mf.dispatchFetch('https://cloud.test/auth-ui.js');
+ assert.equal(js.status,200);
+ const source=await js.text();new vm.Script(source);
+ assert.match(source,/X-CSRF-Token/);
+ assert.match(source,/\/parse-jobs\?document=/);
+ assert.match(source,/\/output/);
+ assert.match(source,/setTimeout\([\s\S]*?\},2000\)\)/);
+ assert.match(source,/\.textContent\s*=\s*markdown/);
+ assert.doesNotMatch(source,/innerHTML/);
+ assert.match(source,/Queued/);assert.match(source,/Parsing/);assert.match(source,/Markdown ready/);assert.match(source,/Parsing failed/);
+});

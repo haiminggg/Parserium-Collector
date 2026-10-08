@@ -10,4 +10,3 @@ def create_engine(settings: Settings) -> AsyncEngine:
         pool_size=5,
         max_overflow=5,
     )
-

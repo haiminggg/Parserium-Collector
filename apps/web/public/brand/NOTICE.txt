@@ -1,0 +1,7 @@
+Google G icon
+Source: https://developers.google.com/static/identity/images/g-logo.png
+Retrieved: 2026-09-09
+Usage: Unmodified sign-in button brand asset, displayed with "Continue with Google".
+Brand guidelines: https://developers.google.com/identity/branding-guidelines
+Google and the Google logo are trademarks of Google LLC. This brand asset is not
+relicensed under Parserium's source-code license and does not imply endorsement.

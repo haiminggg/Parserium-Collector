@@ -14,3 +14,25 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => false,
   }),
 });
+
+// Mantine restores scroll position when a Drawer closes; jsdom has no scrollTo.
+Object.defineProperty(window, "scrollTo", {
+  writable: true,
+  value: () => undefined,
+});
+
+// jsdom test double for Mantine components that observe layout changes.
+class ResizeObserverTestDouble implements ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+Object.defineProperty(window, "ResizeObserver", {
+  writable: true,
+  value: ResizeObserverTestDouble,
+});
+Object.defineProperty(globalThis, "ResizeObserver", {
+  writable: true,
+  value: ResizeObserverTestDouble,
+});

@@ -12,10 +12,31 @@ permissions:
 jobs:
   foundation:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Verify platform foundation
         shell: pwsh
         run: ./scripts/verify-foundation.ps1
+
+  cloud:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Test the Worker
+        run: |
+          docker run --rm --volume "$PWD:/src:ro" docker.io/library/node:24.19.0-bookworm-slim@sha256:3638d9a6fe4030bd716be989438248074489337ba3275657f93595428be4fc03 sh -c '
+            mkdir /work &&
+            cd /src && tar --exclude=node_modules --exclude=.git -cf - . | tar -xf - -C /work &&
+            cd /work/apps/cloud &&
+            npm ci --ignore-scripts --no-audit --no-fund &&
+            node --test tests/*.test.mjs'
+      - name: Test the parser container
+        run: |
+          docker build --target backend-test --tag parserium-collector-backend-test:cloud .
+          docker run --rm --volume "$PWD:/repo:ro" --workdir /repo/apps/cloud \
+            parserium-collector-backend-test:cloud \
+            /app/.venv/bin/pytest -q -p no:cacheprovider tests/test_container_runner.py tests/test_container_server.py
