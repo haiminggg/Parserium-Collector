@@ -51,6 +51,7 @@ services:
       - ALL
     cap_add:
       - CHOWN
+      - DAC_READ_SEARCH  # read host-owned 0600 secrets; setpriv drops it
       - DAC_OVERRIDE
       - SETGID
       - SETPCAP
@@ -89,6 +90,7 @@ services:
       - ALL
     cap_add:
       - CHOWN
+      - DAC_READ_SEARCH  # read host-owned 0600 secrets; setpriv drops it
       - SETGID
       - SETPCAP
       - SETUID
@@ -123,6 +125,7 @@ services:
       - ALL
     cap_add:
       - CHOWN
+      - DAC_READ_SEARCH  # read host-owned 0600 secrets; setpriv drops it
       - SETGID
       - SETPCAP
       - SETUID
@@ -168,6 +171,7 @@ services:
       - ALL
     cap_add:
       - CHOWN
+      - DAC_READ_SEARCH  # read host-owned 0600 secrets; setpriv drops it
       - SETGID
       - SETPCAP
       - SETUID
@@ -236,6 +240,7 @@ services:
       - ALL
     cap_add:
       - CHOWN
+      - DAC_READ_SEARCH  # read host-owned 0600 secrets; setpriv drops it
       - SETGID
       - SETPCAP
       - SETUID

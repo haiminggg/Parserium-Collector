@@ -20,11 +20,17 @@ try {
   $caBundlePath = Join-Path $testRoot 'storage_ca_bundle'
   [IO.File]::WriteAllText($caBundlePath, 'test-ca', [Text.UTF8Encoding]::new($false))
   $fixturePath = Join-Path $repository 'tests\fixtures\verify_secret_handoff.py'
+  if ($IsLinux) {
+    # Real secrets are private to the host user. Prove the root entrypoint can still read them.
+    & chmod 600 $secretPath $wrappingKeyPath $firecrawlBearerPath
+    if ($LASTEXITCODE -ne 0) { throw 'Could not restrict test secret permissions.' }
+  }
   docker run --rm `
     --read-only `
     --tmpfs /tmp:rw,noexec,nosuid,nodev `
     --cap-drop ALL `
     --cap-add CHOWN `
+    --cap-add DAC_READ_SEARCH `
     --cap-add SETUID `
     --cap-add SETGID `
     --cap-add SETPCAP `
