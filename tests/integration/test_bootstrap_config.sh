@@ -42,19 +42,19 @@ done
 custom_local="$TEST_ROOT/custom"
 custom_export="$TEST_ROOT/chosen-export-root"
 mkdir -p "$custom_export"
-"$REPOSITORY/scripts/bootstrap-local.sh" "$custom_local" "$custom_export" >/dev/null
+sh "$REPOSITORY/scripts/bootstrap-local.sh" "$custom_local" "$custom_export" >/dev/null
 sed 's/DASHBOARD_DOWNLOAD_MAX_BYTES=104857600/DASHBOARD_DOWNLOAD_MAX_BYTES=209715200/' \
   "$custom_local/config.env" > "$custom_local/config.env.updated"
 mv "$custom_local/config.env.updated" "$custom_local/config.env"
 before=$(sha256sum "$custom_local/config.env")
-"$REPOSITORY/scripts/bootstrap-local.sh" "$custom_local" >/dev/null
+sh "$REPOSITORY/scripts/bootstrap-local.sh" "$custom_local" >/dev/null
 after=$(sha256sum "$custom_local/config.env")
 test "$before" = "$after"
 
 invalid_local="$TEST_ROOT/invalid"
 mkdir -p "$invalid_local"
 printf '%s\n' 'PARSERIUM_EXPORT_ROOT=relative/exports' > "$invalid_local/config.env"
-if invalid_output=$("$REPOSITORY/scripts/bootstrap-local.sh" "$invalid_local" 2>&1); then
+if invalid_output=$(sh "$REPOSITORY/scripts/bootstrap-local.sh" "$invalid_local" 2>&1); then
   echo 'Relative configured export path unexpectedly succeeded.' >&2
   exit 1
 fi
