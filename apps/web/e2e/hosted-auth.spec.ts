@@ -139,6 +139,12 @@ test("hosted invitations isolate each workspace", async ({ page }, testInfo) => 
 
   await page.goto(invitationA);
   await expect(page.getByRole("heading", { name: "Welcome to Parserium" })).toBeVisible();
+  // The sign-in content fades in. Measure contrast only after the entrance clears its styles.
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll<HTMLElement>("[data-auth-enter]")].every(
+      (node) => !node.style.opacity && !node.style.transform,
+    ),
+  );
   const loginAccessibility = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
@@ -160,7 +166,7 @@ test("hosted invitations isolate each workspace", async ({ page }, testInfo) => 
     firecrawlCredential,
   );
   await expect(page.getByRole("article")).toHaveCount(1);
-  await page.getByRole("button", { name: "Discover", exact: true }).click();
+  await page.getByRole("button", { name: "Collect", exact: true }).click();
 
   const searchResponse = page.waitForResponse(
     (response) =>
@@ -190,7 +196,7 @@ test("hosted invitations isolate each workspace", async ({ page }, testInfo) => 
   await validSelect.check();
   await page.getByRole("button", { name: "Collect selected" }).click();
   if (testInfo.project.name === "hosted-mobile-chromium") {
-    await page.getByRole("button", { name: "Queue", exact: true }).click();
+    await page.getByRole("button", { name: /^Open collection queue/ }).click();
     await expect(page.getByRole("dialog", { name: "Collection activity" })).toBeVisible();
   }
   const completedJob = page
@@ -258,7 +264,7 @@ test("hosted invitations isolate each workspace", async ({ page }, testInfo) => 
 
   await connectionARow.getByRole("button", { name: "Disable connection" }).click();
   await expect(connectionARow.getByText("Disabled", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Discover", exact: true }).click();
+  await page.getByRole("button", { name: "Collect", exact: true }).click();
   await expect(page.getByText("No usable connection", { exact: true })).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Discover", exact: true }).last(),

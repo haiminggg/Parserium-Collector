@@ -154,6 +154,16 @@ function Invoke-RecoveryPhase {
   if ($LASTEXITCODE -ne 0) { throw "Storage recovery phase $Phase failed." }
 }
 
+function Save-BrowserResults {
+  param([string]$Container, [string]$Project, [bool]$Failed)
+  # Keep screenshots and traces of a failed browser run. docker cp writes them as the caller.
+  if ($Failed) {
+    New-Item -ItemType Directory -Path $recoveryRoot -Force | Out-Null
+    docker cp "${Container}:/web/test-results" (Join-Path $recoveryRoot "playwright-$Project") | Out-Null
+  }
+  docker rm --force $Container | Out-Null
+}
+
 function Invoke-RecoveryExercise {
   param([Parameter(Mandatory = $true)][string]$ExerciseId)
   if ($ExerciseId -notmatch '^[a-f0-9]{12,32}$') {
@@ -436,14 +446,17 @@ try {
     if ($pairingCode -notmatch '^[A-Za-z0-9_-]{24}$') {
       throw 'Recovery returned an invalid pairing-code format.'
     }
-    docker run --rm --ipc=host --network $edgeNetwork `
+    $browserContainer = "parserium-e2e-$runId-$browserProject"
+    docker run --name $browserContainer --ipc=host --network $edgeNetwork `
       --env PLAYWRIGHT_BASE_URL=http://api:8080 `
       --env PLAYWRIGHT_PAIRING_CODE=$pairingCode `
       parserium-collector-browser-test:verify `
       npm run test:e2e -- --project=$browserProject
+    $browserExit = $LASTEXITCODE
     $pairingCode = $null
     $recoveryOutput = $null
-    if ($LASTEXITCODE -ne 0) { throw "Browser gate failed for $browserProject." }
+    Save-BrowserResults -Container $browserContainer -Project $browserProject -Failed ($browserExit -ne 0)
+    if ($browserExit -ne 0) { throw "Browser gate failed for $browserProject." }
   }
 
   docker compose --env-file $configFile -p $project -f $composeFile -f $verificationComposeFile stop api worker
@@ -494,7 +507,8 @@ try {
     }
     $inviteA = $inviteALines[0].Trim()
     $inviteB = $inviteBLines[0].Trim()
-    docker run --rm --ipc=host --network $edgeNetwork `
+    $browserContainer = "parserium-e2e-$runId-$hostedBrowserProject"
+    docker run --name $browserContainer --ipc=host --network $edgeNetwork `
       --env PLAYWRIGHT_BASE_URL=https://hosted-api:8443 `
       --env PLAYWRIGHT_INVITE_A=$inviteA `
       --env PLAYWRIGHT_INVITE_B=$inviteB `
@@ -504,11 +518,13 @@ try {
       --volume "${firecrawlBearerPath}:/run/secrets/firecrawl_test_bearer:ro" `
       parserium-collector-browser-test:verify `
       npm run test:e2e -- --project=$hostedBrowserProject
+    $browserExit = $LASTEXITCODE
     $inviteA = $null
     $inviteB = $null
     $inviteAOutput = $null
     $inviteBOutput = $null
-    if ($LASTEXITCODE -ne 0) { throw "Hosted browser gate failed for $hostedBrowserProject." }
+    Save-BrowserResults -Container $browserContainer -Project $hostedBrowserProject -Failed ($browserExit -ne 0)
+    if ($browserExit -ne 0) { throw "Hosted browser gate failed for $hostedBrowserProject." }
   }
   Stop-Transcript | Out-Null
   $transcriptStarted = $false

@@ -114,6 +114,9 @@ services:
     environment:
       <<: *dashboard_environment
       DASHBOARD_WORKER_ID: worker-1
+      DASHBOARD_FIRECRAWL_BASE_URL: http://host.docker.internal:3002
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     secrets:
       - db_password
       - discovery_fingerprint_secret

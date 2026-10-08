@@ -112,8 +112,13 @@ def validate_hosted_firecrawl_policy(
         if "DASHBOARD_FIRECRAWL_BASE_URL" in environment:
             fail(f"{name} must not configure a global Firecrawl endpoint")
     validate_exact_private_allowlist(api_environment, api_name)
-    if "DASHBOARD_FIRECRAWL_REMOTE_PRIVATE_ALLOWLIST" in worker_environment:
-        fail(f"{worker_name} must not configure a remote Firecrawl private allowlist")
+    # The worker runs discovery searches. It may reach private Firecrawl hosts, but never more
+    # than the API can.
+    worker_allowlist = worker_environment.get("DASHBOARD_FIRECRAWL_REMOTE_PRIVATE_ALLOWLIST")
+    if worker_allowlist is not None:
+        validate_exact_private_allowlist(worker_environment, worker_name)
+        if worker_allowlist != api_environment.get("DASHBOARD_FIRECRAWL_REMOTE_PRIVATE_ALLOWLIST"):
+            fail(f"{worker_name} private allowlist must match {api_name} exactly")
 
 
 def has_tmpfs_target(service: dict[str, Any], target: str) -> bool:
@@ -805,6 +810,15 @@ def main() -> int:
     rendered_extra_hosts = json.dumps(services["api"].get("extra_hosts", []))
     if "host.docker.internal" not in rendered_extra_hosts or "host-gateway" not in rendered_extra_hosts:
         fail("api must map the cross-platform Docker host gateway")
+    # The worker runs discovery jobs, so it needs the same endpoint or searches never start.
+    worker_environment = services["worker"].get("environment", {})
+    if not isinstance(worker_environment, dict) or worker_environment.get(
+        "DASHBOARD_FIRECRAWL_BASE_URL"
+    ) != api_environment.get("DASHBOARD_FIRECRAWL_BASE_URL"):
+        fail("worker must target the same local Firecrawl endpoint as the api")
+    worker_extra_hosts = json.dumps(services["worker"].get("extra_hosts", []))
+    if "host.docker.internal" not in worker_extra_hosts or "host-gateway" not in worker_extra_hosts:
+        fail("worker must map the cross-platform Docker host gateway")
 
     networks = document.get("networks", {})
     if not isinstance(networks, dict):

@@ -243,6 +243,10 @@ services:
       DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_FILE: /run/secrets/firecrawl_credential_wrapping_key
       DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_ID: verification-v1
       DASHBOARD_DOWNLOAD_PRIVATE_ALLOWLIST: '["test-origin:8090"]'
+      # The worker runs discovery searches, so it reaches the test Firecrawl like the api does.
+      DASHBOARD_FIRECRAWL_REMOTE_ALLOWED_PORTS: '[9444]'
+      DASHBOARD_FIRECRAWL_REMOTE_PRIVATE_ALLOWLIST: '["test-firecrawl:9444"]'
+      SSL_CERT_FILE: /run/secrets/storage_ca_bundle
     secrets:
       - db_password
       - oidc_client_secret
@@ -384,8 +388,11 @@ services:
   worker:
     environment:
       DASHBOARD_DOWNLOAD_PRIVATE_ALLOWLIST: '["test-origin:8090"]'
+      DASHBOARD_FIRECRAWL_BASE_URL: http://test-firecrawl-self-hosted:8091
     depends_on:
       test-origin:
+        condition: service_healthy
+      test-firecrawl-self-hosted:
         condition: service_healthy
 
   api:

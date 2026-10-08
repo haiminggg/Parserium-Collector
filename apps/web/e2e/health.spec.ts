@@ -73,7 +73,11 @@ test("pairs, analyzes, collects, downloads, exports, rejects, and logs out", asy
     ),
   ).toBe(true);
 
-  await page.getByLabel("Search query").fill("deterministic investment table report");
+  // Each browser project searches separately. An identical query would reuse the previous
+  // project's cached discovery, whose candidate it already collected.
+  await page
+    .getByLabel("Search query")
+    .fill(`deterministic investment table report ${testInfo.project.name}`);
   await page.getByRole("button", { name: "Discover", exact: true }).last().click();
   const results = page.getByRole("region", { name: "Discovered documents" });
   await expect(results).toBeVisible({ timeout: 60_000 });
