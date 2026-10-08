@@ -326,7 +326,10 @@ try {
   }
 
   docker compose --env-file $configFile -p $project -f $composeFile -f $verificationComposeFile up --detach --no-build
-  if ($LASTEXITCODE -ne 0) { throw 'Compose startup failed.' }
+  if ($LASTEXITCODE -ne 0) {
+    docker compose --env-file $configFile -p $project -f $composeFile -f $verificationComposeFile logs --no-color --tail 80
+    throw 'Compose startup failed.'
+  }
   $deadline = (Get-Date).AddMinutes(3)
   do {
     Start-Sleep -Seconds 2
