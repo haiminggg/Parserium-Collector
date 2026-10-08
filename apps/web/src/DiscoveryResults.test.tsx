@@ -120,9 +120,12 @@ describe("DiscoveryResults", () => {
     expect(screen.getByRole("columnheader", { name: "Type" })).toBeVisible();
     expect(screen.getByRole("columnheader", { name: "Tables" })).toBeVisible();
     expect(screen.getByRole("columnheader", { name: "Validation" })).toBeVisible();
-    await waitFor(() => expect(screen.getByText("42")).toBeVisible());
-    expect(screen.getByText("Valid")).toBeVisible();
-    expect(screen.getByText("Analyzing")).toBeVisible();
+    // Rows re-render as analysis states arrive, so re-query until they settle.
+    await waitFor(() => {
+      expect(screen.getByText("42")).toBeVisible();
+      expect(screen.getByText("Valid")).toBeVisible();
+      expect(screen.getByText("Analyzing")).toBeVisible();
+    });
   });
 
   it("uses a plain hyphen when a failed analysis has no table count", () => {
