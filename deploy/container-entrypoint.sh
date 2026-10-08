@@ -72,6 +72,12 @@ if [ -f /run/secrets/firecrawl_credential_wrapping_key ]; then
   export DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_FILE="$runtime_secret_dir/firecrawl_credential_wrapping_key"
 fi
 
+if [ -f /run/secrets/discovery_fingerprint_secret ]; then
+  install -m 0400     /run/secrets/discovery_fingerprint_secret "$runtime_secret_dir/discovery_fingerprint_secret"
+  chown 10001:10001 "$runtime_secret_dir/discovery_fingerprint_secret"
+  export DASHBOARD_DISCOVERY_FINGERPRINT_SECRET_FILE="$runtime_secret_dir/discovery_fingerprint_secret"
+fi
+
 if [ -f /run/secrets/firecrawl_test_bearer ]; then
   install -m 0400 \
     /run/secrets/firecrawl_test_bearer "$runtime_secret_dir/firecrawl_test_bearer"

@@ -15,6 +15,8 @@ try {
   [IO.File]::WriteAllText($secretPath, ('a' * 64), [Text.UTF8Encoding]::new($false))
   $wrappingKeyPath = Join-Path $testRoot 'firecrawl_credential_wrapping_key'
   [IO.File]::WriteAllText($wrappingKeyPath, ('b' * 44), [Text.UTF8Encoding]::new($false))
+  $fingerprintPath = Join-Path $testRoot 'discovery_fingerprint_secret'
+  [IO.File]::WriteAllText($fingerprintPath, ('d' * 64), [Text.UTF8Encoding]::new($false))
   $firecrawlBearerPath = Join-Path $testRoot 'firecrawl_test_bearer'
   [IO.File]::WriteAllText($firecrawlBearerPath, ('c' * 64), [Text.UTF8Encoding]::new($false))
   $caBundlePath = Join-Path $testRoot 'storage_ca_bundle'
@@ -22,7 +24,7 @@ try {
   $fixturePath = Join-Path $repository 'tests\fixtures\verify_secret_handoff.py'
   if ($IsLinux) {
     # Real secrets are private to the host user. Prove the root entrypoint can still read them.
-    & chmod 600 $secretPath $wrappingKeyPath $firecrawlBearerPath
+    & chmod 600 $secretPath $wrappingKeyPath $fingerprintPath $firecrawlBearerPath
     if ($LASTEXITCODE -ne 0) { throw 'Could not restrict test secret permissions.' }
   }
   docker run --rm `
@@ -39,6 +41,7 @@ try {
     --env SSL_CERT_FILE=/run/secrets/storage_ca_bundle `
     --volume "${secretPath}:/run/secrets/db_password:ro" `
     --volume "${wrappingKeyPath}:/run/secrets/firecrawl_credential_wrapping_key:ro" `
+    --volume "${fingerprintPath}:/run/secrets/discovery_fingerprint_secret:ro" `
     --volume "${firecrawlBearerPath}:/run/secrets/firecrawl_test_bearer:ro" `
     --volume "${caBundlePath}:/run/secrets/storage_ca_bundle:ro" `
     --volume "${fixturePath}:/verification/verify_secret_handoff.py:ro" `

@@ -20,6 +20,7 @@ assert int(process_status["CapBnd"], 16) == 0
 expected_secrets = {
     "DASHBOARD_DB_PASSWORD_FILE": (0o400, 64),
     "DASHBOARD_CREDENTIAL_ENCRYPTION_KEY_FILE": (0o400, 44),
+    "DASHBOARD_DISCOVERY_FINGERPRINT_SECRET_FILE": (0o400, 64),
     "TEST_FIRECRAWL_BEARER_FILE": (0o400, 64),
     "SSL_CERT_FILE": (0o444, 7),
 }
